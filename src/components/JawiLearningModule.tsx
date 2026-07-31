@@ -50,6 +50,27 @@ const JAWI_ARABIC_PHONETICS: Record<string, string> = {
   "ء": "هَمْزَة",
   "ي": "يَاء",
   "ڽ": "نِيَا",
+  "alif": "أَلِف",
+  "ba": "بَاء",
+  "ta": "تَاء",
+  "sa": "ثَاء",
+  "jim": "جِيم",
+  "ca": "تَشَا",
+  "ha": "حَاء",
+  "kha": "خَاء",
+  "dal": "دَال",
+  "dzal": "ذَال",
+  "ra": "رَاء",
+  "zai": "زَاي",
+  "sin": "سِين",
+  "syin": "شِين",
+  "sad": "صَاد",
+  "dad": "ضَاد",
+  "nga": "نْغَا",
+  "fa": "فَاء",
+  "pa": "بَا",
+  "ga": "كَا",
+  "nya": "نِيَا",
   "باجو": "بَاجُو",
   "بوكو": "بُوكُو",
   "ناسي": "نَاسِي",
@@ -64,12 +85,7 @@ const JAWI_ARABIC_PHONETICS: Record<string, string> = {
   "جو": "جُو",
   "تا": "تَا",
   "تي": "تِي",
-  "تو": "تُو",
-  "ca": "تَشَا",
-  "ga": "كَا",
-  "pa": "بَا",
-  "nga": "نْغَا",
-  "nya": "نِيَا"
+  "تو": "تُو"
 };
 
 const playAudioChime = (freq = 523.25) => {
@@ -129,26 +145,72 @@ export const JawiLearningModule: React.FC = () => {
   const [builderTargetIdx, setBuilderTargetIdx] = useState(0);
   const [selectedParts, setSelectedParts] = useState<string[]>([]);
 
-  // Arabic Audio Pronunciation for Jawi Letters (Authentic Arabic Tone)
+  // Jawi Audio Reference
+  const jawiAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Arabic / Jawi Audio Pronunciation for Jawi Letters & Words
   const playArabicSound = (text: string) => {
     playAudioChime(659.25);
+    if (!text) return;
+
+    if (jawiAudioRef.current) {
+      jawiAudioRef.current.pause();
+      jawiAudioRef.current = null;
+    }
     if ("speechSynthesis" in window) {
       window.speechSynthesis.cancel();
-      const cleanText = text ? text.trim() : "";
-      const spokenText = JAWI_ARABIC_PHONETICS[cleanText] || cleanText;
+    }
 
+    const cleanText = text.trim();
+    const spokenText =
+      JAWI_ARABIC_PHONETICS[cleanText] ||
+      JAWI_ARABIC_PHONETICS[cleanText.toLowerCase()] ||
+      cleanText;
+
+    const encodeQuery = encodeURIComponent(spokenText);
+    const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeQuery}&tl=ar&client=tw-ob`;
+
+    const audio = new Audio(googleTtsUrl);
+    jawiAudioRef.current = audio;
+
+    let playedOk = false;
+
+    audio.play().then(() => {
+      playedOk = true;
+    }).catch((err) => {
+      console.warn("Google TTS MP3 failed, falling back to Web Speech API:", err);
+      fallbackWebSpeech(spokenText);
+    });
+
+    audio.onerror = () => {
+      if (!playedOk) {
+        fallbackWebSpeech(spokenText);
+      }
+    };
+  };
+
+  const fallbackWebSpeech = (spokenText: string) => {
+    if (!("speechSynthesis" in window)) return;
+    try {
       const utterance = new SpeechSynthesisUtterance(spokenText);
       utterance.lang = "ar-SA";
-      utterance.rate = 0.75;
+      utterance.rate = 0.8;
       utterance.pitch = 1.0;
 
       const voices = window.speechSynthesis.getVoices();
-      const arVoice = voices.find((v) => v.lang.toLowerCase().startsWith("ar"));
+      const arVoice =
+        voices.find((v) => v.lang.toLowerCase().startsWith("ar")) ||
+        voices.find((v) => v.lang.toLowerCase().startsWith("ms")) ||
+        voices.find((v) => v.lang.toLowerCase().startsWith("id"));
       if (arVoice) {
         utterance.voice = arVoice;
       }
 
-      window.speechSynthesis.speak(utterance);
+      setTimeout(() => {
+        window.speechSynthesis.speak(utterance);
+      }, 50);
+    } catch (e) {
+      console.error("SpeechSynthesis error:", e);
     }
   };
 
@@ -663,7 +725,7 @@ export const JawiLearningModule: React.FC = () => {
                   className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all cursor-pointer"
                 >
                   <Volume2 className="w-4 h-4" />
-                  <span>{language === "en" ? "Arabic Pronunciation" : "Dengar Sebutan (Nada Arab)"}</span>
+                  <span>{language === "en" ? "Listen Pronunciation" : "Dengar Sebutan"}</span>
                 </button>
               </div>
 
