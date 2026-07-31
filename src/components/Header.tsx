@@ -22,13 +22,15 @@ interface HeaderProps {
   onOpenLoginModal?: () => void;
   onLogout?: () => void;
   onOpenJakimNotes?: () => void;
+  onOpenSalesPage?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   onOpenRegisterModal,
   onOpenLoginModal,
   onLogout,
-  onOpenJakimNotes
+  onOpenJakimNotes,
+  onOpenSalesPage
 }) => {
   const {
     language,
@@ -76,16 +78,28 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* JAKIM Reference Quick Button */}
-          {onOpenJakimNotes && (
-            <button
-              onClick={onOpenJakimNotes}
-              className="px-3.5 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-black flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
-            >
-              <BookOpen className="w-3.5 h-3.5 text-emerald-700" />
-              <span>📖 Nota & Rujukan JAKIM</span>
-            </button>
-          )}
+          {/* Quick Buttons: Sales Page & JAKIM Notes */}
+          <div className="flex items-center gap-2">
+            {onOpenSalesPage && (
+              <button
+                onClick={onOpenSalesPage}
+                className="px-3.5 py-1.5 rounded-full bg-amber-100 hover:bg-amber-200 border border-amber-300 text-amber-950 text-xs font-black flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
+              >
+                <Crown className="w-3.5 h-3.5 text-amber-700" />
+                <span>Tawaran RM39/Tahun</span>
+              </button>
+            )}
+
+            {onOpenJakimNotes && (
+              <button
+                onClick={onOpenJakimNotes}
+                className="px-3.5 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-black flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
+              >
+                <BookOpen className="w-3.5 h-3.5 text-emerald-700" />
+                <span>Nota & Rujukan JAKIM</span>
+              </button>
+            )}
+          </div>
 
           {/* Child Selector & Stats Badge (If Child Mode) */}
           {role === "child" && activeChild && (
