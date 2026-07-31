@@ -80,9 +80,26 @@ export const HafazanLearningModule: React.FC = () => {
     });
   };
 
-  const speakText = (text: string, lang = "ar-SA") => {
+  // Audio Reference
+  const currentAudioRef = React.useRef<HTMLAudioElement | null>(null);
+
+  const stopAudio = () => {
+    if (currentAudioRef.current) {
+      currentAudioRef.current.pause();
+      currentAudioRef.current = null;
+    }
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    setPlayingAyat(null);
+  };
+
+  const pad3 = (num: number) => num.toString().padStart(3, "0");
+
+  const speakTextFallback = (text: string, lang = "ar-SA") => {
     if (!("speechSynthesis" in window)) {
-      showToast("Web Speech API tidak disokong pada pelayar ini.", "info");
+      showToast("Gagal memainkan audio.", "error");
+      setPlayingAyat(null);
       return;
     }
     window.speechSynthesis.cancel();
@@ -90,7 +107,6 @@ export const HafazanLearningModule: React.FC = () => {
     utterance.lang = lang;
     utterance.rate = audioSpeed === "slow" ? 0.65 : 0.85;
 
-    // Pick Arabic voice if available
     const voices = window.speechSynthesis.getVoices();
     const arVoice = voices.find((v) => v.lang.startsWith("ar"));
     if (arVoice) utterance.voice = arVoice;
@@ -102,17 +118,49 @@ export const HafazanLearningModule: React.FC = () => {
   };
 
   const handlePlayAyat = (verse: HafazanVerse, repeatCount = 1) => {
+    if (!selectedSurah) return;
+    stopAudio();
+
     setPlayingAyat(verse.ayatNumber);
 
-    let count = 0;
-    const playLoop = () => {
-      speakText(verse.arabicText, "ar-SA");
-      count++;
-      if (count < repeatCount) {
-        setTimeout(playLoop, 2500);
+    const surahPadded = pad3(selectedSurah.number);
+    const versePadded = pad3(verse.ayatNumber);
+    const mp3Url = `https://everyayah.com/data/Alafasy_128kbps/${surahPadded}${versePadded}.mp3`;
+
+    let playCount = 0;
+
+    const audio = new Audio(mp3Url);
+    audio.playbackRate = audioSpeed === "slow" ? 0.8 : 1.0;
+    currentAudioRef.current = audio;
+
+    const playNext = () => {
+      audio.currentTime = 0;
+      audio
+        .play()
+        .then(() => {
+          playCount++;
+        })
+        .catch((err) => {
+          console.warn("EveryAyah MP3 play error, falling back to Web Speech", err);
+          speakTextFallback(verse.arabicText, "ar-SA");
+        });
+    };
+
+    audio.onended = () => {
+      if (playCount < repeatCount) {
+        setTimeout(playNext, 800);
+      } else {
+        setPlayingAyat(null);
+        currentAudioRef.current = null;
       }
     };
-    playLoop();
+
+    audio.onerror = () => {
+      console.warn("Failed to load MP3 from EveryAyah, trying fallback...");
+      speakTextFallback(verse.arabicText, "ar-SA");
+    };
+
+    playNext();
   };
 
   const handleToggleVerseProgress = (surahId: string, ayatNumber: number) => {
@@ -290,9 +338,8 @@ export const HafazanLearningModule: React.FC = () => {
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-100 pb-4">
             <button
               onClick={() => {
+                stopAudio();
                 setSelectedSurah(null);
-                setPlayingAyat(null);
-                if (window.speechSynthesis) window.speechSynthesis.cancel();
               }}
               className="px-4 py-2 rounded-2xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-extrabold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
             >

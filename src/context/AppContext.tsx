@@ -758,54 +758,121 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     );
   };
 
+  // Auto decay pet stats slowly over time (every 45 seconds decay 3-4%)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setChildrenProfiles((prev) =>
+        prev.map((c) => {
+          if (!c.pet) return c;
+          const newHunger = Math.max(15, c.pet.hunger - 4);
+          const newHappiness = Math.max(15, c.pet.happiness - 3);
+          const newSleep = Math.max(15, (c.pet.sleep || 100) - 2);
+          return {
+            ...c,
+            pet: {
+              ...c.pet,
+              hunger: newHunger,
+              happiness: newHappiness,
+              sleep: newSleep
+            }
+          };
+        })
+      );
+    }, 45000);
+    return () => clearInterval(timer);
+  }, []);
+
   const feedPet = () => {
     if (!activeChild) return;
-    if (activeChild.coins < 5) {
-      showToast(language === "en" ? "Not enough coins! Need 5 coins." : "Syiling tidak mencukupi! Perlu 5 syiling.", "error");
+    if (activeChild.coins < 2) {
+      showToast(
+        language === "en" ? "Not enough coins! Need 2 coins." : "Syiling tidak mencukupi! Perlu 2 syiling.",
+        "error"
+      );
       return;
     }
-    const newHunger = Math.min(100, activeChild.pet.hunger + 25);
-    const newHappiness = Math.min(100, activeChild.pet.happiness + 10);
-    const newPetXP = activeChild.pet.xp + 15;
+    const newHunger = Math.min(100, activeChild.pet.hunger + 35);
+    const newHappiness = Math.min(100, activeChild.pet.happiness + 15);
+    const newPetXP = activeChild.pet.xp + 25;
     let newLevel = activeChild.pet.level;
     let newEvolution = activeChild.pet.evolutionStage;
 
-    if (newPetXP >= newLevel * 100) {
+    const xpNeeded = newLevel * 50;
+    if (newPetXP >= xpNeeded) {
       newLevel += 1;
-      if (newLevel >= 3) newEvolution = 2;
-      if (newLevel >= 5) newEvolution = 3;
-      showToast(language === "en" ? `Your Pet evolved to Stage ${newEvolution}!` : `Haiwan peliharaan berevolusi ke Peringkat ${newEvolution}!`, "success");
+      if (newLevel >= 2) newEvolution = 2;
+      if (newLevel >= 4) newEvolution = 3;
+      showToast(
+        language === "en"
+          ? `🎉 Your Pet leveled up to Level ${newLevel} (Stage ${newEvolution})!`
+          : `🎉 Haiwan peliharaan naik ke Tahap ${newLevel} (Peringkat ${newEvolution})!`,
+        "success"
+      );
+    } else {
+      showToast(
+        language === "en" ? "Yummy! Pet is happy and full! (+25 Pet XP)" : "Nyam nyam! Haiwan kenyang & gembira! (+25 XP Pet)",
+        "success"
+      );
     }
 
     updateChildProfile({
-      coins: activeChild.coins - 5,
+      coins: Math.max(0, activeChild.coins - 2),
       pet: {
         ...activeChild.pet,
         hunger: newHunger,
         happiness: newHappiness,
         xp: newPetXP,
         level: newLevel,
-        evolutionStage: newEvolution
+        evolutionStage: newEvolution as 1 | 2 | 3
       }
     });
-    showToast(language === "en" ? "Yummy! Pet is happy and full!" : "Nyam nyam! Haiwan kenyang & gembira!", "success");
   };
 
   const playWithPet = () => {
     if (!activeChild) return;
-    const newHappiness = Math.min(100, activeChild.pet.happiness + 20);
+    const newHappiness = Math.min(100, activeChild.pet.happiness + 25);
+    const newPetXP = activeChild.pet.xp + 15;
+    let newLevel = activeChild.pet.level;
+    let newEvolution = activeChild.pet.evolutionStage;
+
+    const xpNeeded = newLevel * 50;
+    if (newPetXP >= xpNeeded) {
+      newLevel += 1;
+      if (newLevel >= 2) newEvolution = 2;
+      if (newLevel >= 4) newEvolution = 3;
+      showToast(
+        language === "en"
+          ? `🎉 Your Pet leveled up to Level ${newLevel}!`
+          : `🎉 Haiwan peliharaan naik ke Tahap ${newLevel}!`,
+        "success"
+      );
+    } else {
+      showToast(
+        language === "en" ? "Playing together! Happiness increased! (+15 Pet XP)" : "Bermain bersama! Kegembiraan meningkat! (+15 XP Pet)",
+        "success"
+      );
+    }
+
     updateChildProfile({
-      pet: { ...activeChild.pet, happiness: newHappiness }
+      pet: {
+        ...activeChild.pet,
+        happiness: newHappiness,
+        xp: newPetXP,
+        level: newLevel,
+        evolutionStage: newEvolution as 1 | 2 | 3
+      }
     });
-    showToast(language === "en" ? "Playing together! Happiness increased!" : "Bermain bersama! Kegembiraan meningkat!", "success");
   };
 
   const sleepPet = () => {
     if (!activeChild) return;
     updateChildProfile({
-      pet: { ...activeChild.pet, sleep: 100 }
+      pet: { ...activeChild.pet, sleep: 100, hunger: Math.max(10, activeChild.pet.hunger - 5) }
     });
-    showToast(language === "en" ? "Zzz... Pet is fully rested!" : "Zzz... Haiwan kini segar semula!", "success");
+    showToast(
+      language === "en" ? "Zzz... Pet is fully rested!" : "Zzz... Haiwan kini segar semula!",
+      "success"
+    );
   };
 
   const buyItem = (item: ShopItem) => {

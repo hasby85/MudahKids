@@ -221,8 +221,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <h3 className="text-3xl font-black text-amber-300">
                   {language === "en" ? "MUDAHKIDS PACKAGE" : "PAKEJ MUDAHKIDS"}
                 </h3>
-                <div className="text-4xl font-black text-white">
-                  RM 39 <span className="text-sm text-emerald-300 font-normal">{language === "en" ? "/ lifetime" : "/ selamanya"}</span>
+                <div className="text-2xl font-black text-amber-300">
+                  {language === "en" ? "Full Family Access" : "Akses Penuh Sekeluarga"}
                 </div>
                 <ul className="space-y-3 text-xs text-emerald-100 pt-2">
                   <li className="flex items-center gap-2">
@@ -259,7 +259,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 onClick={() => onStartRegistration("PREMIUM")}
                 className="w-full py-4 rounded-2xl bg-amber-400 hover:bg-amber-500 text-stone-900 font-extrabold text-base shadow-md transition-all cursor-pointer transform hover:-translate-y-0.5"
               >
-                {language === "en" ? "Register Now (RM39)" : "Daftar Sekarang (RM39)"}
+                {language === "en" ? "Register Now" : "Daftar Sekarang"}
               </button>
             </div>
           </div>

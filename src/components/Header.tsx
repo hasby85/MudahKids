@@ -69,12 +69,6 @@ export const Header: React.FC<HeaderProps> = ({
                 <h1 className="font-extrabold text-xl tracking-tight text-stone-900 font-sans">
                   Mudah<span className="text-emerald-600">Kids</span>
                 </h1>
-                {user && (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1 bg-amber-100 text-amber-900 border border-amber-300">
-                    <Crown className="w-3 h-3 text-amber-500" />
-                    {language === "en" ? "FULL ACCESS (RM39)" : "AKSES PENUH (RM39)"}
-                  </span>
-                )}
               </div>
               <p className="text-[11px] font-medium text-stone-500">
                 {language === "en" ? "Learn • Pray • Help • Play" : "Belajar • Beribadah • Membantu • Bermain"}
@@ -209,14 +203,16 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
 
-            {/* Register / Plan CTA */}
-            <button
-              onClick={onOpenRegisterModal}
-              className="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-stone-900 font-extrabold text-xs shadow-2xs transition-all flex items-center gap-1 cursor-pointer"
-            >
-              <Crown className="w-3.5 h-3.5 text-stone-900" />
-              <span>{user ? (language === "en" ? "Account Plan" : "Pelan Akaun") : (language === "en" ? "Register" : "Daftar")}</span>
-            </button>
+            {/* Register CTA (Only if not logged in) */}
+            {!user && (
+              <button
+                onClick={onOpenRegisterModal}
+                className="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-stone-900 font-extrabold text-xs shadow-2xs transition-all flex items-center gap-1 cursor-pointer"
+              >
+                <Crown className="w-3.5 h-3.5 text-stone-900" />
+                <span>{language === "en" ? "Register" : "Daftar"}</span>
+              </button>
+            )}
           </div>
         </div>
       </header>

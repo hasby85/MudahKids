@@ -167,76 +167,122 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
           </div>
 
           {/* Column 2: Pet Care Widget */}
-          <div className="bg-white/10 backdrop-blur-md p-4 rounded-3xl border border-white/20 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-black uppercase tracking-wider text-amber-300">
-                {language === "en" ? "Virtual Pet" : "Haiwan Peliharaan"}
-              </span>
-              <span className="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-full">
-                Lvl {activeChild.pet.level} • Stage {activeChild.pet.evolutionStage}
-              </span>
-            </div>
+          {(() => {
+            const pet = activeChild.pet;
+            const stage = pet.evolutionStage || 1;
+            const level = pet.level || 1;
+            const xpForNext = level * 50;
 
-            <div className="flex items-center gap-3">
-              <div className="w-16 h-16 rounded-2xl bg-amber-50 text-stone-900 flex items-center justify-center text-3xl shadow-md shrink-0">
-                {activeChild.pet.type === "cat"
-                  ? "🐱"
-                  : activeChild.pet.type === "rabbit"
-                  ? "🐰"
-                  : activeChild.pet.type === "camel"
-                  ? "🐪"
-                  : "🦅"}
-              </div>
-              <div className="space-y-1 w-full text-xs">
-                <h4 className="font-extrabold text-sm text-white">{activeChild.pet.name}</h4>
-                <div>
-                  <div className="flex justify-between text-[10px] text-emerald-200">
-                    <span>{language === "en" ? "Fullness" : "Kenyang"}</span>
-                    <span>{activeChild.pet.hunger}%</span>
+            let petEmoji = "🐱";
+            let stageLabel = "Bayi 🐣";
+
+            if (stage === 1) stageLabel = "Bayi 🐣";
+            else if (stage === 2) stageLabel = "Remaja 🐥";
+            else if (stage === 3) stageLabel = "Dewasa 🦅";
+            else if (stage >= 4) stageLabel = "Mistik 🌟";
+
+            if (pet.type === "cat") {
+              petEmoji = stage === 1 ? "🐱" : stage === 2 ? "🐈" : stage === 3 ? "🐅" : "🦁";
+            } else if (pet.type === "rabbit") {
+              petEmoji = stage === 1 ? "🐰" : stage === 2 ? "🐇" : stage === 3 ? "🐇👑" : "🐰🌟";
+            } else if (pet.type === "camel") {
+              petEmoji = stage === 1 ? "🐪" : stage === 2 ? "🐫" : stage === 3 ? "🐪👑" : "🐫✨";
+            } else {
+              petEmoji = stage === 1 ? "🐤" : stage === 2 ? "🦜" : stage === 3 ? "🦅" : "🦅🌟";
+            }
+
+            let moodBadge = "😊 Ceria";
+            if (pet.hunger < 40) moodBadge = "😋 Lapar!";
+            else if (pet.happiness < 40) moodBadge = "😢 Bosan";
+            else if ((pet.sleep || 100) < 40) moodBadge = "😴 Ngantuk";
+
+            return (
+              <div className="bg-white/10 backdrop-blur-md p-4 rounded-3xl border border-white/20 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-black uppercase tracking-wider text-amber-300">
+                      {language === "en" ? "Virtual Pet" : "Haiwan Peliharaan"}
+                    </span>
+                    <span className="text-[10px] font-bold bg-amber-400 text-stone-900 px-2 py-0.5 rounded-full shadow-2xs">
+                      {moodBadge}
+                    </span>
                   </div>
-                  <div className="w-full h-1.5 bg-black/20 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-amber-400 rounded-full"
-                      style={{ width: `${activeChild.pet.hunger}%` }}
-                    />
+                  <span className="text-[10px] font-bold bg-white/20 text-white px-2 py-0.5 rounded-full border border-white/20">
+                    Lvl {level} • {stageLabel}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="w-16 h-16 rounded-2xl bg-amber-50 text-stone-900 flex items-center justify-center text-3xl shadow-md shrink-0 border-2 border-amber-300/50 relative">
+                    <span>{petEmoji}</span>
+                    <span className="absolute -bottom-1 -right-1 text-[9px] bg-stone-900 text-amber-300 font-black px-1.5 py-0.2 rounded-md">
+                      P{stage}
+                    </span>
+                  </div>
+
+                  <div className="space-y-1.5 w-full text-xs">
+                    <div className="flex justify-between items-center">
+                      <h4 className="font-extrabold text-sm text-white">{pet.name}</h4>
+                      <span className="text-[10px] font-bold text-amber-300">
+                        {pet.xp}/{xpForNext} XP
+                      </span>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between text-[10px] text-emerald-200">
+                        <span>{language === "en" ? "Fullness" : "Kenyang"}</span>
+                        <span>{pet.hunger}%</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-black/20 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            pet.hunger < 40 ? "bg-rose-400 animate-pulse" : "bg-amber-400"
+                          }`}
+                          style={{ width: `${pet.hunger}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between text-[10px] text-emerald-200">
+                        <span>{language === "en" ? "Happiness" : "Gembira"}</span>
+                        <span>{pet.happiness}%</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-black/20 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            pet.happiness < 40 ? "bg-rose-400 animate-pulse" : "bg-pink-400"
+                          }`}
+                          style={{ width: `${pet.happiness}%` }}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <div className="flex justify-between text-[10px] text-emerald-200">
-                    <span>{language === "en" ? "Happiness" : "Gembira"}</span>
-                    <span>{activeChild.pet.happiness}%</span>
-                  </div>
-                  <div className="w-full h-1.5 bg-black/20 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-pink-400 rounded-full"
-                      style={{ width: `${activeChild.pet.happiness}%` }}
-                    />
-                  </div>
+
+                <div className="grid grid-cols-3 gap-1.5 pt-1">
+                  <button
+                    onClick={feedPet}
+                    className="py-1.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-stone-900 font-extrabold text-[11px] shadow-2xs cursor-pointer flex items-center justify-center gap-1 border border-amber-300 active:scale-95 transition-all"
+                  >
+                    <span>{language === "en" ? "🥩 Feed" : "🥩 Makan (-2🪙)"}</span>
+                  </button>
+                  <button
+                    onClick={playWithPet}
+                    className="py-1.5 rounded-xl bg-sky-400 hover:bg-sky-500 text-stone-900 font-extrabold text-[11px] shadow-2xs cursor-pointer flex items-center justify-center gap-1 border border-sky-300 active:scale-95 transition-all"
+                  >
+                    <span>{language === "en" ? "🎾 Play" : "🎾 Main (+XP)"}</span>
+                  </button>
+                  <button
+                    onClick={sleepPet}
+                    className="py-1.5 rounded-xl bg-purple-400 hover:bg-purple-500 text-stone-900 font-extrabold text-[11px] shadow-2xs cursor-pointer flex items-center justify-center gap-1 border border-purple-300 active:scale-95 transition-all"
+                  >
+                    <span>{language === "en" ? "💤 Sleep" : "💤 Tidur"}</span>
+                  </button>
                 </div>
               </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-1.5 pt-1">
-              <button
-                onClick={feedPet}
-                className="py-1.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-stone-900 font-extrabold text-[11px] shadow-2xs cursor-pointer flex items-center justify-center gap-1"
-              >
-                <span>{language === "en" ? "🥩 Feed" : "🥩 Makan"}</span>
-              </button>
-              <button
-                onClick={playWithPet}
-                className="py-1.5 rounded-xl bg-sky-400 hover:bg-sky-500 text-stone-900 font-extrabold text-[11px] shadow-2xs cursor-pointer flex items-center justify-center gap-1"
-              >
-                <span>{language === "en" ? "🎾 Play" : "🎾 Main"}</span>
-              </button>
-              <button
-                onClick={sleepPet}
-                className="py-1.5 rounded-xl bg-purple-400 hover:bg-purple-500 text-stone-900 font-extrabold text-[11px] shadow-2xs cursor-pointer flex items-center justify-center gap-1"
-              >
-                <span>{language === "en" ? "💤 Sleep" : "💤 Tidur"}</span>
-              </button>
-            </div>
-          </div>
+            );
+          })()}
 
           {/* Column 3: Daily Reward & Quick Nav Buttons */}
           <div className="bg-white/10 backdrop-blur-md p-4 rounded-3xl border border-white/20 space-y-3 flex flex-col justify-between">
@@ -417,27 +463,6 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
             </div>
           </div>
         </div>
-
-        {/* If Islamic is selected, offer direct launch into Hafazan Module */}
-        {activeCategory === "Islamic" && onNavigateToHafazan && (
-          <div className="p-4 rounded-2xl bg-teal-50 border border-teal-200 flex items-center justify-between gap-4">
-            <div className="space-y-1">
-              <h4 className="font-extrabold text-teal-950 text-sm">
-                📜 Modul Hafazan Surah-Surah Pilihan
-              </h4>
-              <p className="text-xs text-teal-800">
-                Hafal 10 Surah Pilihan (Al-Fatihah, 3 Qul, dll.) & dapatkan gelaran eksklusif{" "}
-                <strong>{activeChild.gender === "boy" ? "Hafiz Cilik" : "Hafizah Cilik"}</strong>!
-              </p>
-            </div>
-            <button
-              onClick={onNavigateToHafazan}
-              className="px-4 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-extrabold text-xs shadow-2xs cursor-pointer shrink-0"
-            >
-              Buka Modul Hafazan →
-            </button>
-          </div>
-        )}
 
         {/* If Hafazan category is selected, offer direct launch into Hafazan Module */}
         {activeCategory === "Hafazan" && (

@@ -97,8 +97,8 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
               <Crown className="w-4 h-4 text-amber-300" />
               <span>{language === "en" ? "MUDAHKIDS FULL FAMILY PACKAGE" : "PAKEJ LENGKAP MUDAHKIDS"}</span>
             </div>
-            <span className="text-sm font-black text-amber-300 bg-emerald-900/60 px-2.5 py-0.5 rounded-full border border-amber-300/40">
-              RM39 <span className="text-[10px] font-medium text-emerald-100">{language === "en" ? "/ lifetime" : "/ selamanya"}</span>
+            <span className="text-xs font-black text-amber-300 bg-emerald-900/60 px-2.5 py-0.5 rounded-full border border-amber-300/40">
+              <span className="text-xs font-bold text-amber-300">{language === "en" ? "Lifetime Access" : "Akses Selamanya"}</span>
             </span>
           </div>
           <p className="text-[11px] text-emerald-100">
@@ -218,8 +218,8 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
             <CheckCircle className="w-4 h-4" />
             <span>
               {language === "en"
-                ? `Complete Registration (RM39)`
-                : `Selesaikan Pendaftaran (RM39)`}
+                ? `Complete Registration`
+                : `Selesaikan Pendaftaran`}
             </span>
           </button>
         </form>
