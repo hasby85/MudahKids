@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 interface HeaderProps {
+  currentView?: string;
   onOpenDocs?: () => void;
   onOpenRegisterModal: () => void;
   onOpenLoginModal?: () => void;
@@ -26,6 +27,7 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
+  currentView,
   onOpenRegisterModal,
   onOpenLoginModal,
   onLogout,
@@ -78,31 +80,8 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* Quick Buttons: Sales Page & JAKIM Notes */}
-          <div className="flex items-center gap-2">
-            {onOpenSalesPage && (
-              <button
-                onClick={onOpenSalesPage}
-                className="px-3.5 py-1.5 rounded-full bg-amber-100 hover:bg-amber-200 border border-amber-300 text-amber-950 text-xs font-black flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
-              >
-                <Crown className="w-3.5 h-3.5 text-amber-700" />
-                <span>Tawaran RM39/Tahun</span>
-              </button>
-            )}
-
-            {onOpenJakimNotes && (
-              <button
-                onClick={onOpenJakimNotes}
-                className="px-3.5 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-black flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
-              >
-                <BookOpen className="w-3.5 h-3.5 text-emerald-700" />
-                <span>Nota & Rujukan JAKIM</span>
-              </button>
-            )}
-          </div>
-
-          {/* Child Selector & Stats Badge (If Child Mode) */}
-          {role === "child" && activeChild && (
+          {/* Child Selector & Stats Badge (Only shown inside app views, hidden on sales and login/landing pages) */}
+          {role === "child" && activeChild && currentView !== "sales" && currentView !== "landing" && user && (
             <div className="flex flex-wrap items-center gap-3 bg-white px-3 py-1.5 rounded-full border border-stone-200 shadow-2xs">
               {activeChild.activeTitle && (
                 <span className="bg-amber-300 text-stone-900 font-black text-[10px] uppercase px-2.5 py-0.5 rounded-full flex items-center gap-1 border border-amber-400">

@@ -48,6 +48,7 @@ const MainContent: React.FC = () => {
     <div className="min-h-screen bg-stone-50 font-sans text-stone-900 flex flex-col selection:bg-emerald-200">
       {/* Global Header */}
       <Header
+        currentView={view}
         onOpenRegisterModal={() => handleStartRegister("PREMIUM")}
         onOpenLoginModal={handleOpenLogin}
         onLogout={() => setView("landing")}

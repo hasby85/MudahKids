@@ -50,17 +50,17 @@ export const SalesPage: React.FC<SalesPageProps> = ({ onStartRegistration }) => 
       setDemoAudioPlaying(true);
 
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "ms-MY";
+      utterance.lang = "id-ID";
       utterance.rate = 0.85;
 
       const voices = window.speechSynthesis.getVoices();
-      const msVoice = voices.find(
+      const idVoice = voices.find(
         (v) =>
-          (v.lang.toLowerCase() === "ms-my" || v.lang.toLowerCase() === "ms_my") &&
-          !v.lang.toLowerCase().startsWith("id")
+          v.lang.toLowerCase().startsWith("id") ||
+          v.name.toLowerCase().includes("indonesi")
       );
-      if (msVoice) {
-        utterance.voice = msVoice;
+      if (idVoice) {
+        utterance.voice = idVoice;
       }
 
       utterance.onend = () => setDemoAudioPlaying(false);

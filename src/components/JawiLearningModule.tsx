@@ -169,28 +169,14 @@ export const JawiLearningModule: React.FC = () => {
   // Audio Element Reference
   const jawiAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Helper to find authentic Malay (Malaysia) voice, excluding Indonesian
-  const getMalayVoice = (voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null => {
+  // Helper to find Indonesian voice
+  const getIndonesianVoice = (voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null => {
     if (!voices || voices.length === 0) return null;
-    // 1. Look for exact ms-MY or ms_MY
     let voice = voices.find(
-      (v) => v.lang.toLowerCase() === "ms-my" || v.lang.toLowerCase() === "ms_my"
+      (v) => v.lang.toLowerCase().startsWith("id") || v.name.toLowerCase().includes("indonesi")
     );
     if (voice) return voice;
 
-    // 2. Look for any 'ms' or 'malay' or 'melayu' voice that is NOT Indonesian
-    voice = voices.find((v) => {
-      const lang = v.lang.toLowerCase();
-      const name = v.name.toLowerCase();
-      return (
-        (lang.startsWith("ms") || name.includes("malay") || name.includes("melayu")) &&
-        !lang.startsWith("id") &&
-        !name.includes("indonesi")
-      );
-    });
-    if (voice) return voice;
-
-    // 3. Any ms voice
     voice = voices.find((v) => v.lang.toLowerCase().startsWith("ms"));
     return voice || null;
   };
@@ -201,7 +187,7 @@ export const JawiLearningModule: React.FC = () => {
   };
 
   // Fallback Web Speech API
-  const fallbackWebSpeech = (text: string, preferredLang: "ms" | "ar" = "ms") => {
+  const fallbackWebSpeech = (text: string, preferredLang: "ms" | "ar" | "id" = "id") => {
     if (!("speechSynthesis" in window)) return;
 
     try {
@@ -215,13 +201,13 @@ export const JawiLearningModule: React.FC = () => {
       utterance.pitch = 1.0;
 
       const voices = window.speechSynthesis.getVoices();
-      if (preferredLang === "ms") {
-        const msVoice = getMalayVoice(voices);
-        if (msVoice) {
-          utterance.voice = msVoice;
-          utterance.lang = msVoice.lang;
+      if (preferredLang === "ms" || preferredLang === "id") {
+        const idVoice = getIndonesianVoice(voices);
+        if (idVoice) {
+          utterance.voice = idVoice;
+          utterance.lang = idVoice.lang;
         } else {
-          utterance.lang = "ms-MY";
+          utterance.lang = "id-ID";
         }
       } else {
         const arVoice = getArabicVoice(voices);
@@ -259,7 +245,7 @@ export const JawiLearningModule: React.FC = () => {
       cleanText;
 
     const isArabicScript = /[\u0600-\u06FF]/.test(spokenText);
-    const langCode = isArabicScript ? "ar" : "ms";
+    const langCode = isArabicScript ? "ar" : "id";
     const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(spokenText)}&tl=${langCode}&client=tw-ob`;
 
     const audio = new Audio(googleTtsUrl);
@@ -269,17 +255,17 @@ export const JawiLearningModule: React.FC = () => {
     audio.play().then(() => {
       playedOk = true;
     }).catch(() => {
-      fallbackWebSpeech(spokenText, isArabicScript ? "ar" : "ms");
+      fallbackWebSpeech(spokenText, isArabicScript ? "ar" : "id");
     });
 
     audio.onerror = () => {
       if (!playedOk) {
-        fallbackWebSpeech(spokenText, isArabicScript ? "ar" : "ms");
+        fallbackWebSpeech(spokenText, isArabicScript ? "ar" : "id");
       }
     };
   };
 
-  // Full Lesson Audio Pronunciation ("Dengar Sebutan" in Melayu Malaysia)
+  // Full Lesson Audio Pronunciation ("Dengar Sebutan" in Melayu Indonesia)
   const speakLesson = (lesson: JawiLesson) => {
     playAudioChime(659.25);
 
@@ -293,8 +279,8 @@ export const JawiLearningModule: React.FC = () => {
 
     const textToSpeak = lesson.audioPrompt || `Huruf ${lesson.jawiName}. ${lesson.soundHint}. Contoh perkataan: ${lesson.latinWord}.`;
     
-    // Google TTS with tl=ms for authentic Bahasa Melayu Malaysia speech
-    const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(textToSpeak)}&tl=ms&client=tw-ob`;
+    // Google TTS with tl=id for Bahasa Melayu Indonesia speech
+    const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(textToSpeak)}&tl=id&client=tw-ob`;
 
     const audio = new Audio(googleTtsUrl);
     jawiAudioRef.current = audio;
@@ -303,17 +289,17 @@ export const JawiLearningModule: React.FC = () => {
     audio.play().then(() => {
       playedOk = true;
     }).catch(() => {
-      fallbackWebSpeech(textToSpeak, "ms");
+      fallbackWebSpeech(textToSpeak, "id");
     });
 
     audio.onerror = () => {
       if (!playedOk) {
-        fallbackWebSpeech(textToSpeak, "ms");
+        fallbackWebSpeech(textToSpeak, "id");
       }
     };
   };
 
-  // Smart Speech for Question Prompt (Standard Malaysian Malay voice)
+  // Smart Speech for Question Prompt
   const speakQuestion = (q: JawiQuizQuestion) => {
     playAudioChime(587.33);
     if (!("speechSynthesis" in window)) return;
@@ -326,7 +312,7 @@ export const JawiLearningModule: React.FC = () => {
     const isEn = language === "en";
     const questionText = isEn ? (q.questionTextEn || q.questionText) : q.questionText;
 
-    // Phase 1: Speak question text in Malay or English
+    // Phase 1: Speak question text in Malay/Indonesian or English
     const promptUtterance = new SpeechSynthesisUtterance(questionText);
     promptUtterance.rate = 0.88;
 
@@ -335,22 +321,22 @@ export const JawiLearningModule: React.FC = () => {
       const enVoice = voices.find((v) => v.lang.toLowerCase().startsWith("en"));
       if (enVoice) promptUtterance.voice = enVoice;
     } else {
-      promptUtterance.lang = "ms-MY";
-      const msVoice = getMalayVoice(voices);
-      if (msVoice) promptUtterance.voice = msVoice;
+      promptUtterance.lang = "id-ID";
+      const idVoice = getIndonesianVoice(voices);
+      if (idVoice) promptUtterance.voice = idVoice;
     }
 
-    // Phase 2: Speak Jawi letter or display text in Standard Malaysian Malay
+    // Phase 2: Speak Jawi letter or display text in Indonesian accent
     if (q.jawiDisplay) {
       promptUtterance.onend = () => {
         const cleanJawi = q.jawiDisplay.trim();
         const malayPhonetic = JAWI_MALAY_PHONETICS[cleanJawi] || cleanJawi;
 
         const jawiUtterance = new SpeechSynthesisUtterance(malayPhonetic);
-        jawiUtterance.lang = "ms-MY";
+        jawiUtterance.lang = "id-ID";
         jawiUtterance.rate = 0.82;
-        const msVoice = getMalayVoice(voices);
-        if (msVoice) jawiUtterance.voice = msVoice;
+        const idVoice = getIndonesianVoice(voices);
+        if (idVoice) jawiUtterance.voice = idVoice;
 
         window.speechSynthesis.speak(jawiUtterance);
       };
