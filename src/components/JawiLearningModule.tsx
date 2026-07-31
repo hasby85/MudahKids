@@ -159,58 +159,43 @@ export const JawiLearningModule: React.FC = () => {
     }
   }, []);
 
-  // Jawi Audio Pronunciation for Jawi Letters & Words (Synchronous Web Speech API)
-  const playArabicSound = (text: string) => {
-    playAudioChime(659.25);
-    if (!text) return;
+  // Audio Element Reference
+  const jawiAudioRef = useRef<HTMLAudioElement | null>(null);
 
-    if (!("speechSynthesis" in window)) {
-      showToast(language === "en" ? "Speech API not supported" : "Peranti ini tidak menyokong audio", "info");
-      return;
-    }
+  // Helper to find authentic Malay (Malaysia) voice, excluding Indonesian
+  const getMalayVoice = (voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null => {
+    if (!voices || voices.length === 0) return null;
+    // 1. Look for exact ms-MY or ms_MY
+    let voice = voices.find(
+      (v) => v.lang.toLowerCase() === "ms-my" || v.lang.toLowerCase() === "ms_my"
+    );
+    if (voice) return voice;
 
-    try {
-      window.speechSynthesis.cancel();
-      if ("resume" in window.speechSynthesis) {
-        window.speechSynthesis.resume();
-      }
+    // 2. Look for any 'ms' or 'malay' or 'melayu' voice that is NOT Indonesian
+    voice = voices.find((v) => {
+      const lang = v.lang.toLowerCase();
+      const name = v.name.toLowerCase();
+      return (
+        (lang.startsWith("ms") || name.includes("malay") || name.includes("melayu")) &&
+        !lang.startsWith("id") &&
+        !name.includes("indonesi")
+      );
+    });
+    if (voice) return voice;
 
-      const cleanText = text.trim();
-      const spokenText =
-        JAWI_ARABIC_PHONETICS[cleanText] ||
-        JAWI_ARABIC_PHONETICS[cleanText.toLowerCase()] ||
-        cleanText;
-
-      const utterance = new SpeechSynthesisUtterance(spokenText);
-      utterance.rate = 0.8;
-      utterance.pitch = 1.0;
-
-      const voices = window.speechSynthesis.getVoices();
-      const bestVoice =
-        voices.find((v) => v.lang.toLowerCase().startsWith("ar")) ||
-        voices.find((v) => v.lang.toLowerCase().startsWith("ms")) ||
-        voices.find((v) => v.lang.toLowerCase().startsWith("id"));
-
-      if (bestVoice) {
-        utterance.voice = bestVoice;
-        utterance.lang = bestVoice.lang;
-      } else {
-        utterance.lang = "ar-SA";
-      }
-
-      window.speechSynthesis.speak(utterance);
-    } catch (err) {
-      console.error("SpeechSynthesis error:", err);
-    }
+    // 3. Any ms voice
+    voice = voices.find((v) => v.lang.toLowerCase().startsWith("ms"));
+    return voice || null;
   };
 
-  // Full Lesson Audio Pronunciation ("Dengar Sebutan")
-  const speakLesson = (lesson: JawiLesson) => {
-    playAudioChime(659.25);
-    if (!("speechSynthesis" in window)) {
-      showToast(language === "en" ? "Speech API not supported" : "Peranti ini tidak menyokong audio", "info");
-      return;
-    }
+  const getArabicVoice = (voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null => {
+    if (!voices || voices.length === 0) return null;
+    return voices.find((v) => v.lang.toLowerCase().startsWith("ar")) || null;
+  };
+
+  // Fallback Web Speech API
+  const fallbackWebSpeech = (text: string, preferredLang: "ms" | "ar" = "ms") => {
+    if (!("speechSynthesis" in window)) return;
 
     try {
       window.speechSynthesis.cancel();
@@ -218,28 +203,107 @@ export const JawiLearningModule: React.FC = () => {
         window.speechSynthesis.resume();
       }
 
-      const textToSpeak = lesson.audioPrompt || `Huruf ${lesson.jawiName}. ${lesson.soundHint}. Contoh perkataan: ${lesson.latinWord}.`;
-      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      const utterance = new SpeechSynthesisUtterance(text);
       utterance.rate = 0.85;
       utterance.pitch = 1.0;
 
       const voices = window.speechSynthesis.getVoices();
-      const msVoice =
-        voices.find((v) => v.lang.toLowerCase().startsWith("ms")) ||
-        voices.find((v) => v.lang.toLowerCase().startsWith("id")) ||
-        voices.find((v) => v.lang.toLowerCase().startsWith("ar"));
-
-      if (msVoice) {
-        utterance.voice = msVoice;
-        utterance.lang = msVoice.lang;
+      if (preferredLang === "ms") {
+        const msVoice = getMalayVoice(voices);
+        if (msVoice) {
+          utterance.voice = msVoice;
+          utterance.lang = msVoice.lang;
+        } else {
+          utterance.lang = "ms-MY";
+        }
       } else {
-        utterance.lang = "ms-MY";
+        const arVoice = getArabicVoice(voices);
+        if (arVoice) {
+          utterance.voice = arVoice;
+          utterance.lang = arVoice.lang;
+        } else {
+          utterance.lang = "ar-SA";
+        }
       }
 
       window.speechSynthesis.speak(utterance);
-    } catch (e) {
-      console.error("Lesson speech error:", e);
+    } catch (err) {
+      console.error("WebSpeech fallback error:", err);
     }
+  };
+
+  // Jawi Audio Pronunciation for Jawi Letters & Words
+  const playArabicSound = (text: string) => {
+    playAudioChime(659.25);
+    if (!text) return;
+
+    if (jawiAudioRef.current) {
+      jawiAudioRef.current.pause();
+      jawiAudioRef.current = null;
+    }
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+
+    const cleanText = text.trim();
+    const spokenText =
+      JAWI_ARABIC_PHONETICS[cleanText] ||
+      JAWI_ARABIC_PHONETICS[cleanText.toLowerCase()] ||
+      cleanText;
+
+    const isArabicScript = /[\u0600-\u06FF]/.test(spokenText);
+    const langCode = isArabicScript ? "ar" : "ms";
+    const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(spokenText)}&tl=${langCode}&client=tw-ob`;
+
+    const audio = new Audio(googleTtsUrl);
+    jawiAudioRef.current = audio;
+
+    let playedOk = false;
+    audio.play().then(() => {
+      playedOk = true;
+    }).catch(() => {
+      fallbackWebSpeech(spokenText, isArabicScript ? "ar" : "ms");
+    });
+
+    audio.onerror = () => {
+      if (!playedOk) {
+        fallbackWebSpeech(spokenText, isArabicScript ? "ar" : "ms");
+      }
+    };
+  };
+
+  // Full Lesson Audio Pronunciation ("Dengar Sebutan" in Melayu Malaysia)
+  const speakLesson = (lesson: JawiLesson) => {
+    playAudioChime(659.25);
+
+    if (jawiAudioRef.current) {
+      jawiAudioRef.current.pause();
+      jawiAudioRef.current = null;
+    }
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+
+    const textToSpeak = lesson.audioPrompt || `Huruf ${lesson.jawiName}. ${lesson.soundHint}. Contoh perkataan: ${lesson.latinWord}.`;
+    
+    // Google TTS with tl=ms for authentic Bahasa Melayu Malaysia speech
+    const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(textToSpeak)}&tl=ms&client=tw-ob`;
+
+    const audio = new Audio(googleTtsUrl);
+    jawiAudioRef.current = audio;
+
+    let playedOk = false;
+    audio.play().then(() => {
+      playedOk = true;
+    }).catch(() => {
+      fallbackWebSpeech(textToSpeak, "ms");
+    });
+
+    audio.onerror = () => {
+      if (!playedOk) {
+        fallbackWebSpeech(textToSpeak, "ms");
+      }
+    };
   };
 
   // Smart Speech for Question Prompt (Malay/English voice for question, Arabic tone for Jawi letter)
@@ -265,9 +329,7 @@ export const JawiLearningModule: React.FC = () => {
       if (enVoice) promptUtterance.voice = enVoice;
     } else {
       promptUtterance.lang = "ms-MY";
-      const msVoice = voices.find(
-        (v) => v.lang.toLowerCase().startsWith("ms") || v.lang.toLowerCase().startsWith("id")
-      );
+      const msVoice = getMalayVoice(voices);
       if (msVoice) promptUtterance.voice = msVoice;
     }
 
@@ -280,7 +342,7 @@ export const JawiLearningModule: React.FC = () => {
         const arabicUtterance = new SpeechSynthesisUtterance(arabicPhonetic);
         arabicUtterance.lang = "ar-SA";
         arabicUtterance.rate = 0.72;
-        const arVoice = voices.find((v) => v.lang.toLowerCase().startsWith("ar"));
+        const arVoice = getArabicVoice(voices);
         if (arVoice) arabicUtterance.voice = arVoice;
 
         window.speechSynthesis.speak(arabicUtterance);
