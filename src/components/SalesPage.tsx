@@ -76,6 +76,8 @@ export const SalesPage: React.FC<SalesPageProps> = ({ onStartRegistration }) => 
     const el = document.getElementById("pricing-section");
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     }
   };
 
@@ -796,7 +798,7 @@ export const SalesPage: React.FC<SalesPageProps> = ({ onStartRegistration }) => 
 
             {/* THE ONLY CHECKOUT BUTTON ON THE SALES PAGE */}
             <button
-              onClick={() => onStartRegistration("PREMIUM")}
+              onClick={scrollToPricing}
               className="w-full py-4 rounded-2xl bg-amber-400 hover:bg-amber-500 text-stone-900 font-black text-base shadow-xl transition-all cursor-pointer transform hover:-translate-y-0.5 text-center block"
             >
               LANGGAN SEKARANG - RM39 / TAHUN
