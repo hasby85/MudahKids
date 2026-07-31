@@ -48,7 +48,7 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
     showToast
   } = useApp();
 
-  const [activeCategory, setActiveCategory] = useState<"Islamic" | "Jawi" | "Chores">("Islamic");
+  const [activeCategory, setActiveCategory] = useState<"Islamic" | "Jawi" | "Hafazan" | "Chores">("Islamic");
   const [showProofModal, setShowProofModal] = useState<string | null>(null);
   const [proofNote, setProofNote] = useState("");
   const [dailyClaimed, setDailyClaimed] = useState(false);
@@ -373,7 +373,7 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
             </button>
 
             {/* Category Filter */}
-            <div className="flex items-center gap-1 bg-stone-100 p-1.5 rounded-2xl text-xs font-bold">
+            <div className="flex flex-wrap items-center gap-1 bg-stone-100 p-1.5 rounded-2xl text-xs font-bold">
               <button
                 onClick={() => setActiveCategory("Islamic")}
                 className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer ${
@@ -393,6 +393,16 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
                 }`}
               >
                 {language === "en" ? "✏️ Learn Jawi" : "✏️ Belajar Jawi"}
+              </button>
+              <button
+                onClick={() => setActiveCategory("Hafazan")}
+                className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer ${
+                  activeCategory === "Hafazan"
+                    ? "bg-emerald-600 text-white shadow-2xs font-extrabold"
+                    : "text-stone-600 hover:text-stone-900"
+                }`}
+              >
+                {language === "en" ? "📜 Hafazan Module" : "📜 Modul Hafazan"}
               </button>
               <button
                 onClick={() => setActiveCategory("Chores")}
@@ -426,6 +436,32 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
             >
               Buka Modul Hafazan →
             </button>
+          </div>
+        )}
+
+        {/* If Hafazan category is selected, offer direct launch into Hafazan Module */}
+        {activeCategory === "Hafazan" && (
+          <div className="p-4 rounded-2xl bg-teal-50 border border-teal-200 flex items-center justify-between gap-4">
+            <div className="space-y-1">
+              <h4 className="font-extrabold text-teal-950 text-sm">
+                {language === "en" ? "Interactive Hafazan Module" : "Modul Hafazan Surah-Surah Pilihan"}
+              </h4>
+              <p className="text-xs text-teal-800">
+                {language === "en"
+                  ? "Memorize 10 selected Surahs with audio recitations, hide-and-reveal practice, and verse quizzes!"
+                  : `Hafal 10 Surah Pilihan (Al-Fatihah, 3 Qul, dll.) & dapatkan gelaran eksklusif ${
+                      activeChild.gender === "boy" ? "Hafiz Cilik" : "Hafizah Cilik"
+                    }!`}
+              </p>
+            </div>
+            {onNavigateToHafazan && (
+              <button
+                onClick={onNavigateToHafazan}
+                className="px-4 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-extrabold text-xs shadow-2xs cursor-pointer shrink-0"
+              >
+                {language === "en" ? "Open Hafazan Module →" : "Buka Modul Hafazan →"}
+              </button>
+            )}
           </div>
         )}
 
