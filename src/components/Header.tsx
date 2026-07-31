@@ -115,7 +115,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Role Switcher Controls */}
           <div className="flex items-center gap-2">
             {/* Active Profile Dropdown if multiple children */}
-            {childrenProfiles.length > 1 && currentView !== "sales" && (
+            {childrenProfiles.length > 1 && currentView !== "sales" && currentView !== "landing" && (
               <select
                 value={activeChildId}
                 onChange={(e) => setActiveChildId(e.target.value)}
@@ -130,7 +130,7 @@ export const Header: React.FC<HeaderProps> = ({
             )}
 
             {/* Mode Tabs */}
-            {currentView !== "sales" && (
+            {currentView !== "sales" && currentView !== "landing" && (
               <div className="bg-stone-200/80 p-1 rounded-xl flex items-center gap-1 text-xs font-semibold">
                 <button
                   onClick={handleSwitchToParent}

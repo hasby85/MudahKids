@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useApp } from "../context/AppContext";
 import { MembershipPlan } from "../types";
-import { X, Lock, Mail, User, Phone, Crown, CheckCircle } from "lucide-react";
+import { X, Lock, Mail, User, Phone, Crown, CheckCircle, KeyRound } from "lucide-react";
 
 interface RegisterModalProps {
   initialPlan: MembershipPlan;
@@ -21,17 +21,18 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [accessCode, setAccessCode] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
 
-    if (!name || !email || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword || !accessCode) {
       setErrorMsg(
         language === "en"
-          ? "Please fill in all required fields."
-          : "Sila isi semua ruangan yang diwajibkan."
+          ? "Please fill in all required fields including the Access Code."
+          : "Sila isi semua ruangan yang diwajibkan termasuk Kod Akses."
       );
       return;
     }
@@ -45,6 +46,15 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
       return;
     }
 
+    if (accessCode.trim() !== "MudahKids2026") {
+      setErrorMsg(
+        language === "en"
+          ? "Invalid access code! Please check your email for the correct code."
+          : "Kod akses tidak sah! Sila semak emel anda untuk mendapatkan kod akses yang betul."
+      );
+      return;
+    }
+
     const result = registerAccount({
       name,
       email,
@@ -53,7 +63,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
       passwordConfirm: confirmPassword,
       role: "parent",
       plan: selectedPlan,
-      accessCode: "Rifqi@2026"
+      accessCode: accessCode.trim()
     });
 
     if (!result.success) {
@@ -176,6 +186,27 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
                 className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-stone-300 text-xs text-stone-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-extrabold text-stone-700 mb-1">
+              {language === "en" ? "Access Code *" : "Kod Akses *"}
+            </label>
+            <div className="relative">
+              <KeyRound className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
+              <input
+                type="text"
+                placeholder={language === "en" ? "Enter access code from email" : "Masukkan kod akses dari emel"}
+                value={accessCode}
+                onChange={(e) => setAccessCode(e.target.value)}
+                className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-stone-300 text-xs text-stone-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              />
+            </div>
+            <p className="text-[11px] text-amber-700 font-semibold mt-1">
+              {language === "en"
+                ? "Please check your email to get your access code."
+                : "Sila semak emel anda untuk mendapatkan kod akses tersebut."}
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">

@@ -510,7 +510,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       };
     }
 
-    const assignedCode = data.accessCode || "Rifqi@2026";
+    if (!data.accessCode || data.accessCode.trim() !== "MudahKids2026") {
+      return {
+        success: false,
+        message:
+          language === "en"
+            ? "Invalid access code! Please check your email for the correct code."
+            : "Kod akses tidak sah! Sila semak emel anda untuk mendapatkan kod akses yang betul."
+      };
+    }
+
+    const assignedCode = data.accessCode.trim();
     const newUser: UserAccount = {
       id: `u-${Date.now()}`,
       name: data.name,
