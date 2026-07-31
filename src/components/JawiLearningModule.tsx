@@ -13,79 +13,86 @@ import {
   HelpCircle
 } from "lucide-react";
 
-// Phonetic Arabic dictionary for Jawi characters, letters, and words
-const JAWI_ARABIC_PHONETICS: Record<string, string> = {
-  "ا": "أَلِف",
-  "ب": "بَاء",
-  "ت": "تَاء",
-  "ث": "ثَاء",
-  "ج": "جِيم",
-  "چ": "تَشَا",
-  "ح": "حَاء",
-  "خ": "خَاء",
-  "د": "دَال",
-  "ذ": "ذَال",
-  "ر": "رَاء",
-  "ز": "زَاي",
-  "س": "سِين",
-  "ش": "شِين",
-  "ص": "صَاد",
-  "ض": "ضَاد",
-  "ط": "طَاء",
-  "ظ": "ظَاء",
-  "ع": "عَيْن",
-  "غ": "غَيْن",
-  "ڠ": "نْغَا",
-  "ف": "فَاء",
-  "ڤ": "بَا",
-  "ق": "قَاف",
-  "ك": "كَاف",
-  "ک": "كَاف",
-  "ݢ": "كَا",
-  "ل": "لاَم",
-  "م": "مِيم",
-  "ن": "نُون",
-  "و": "وَاو",
-  "ه": "هَاء",
-  "ء": "هَمْزَة",
-  "ي": "يَاء",
-  "ڽ": "نِيَا",
-  "alif": "أَلِف",
-  "ba": "بَاء",
-  "ta": "تَاء",
-  "sa": "ثَاء",
-  "jim": "جِيم",
-  "ca": "تَشَا",
-  "ha": "حَاء",
-  "kha": "خَاء",
-  "dal": "دَال",
-  "dzal": "ذَال",
-  "ra": "رَاء",
-  "zai": "زَاي",
-  "sin": "سِين",
-  "syin": "شِين",
-  "sad": "صَاد",
-  "dad": "ضَاد",
-  "nga": "نْغَا",
-  "fa": "فَاء",
-  "pa": "بَا",
-  "ga": "كَا",
-  "nya": "نِيَا",
-  "باجو": "بَاجُو",
-  "بوكو": "بُوكُو",
-  "ناسي": "نَاسِي",
-  "بولا": "بُولاَ",
-  "ݢاجه": "جَاجَه",
-  "ڤوكوق": "بُوكُوق",
-  "با": "بَا",
-  "بي": "بِي",
-  "بو": "بُو",
-  "جا": "جَا",
-  "جي": "جِي",
-  "جو": "جُو",
-  "تا": "تَا",
-  "تي": "تِي",
-  "تو": "تُو"
+// Phonetic dictionary for Jawi characters, letters, and words in Standard Malaysian Malay (ms-MY)
+const JAWI_MALAY_PHONETICS: Record<string, string> = {
+  "ا": "Alif",
+  "ب": "Ba",
+  "ت": "Ta",
+  "ث": "Sa",
+  "ج": "Jim",
+  "چ": "Cha",
+  "ح": "Ha",
+  "خ": "Kha",
+  "د": "Dal",
+  "ذ": "Dzal",
+  "ر": "Ra",
+  "ز": "Zai",
+  "س": "Sin",
+  "ش": "Syin",
+  "ص": "Sad",
+  "ض": "Dhad",
+  "ط": "Tha",
+  "ظ": "Zha",
+  "ع": "Ain",
+  "غ": "Ghain",
+  "ڠ": "Nga",
+  "ف": "Fa",
+  "ڤ": "Pa",
+  "ق": "Qaf",
+  "ك": "Kaf",
+  "ک": "Kaf",
+  "ݢ": "Ga",
+  "ل": "Lam",
+  "م": "Mim",
+  "ن": "Nun",
+  "و": "Wau",
+  "ۏ": "Va",
+  "ه": "Ha",
+  "ء": "Hamzah",
+  "ي": "Ya",
+  "ڽ": "Nya",
+  "alif": "Alif",
+  "ba": "Ba",
+  "ta": "Ta",
+  "sa": "Sa",
+  "jim": "Jim",
+  "ca": "Cha",
+  "ha": "Ha",
+  "kha": "Kha",
+  "dal": "Dal",
+  "dzal": "Dzal",
+  "ra": "Ra",
+  "zai": "Zai",
+  "sin": "Sin",
+  "syin": "Syin",
+  "sad": "Sad",
+  "dad": "Dhad",
+  "nga": "Nga",
+  "fa": "Fa",
+  "pa": "Pa",
+  "ga": "Ga",
+  "nya": "Nya",
+  "باجو": "Baju",
+  "بوكو": "Buku",
+  "ناسي": "Nasi",
+  "بولا": "Bola",
+  "ݢاجه": "Gajah",
+  "ڤوكوق": "Pokok",
+  "با": "Ba",
+  "بي": "Bi",
+  "بو": "Bu",
+  "جا": "Ja",
+  "جي": "Ji",
+  "جو": "Ju",
+  "تا": "Ta",
+  "تي": "Ti",
+  "تو": "Tu",
+  "چا": "Cha",
+  "ڤو": "Po",
+  "ݢي": "Gi",
+  "سيا سوک بلاجر جاوي": "Saya suka belajar Jawi",
+  "اييبو مماسق ناسي": "Ibu memasak nasi",
+  "اياه ممبلي بوكو": "Ayah membeli buku"
 };
 
 const playAudioChime = (freq = 523.25) => {
@@ -247,8 +254,8 @@ export const JawiLearningModule: React.FC = () => {
 
     const cleanText = text.trim();
     const spokenText =
-      JAWI_ARABIC_PHONETICS[cleanText] ||
-      JAWI_ARABIC_PHONETICS[cleanText.toLowerCase()] ||
+      JAWI_MALAY_PHONETICS[cleanText] ||
+      JAWI_MALAY_PHONETICS[cleanText.toLowerCase()] ||
       cleanText;
 
     const isArabicScript = /[\u0600-\u06FF]/.test(spokenText);
@@ -306,7 +313,7 @@ export const JawiLearningModule: React.FC = () => {
     };
   };
 
-  // Smart Speech for Question Prompt (Malay/English voice for question, Arabic tone for Jawi letter)
+  // Smart Speech for Question Prompt (Standard Malaysian Malay voice)
   const speakQuestion = (q: JawiQuizQuestion) => {
     playAudioChime(587.33);
     if (!("speechSynthesis" in window)) return;
@@ -333,19 +340,19 @@ export const JawiLearningModule: React.FC = () => {
       if (msVoice) promptUtterance.voice = msVoice;
     }
 
-    // Phase 2: Speak Jawi letter or display text
+    // Phase 2: Speak Jawi letter or display text in Standard Malaysian Malay
     if (q.jawiDisplay) {
       promptUtterance.onend = () => {
         const cleanJawi = q.jawiDisplay.trim();
-        const arabicPhonetic = JAWI_ARABIC_PHONETICS[cleanJawi] || cleanJawi;
+        const malayPhonetic = JAWI_MALAY_PHONETICS[cleanJawi] || cleanJawi;
 
-        const arabicUtterance = new SpeechSynthesisUtterance(arabicPhonetic);
-        arabicUtterance.lang = "ar-SA";
-        arabicUtterance.rate = 0.72;
-        const arVoice = getArabicVoice(voices);
-        if (arVoice) arabicUtterance.voice = arVoice;
+        const jawiUtterance = new SpeechSynthesisUtterance(malayPhonetic);
+        jawiUtterance.lang = "ms-MY";
+        jawiUtterance.rate = 0.82;
+        const msVoice = getMalayVoice(voices);
+        if (msVoice) jawiUtterance.voice = msVoice;
 
-        window.speechSynthesis.speak(arabicUtterance);
+        window.speechSynthesis.speak(jawiUtterance);
       };
     }
 
