@@ -115,7 +115,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Role Switcher Controls */}
           <div className="flex items-center gap-2">
             {/* Active Profile Dropdown if multiple children */}
-            {childrenProfiles.length > 1 && (
+            {childrenProfiles.length > 1 && currentView !== "sales" && (
               <select
                 value={activeChildId}
                 onChange={(e) => setActiveChildId(e.target.value)}
@@ -130,30 +130,32 @@ export const Header: React.FC<HeaderProps> = ({
             )}
 
             {/* Mode Tabs */}
-            <div className="bg-stone-200/80 p-1 rounded-xl flex items-center gap-1 text-xs font-semibold">
-              <button
-                onClick={handleSwitchToParent}
-                className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer ${
-                  role === "parent"
-                    ? "bg-white text-emerald-700 shadow-2xs font-bold"
-                    : "text-stone-600 hover:text-stone-900"
-                }`}
-              >
-                <User className="w-3.5 h-3.5" />
-                <span>🔒 {language === "en" ? "Parent" : "Ibu Bapa"}</span>
-              </button>
-              <button
-                onClick={() => setRole("child")}
-                className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer ${
-                  role === "child"
-                    ? "bg-emerald-600 text-white shadow-2xs font-bold"
-                    : "text-stone-600 hover:text-stone-900"
-                }`}
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>{language === "en" ? "Child" : "Anak"}</span>
-              </button>
-            </div>
+            {currentView !== "sales" && (
+              <div className="bg-stone-200/80 p-1 rounded-xl flex items-center gap-1 text-xs font-semibold">
+                <button
+                  onClick={handleSwitchToParent}
+                  className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer ${
+                    role === "parent"
+                      ? "bg-white text-emerald-700 shadow-2xs font-bold"
+                      : "text-stone-600 hover:text-stone-900"
+                  }`}
+                >
+                  <User className="w-3.5 h-3.5" />
+                  <span>🔒 {language === "en" ? "Parent" : "Ibu Bapa"}</span>
+                </button>
+                <button
+                  onClick={() => setRole("child")}
+                  className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer ${
+                    role === "child"
+                      ? "bg-emerald-600 text-white shadow-2xs font-bold"
+                      : "text-stone-600 hover:text-stone-900"
+                  }`}
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>{language === "en" ? "Child" : "Anak"}</span>
+                </button>
+              </div>
+            )}
 
             {/* Language Switcher */}
             <button
