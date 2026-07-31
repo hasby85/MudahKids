@@ -3,8 +3,6 @@ import { useApp } from "../context/AppContext";
 import { MembershipPlan } from "../types";
 import {
   Sparkles,
-  CheckCircle2,
-  Crown,
   ArrowRight,
   Mail,
   LogIn
@@ -184,98 +182,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               {language === "en"
                 ? "Track task completion rates, Jawi learning progress, habit growth graphs & AI smart mission recommendations."
                 : "Analitik kadar tugasan, tahap pembelajaran Jawi, graf pertumbuhan tabiat & cadangan pintar AI Gemini untuk tugasan anak."}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Membership Pricing Section */}
-      <section className="py-16 px-4 bg-stone-100/70 border-t border-b border-stone-200">
-        <div className="max-w-5xl mx-auto space-y-12">
-          <div className="text-center space-y-3">
-            <span className="text-xs font-black uppercase tracking-widest text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">
-              {language === "en" ? "Choose Membership Package" : "Pilih Pakej Keahlian"}
-            </span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-stone-900">
-              {language === "en" ? "Transparent Pricing & Lifetime Access" : "Pakej Yang Jelas & Akses Selamanya"}
-            </h2>
-            <p className="text-stone-600 text-sm max-w-xl mx-auto">
-              {language === "en"
-                ? "One-time payment for lifetime access with no recurring monthly fees."
-                : "Sekali bayar untuk akses selamanya tanpa yuran langganan bulanan."}
-            </p>
-          </div>
-
-          <div className="max-w-xl mx-auto">
-            {/* PAKEJ TUNGGAL MUDAHKIDS (RM39) */}
-            <div className="relative p-8 rounded-3xl bg-emerald-900 text-white shadow-xl flex flex-col justify-between space-y-6 border-2 border-amber-400">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-amber-400 text-stone-900 font-black text-[11px] uppercase tracking-widest px-4 py-1 rounded-full shadow-md flex items-center gap-1">
-                <Crown className="w-3.5 h-3.5" />
-                <span>{language === "en" ? "Full Family Package" : "Pakej Lengkap Sekeluarga"}</span>
-              </div>
-
-              <div className="space-y-4 pt-2">
-                <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider">
-                  {language === "en" ? "Full Access • Lifetime Membership" : "Akses Penuh • Keahlian Selamanya"}
-                </span>
-                <h3 className="text-3xl font-black text-amber-300">
-                  {language === "en" ? "MUDAHKIDS PACKAGE" : "PAKEJ MUDAHKIDS"}
-                </h3>
-                <div className="text-2xl font-black text-amber-300">
-                  {language === "en" ? "Full Family Access" : "Akses Penuh Sekeluarga"}
-                </div>
-                <ul className="space-y-3 text-xs text-emerald-100 pt-2">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>{language === "en" ? "Up to 5 Child Profiles" : "Sehingga 5 Profil Anak"}</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>{language === "en" ? "Unlimited Missions & Tasks" : "Tugasan & Misi Tanpa Had"}</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>{language === "en" ? "All Avatar Outfits & Virtual Pets" : "Semua Pakaian Avatar & Haiwan Peliharaan"}</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>{language === "en" ? "All 15 Nusantara Zones & Build Mode" : "Semua 15 Dunia Nusantara & Mode Bina"}</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>{language === "en" ? "AI Mission Generator (Gemini 3.6)" : "AI Cadangan Tugasan (Gemini 3.6 Flash)"}</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>{language === "en" ? "Parent Security PIN & Custom Activities" : "Kunci PIN Ibu Bapa & Cadangan Aktiviti Luar"}</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>{language === "en" ? "JAKIM Reference Hub & Parent Analytics" : "Panduan Rujukan JAKIM & Analitik Ibu Bapa"}</span>
-                  </li>
-                </ul>
-              </div>
-              <button
-                onClick={() => onStartRegistration("PREMIUM")}
-                className="w-full py-4 rounded-2xl bg-amber-400 hover:bg-amber-500 text-stone-900 font-extrabold text-base shadow-md transition-all cursor-pointer transform hover:-translate-y-0.5"
-              >
-                {language === "en" ? "Register Now" : "Daftar Sekarang"}
-              </button>
-            </div>
-          </div>
-
-          {/* Email Delivery Banner */}
-          <div className="p-4 bg-white rounded-2xl border border-stone-200 text-center max-w-2xl mx-auto space-y-1 shadow-2xs">
-            <p className="text-xs font-bold text-stone-800 flex items-center justify-center gap-2">
-              <Mail className="w-4 h-4 text-emerald-600" />
-              <span>
-                {language === "en" ? "Fast Access Code Email Delivery" : "Sistem Penghantaran Kod Akses Pantas"}
-              </span>
-            </p>
-            <p className="text-xs text-stone-600">
-              {language === "en"
-                ? "Access code will be sent automatically to your registered email upon completion of registration and payment."
-                : "Kod akses laluan akan dihantar secara automatik melalui email yang didaftarkan selepas pendaftaran dan pembayaran selesai."}
             </p>
           </div>
         </div>
