@@ -145,72 +145,100 @@ export const JawiLearningModule: React.FC = () => {
   const [builderTargetIdx, setBuilderTargetIdx] = useState(0);
   const [selectedParts, setSelectedParts] = useState<string[]>([]);
 
-  // Jawi Audio Reference
-  const jawiAudioRef = useRef<HTMLAudioElement | null>(null);
+  // Ensure SpeechSynthesis voices are loaded on mount
+  useEffect(() => {
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.getVoices();
+      const handleVoices = () => {
+        window.speechSynthesis.getVoices();
+      };
+      window.speechSynthesis.onvoiceschanged = handleVoices;
+      return () => {
+        window.speechSynthesis.onvoiceschanged = null;
+      };
+    }
+  }, []);
 
-  // Arabic / Jawi Audio Pronunciation for Jawi Letters & Words
+  // Jawi Audio Pronunciation for Jawi Letters & Words (Synchronous Web Speech API)
   const playArabicSound = (text: string) => {
     playAudioChime(659.25);
     if (!text) return;
 
-    if (jawiAudioRef.current) {
-      jawiAudioRef.current.pause();
-      jawiAudioRef.current = null;
-    }
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
+    if (!("speechSynthesis" in window)) {
+      showToast(language === "en" ? "Speech API not supported" : "Peranti ini tidak menyokong audio", "info");
+      return;
     }
 
-    const cleanText = text.trim();
-    const spokenText =
-      JAWI_ARABIC_PHONETICS[cleanText] ||
-      JAWI_ARABIC_PHONETICS[cleanText.toLowerCase()] ||
-      cleanText;
-
-    const encodeQuery = encodeURIComponent(spokenText);
-    const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeQuery}&tl=ar&client=tw-ob`;
-
-    const audio = new Audio(googleTtsUrl);
-    jawiAudioRef.current = audio;
-
-    let playedOk = false;
-
-    audio.play().then(() => {
-      playedOk = true;
-    }).catch((err) => {
-      console.warn("Google TTS MP3 failed, falling back to Web Speech API:", err);
-      fallbackWebSpeech(spokenText);
-    });
-
-    audio.onerror = () => {
-      if (!playedOk) {
-        fallbackWebSpeech(spokenText);
-      }
-    };
-  };
-
-  const fallbackWebSpeech = (spokenText: string) => {
-    if (!("speechSynthesis" in window)) return;
     try {
+      window.speechSynthesis.cancel();
+      if ("resume" in window.speechSynthesis) {
+        window.speechSynthesis.resume();
+      }
+
+      const cleanText = text.trim();
+      const spokenText =
+        JAWI_ARABIC_PHONETICS[cleanText] ||
+        JAWI_ARABIC_PHONETICS[cleanText.toLowerCase()] ||
+        cleanText;
+
       const utterance = new SpeechSynthesisUtterance(spokenText);
-      utterance.lang = "ar-SA";
       utterance.rate = 0.8;
       utterance.pitch = 1.0;
 
       const voices = window.speechSynthesis.getVoices();
-      const arVoice =
+      const bestVoice =
         voices.find((v) => v.lang.toLowerCase().startsWith("ar")) ||
         voices.find((v) => v.lang.toLowerCase().startsWith("ms")) ||
         voices.find((v) => v.lang.toLowerCase().startsWith("id"));
-      if (arVoice) {
-        utterance.voice = arVoice;
+
+      if (bestVoice) {
+        utterance.voice = bestVoice;
+        utterance.lang = bestVoice.lang;
+      } else {
+        utterance.lang = "ar-SA";
       }
 
-      setTimeout(() => {
-        window.speechSynthesis.speak(utterance);
-      }, 50);
+      window.speechSynthesis.speak(utterance);
+    } catch (err) {
+      console.error("SpeechSynthesis error:", err);
+    }
+  };
+
+  // Full Lesson Audio Pronunciation ("Dengar Sebutan")
+  const speakLesson = (lesson: JawiLesson) => {
+    playAudioChime(659.25);
+    if (!("speechSynthesis" in window)) {
+      showToast(language === "en" ? "Speech API not supported" : "Peranti ini tidak menyokong audio", "info");
+      return;
+    }
+
+    try {
+      window.speechSynthesis.cancel();
+      if ("resume" in window.speechSynthesis) {
+        window.speechSynthesis.resume();
+      }
+
+      const textToSpeak = lesson.audioPrompt || `Huruf ${lesson.jawiName}. ${lesson.soundHint}. Contoh perkataan: ${lesson.latinWord}.`;
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      utterance.rate = 0.85;
+      utterance.pitch = 1.0;
+
+      const voices = window.speechSynthesis.getVoices();
+      const msVoice =
+        voices.find((v) => v.lang.toLowerCase().startsWith("ms")) ||
+        voices.find((v) => v.lang.toLowerCase().startsWith("id")) ||
+        voices.find((v) => v.lang.toLowerCase().startsWith("ar"));
+
+      if (msVoice) {
+        utterance.voice = msVoice;
+        utterance.lang = msVoice.lang;
+      } else {
+        utterance.lang = "ms-MY";
+      }
+
+      window.speechSynthesis.speak(utterance);
     } catch (e) {
-      console.error("SpeechSynthesis error:", e);
+      console.error("Lesson speech error:", e);
     }
   };
 
@@ -219,6 +247,9 @@ export const JawiLearningModule: React.FC = () => {
     playAudioChime(587.33);
     if (!("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
+    if ("resume" in window.speechSynthesis) {
+      window.speechSynthesis.resume();
+    }
 
     const voices = window.speechSynthesis.getVoices();
     const isEn = language === "en";
@@ -240,7 +271,7 @@ export const JawiLearningModule: React.FC = () => {
       if (msVoice) promptUtterance.voice = msVoice;
     }
 
-    // Phase 2: Speak Jawi letter or display text in authentic Arabic tone
+    // Phase 2: Speak Jawi letter or display text
     if (q.jawiDisplay) {
       promptUtterance.onend = () => {
         const cleanJawi = q.jawiDisplay.trim();
@@ -721,8 +752,8 @@ export const JawiLearningModule: React.FC = () => {
                 </span>
 
                 <button
-                  onClick={() => playArabicSound(currentLesson.letter || currentLesson.jawiName)}
-                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all cursor-pointer"
+                  onClick={() => speakLesson(currentLesson)}
+                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all cursor-pointer active:scale-95"
                 >
                   <Volume2 className="w-4 h-4" />
                   <span>{language === "en" ? "Listen Pronunciation" : "Dengar Sebutan"}</span>
@@ -730,12 +761,13 @@ export const JawiLearningModule: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-baseline gap-3">
-                  <h3 className="text-5xl font-black text-stone-900 font-serif">
+                <div className="flex items-baseline gap-3 cursor-pointer group" onClick={() => playArabicSound(currentLesson.letter || currentLesson.jawiName)}>
+                  <h3 className="text-5xl font-black text-stone-900 font-serif group-hover:text-emerald-600 transition-colors">
                     {currentLesson.letter}
                   </h3>
-                  <span className="text-xl font-bold text-emerald-700">
+                  <span className="text-xl font-bold text-emerald-700 flex items-center gap-1">
                     {currentLesson.jawiName}
+                    <Volume2 className="w-4 h-4 text-emerald-500 opacity-60 group-hover:opacity-100" />
                   </span>
                 </div>
 
