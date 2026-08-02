@@ -15,7 +15,8 @@ import {
   BookmarkCheck,
   RotateCcw,
   Star,
-  Check
+  Check,
+  X
 } from "lucide-react";
 import { ReadingLogEntry } from "../types";
 
@@ -116,12 +117,128 @@ export const QuranIqraDiary: React.FC = () => {
   const [noteInput, setNoteInput] = useState("");
   const [filterHistoryType, setFilterHistoryType] = useState<"all" | "iqra" | "quran">("all");
 
+  // Reset Modal State
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetType, setResetType] = useState<"iqra" | "quran" | "both">("iqra");
+  const [resetNote, setResetNote] = useState("");
+
   const triggerCelebration = () => {
     confetti({
       particleCount: 100,
       spread: 80,
       origin: { y: 0.6 }
     });
+  };
+
+  // Handle Cycle Reset (Khatam / Mula Kitaran Baru)
+  const handleConfirmReset = () => {
+    let logTitle = "";
+    let newProgress = { ...currentProgress };
+
+    const defaultNote =
+      resetNote.trim() ||
+      (language === "en"
+        ? "Alhamdulillah, finished reading cycle! Starting a new reading cycle."
+        : "Alhamdulillah, telah tamat bacaan. Bermula kitaran baru!");
+
+    if (resetType === "iqra") {
+      logTitle =
+        language === "en"
+          ? "🎉 KHATAM IQRA: New Iqra Cycle Started (Level 1, Page 1)"
+          : "🎉 KHATAM IQRA: Kitaran Iqra Baru Dimulakan (Jilid 1, M/S 1)";
+      newProgress = {
+        ...newProgress,
+        currentType: "iqra",
+        currentIqraLevel: 1,
+        currentIqraPage: 1,
+        lastUpdated: new Date().toISOString()
+      };
+      setSelectedIqraLevel(1);
+      setSelectedIqraPage(1);
+      setReadingType("iqra");
+    } else if (resetType === "quran") {
+      logTitle =
+        language === "en"
+          ? "🎉 KHATAM AL-QURAN: New Al-Quran Cycle Started (Surah Al-Fatihah, Page 1)"
+          : "🎉 KHATAM AL-QURAN: Kitaran Al-Quran Baru Dimulakan (Surah Al-Fatihah, M/S 1)";
+      newProgress = {
+        ...newProgress,
+        currentType: "quran",
+        currentQuranSurahName: "Al-Fatihah",
+        currentQuranJuzuk: 1,
+        currentQuranPage: 1,
+        currentQuranAyat: 1,
+        lastUpdated: new Date().toISOString()
+      };
+      setSelectedQuranSurah("Al-Fatihah");
+      setSelectedQuranJuzuk(1);
+      setSelectedQuranPage(1);
+      setSelectedQuranAyat(1);
+      setReadingType("quran");
+    } else {
+      logTitle =
+        language === "en"
+          ? "🎉 FULL KHATAM & RESET: New Iqra & Al-Quran Cycle Started"
+          : "🎉 KHATAM & RESET SEMUA: Kitaran Iqra & Al-Quran Baru Dimulakan";
+      newProgress = {
+        ...newProgress,
+        currentType: "iqra",
+        currentIqraLevel: 1,
+        currentIqraPage: 1,
+        currentQuranSurahName: "Al-Fatihah",
+        currentQuranJuzuk: 1,
+        currentQuranPage: 1,
+        currentQuranAyat: 1,
+        lastUpdated: new Date().toISOString()
+      };
+      setSelectedIqraLevel(1);
+      setSelectedIqraPage(1);
+      setSelectedQuranSurah("Al-Fatihah");
+      setSelectedQuranJuzuk(1);
+      setSelectedQuranPage(1);
+      setSelectedQuranAyat(1);
+      setReadingType("iqra");
+    }
+
+    const milestoneEntry: ReadingLogEntry = {
+      id: `log-reset-${Date.now()}`,
+      type: resetType === "quran" ? "quran" : "iqra",
+      title: logTitle,
+      iqraLevel: 1,
+      iqraPage: 1,
+      quranJuzuk: 1,
+      quranSurahName: "Al-Fatihah",
+      quranPage: 1,
+      quranAyat: 1,
+      completedAt: new Date().toISOString(),
+      parentNote: defaultNote
+    };
+
+    const updatedHistory = [milestoneEntry, ...(newProgress.history || [])];
+
+    // Bonus reward for completing/resetting cycle: +100 XP & +50 Coins!
+    const updatedXp = activeChild.xp + 100;
+    const updatedCoins = activeChild.coins + 50;
+
+    updateChildProfile({
+      xp: updatedXp,
+      coins: updatedCoins,
+      quranIqraProgress: {
+        ...newProgress,
+        history: updatedHistory
+      }
+    });
+
+    triggerCelebration();
+    showToast(
+      language === "en"
+        ? `🎉 Alhamdulillah! Cycle reset successful. (+100 XP, +50 Coins)`
+        : `🎉 Alhamdulillah! Kitaran bacaan di-reset untuk kitaran baru. (+100 XP, +50 Syiling)`,
+      "success"
+    );
+
+    setShowResetModal(false);
+    setResetNote("");
   };
 
   // Submit Progress Tick Function
@@ -261,20 +378,26 @@ export const QuranIqraDiary: React.FC = () => {
               )}
             </div>
 
-            <div className="text-[10px] font-medium text-emerald-200 border-t border-white/10 pt-2 flex items-center gap-1">
-              <Clock className="w-3 h-3 text-emerald-300" />
-              <span>
-                {language === "en" ? "Last updated: " : "Kemaskini: "}
+            <div className="text-[10px] font-medium text-emerald-200 border-t border-white/10 pt-2 flex items-center justify-between gap-1">
+              <span className="flex items-center gap-1">
+                <Clock className="w-3 h-3 text-emerald-300" />
                 {currentProgress.lastUpdated
                   ? new Date(currentProgress.lastUpdated).toLocaleDateString("ms-MY", {
                       day: "numeric",
                       month: "short",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit"
+                      year: "numeric"
                     })
                   : "Baru sekarang"}
               </span>
+
+              <button
+                type="button"
+                onClick={() => setShowResetModal(true)}
+                className="px-2.5 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-stone-900 font-black text-[10px] shadow-sm transition-all cursor-pointer flex items-center gap-1 active:scale-95"
+              >
+                <RotateCcw className="w-3 h-3" />
+                <span>Reset</span>
+              </button>
             </div>
           </div>
         </div>
@@ -283,6 +406,37 @@ export const QuranIqraDiary: React.FC = () => {
       {/* Main Interactive Tracker & Tick Form */}
       <div className="bg-white rounded-3xl p-6 md:p-8 border border-stone-200 shadow-md space-y-8">
         
+        {/* Khatam & Reset Banner Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-amber-50 to-orange-50 p-4 md:p-5 rounded-2xl border border-amber-200/80 shadow-2xs">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-amber-200 text-amber-900 flex items-center justify-center text-xl font-black shrink-0 shadow-xs">
+              🎓
+            </div>
+            <div>
+              <h4 className="font-extrabold text-stone-900 text-xs md:text-sm flex items-center gap-2">
+                <span>{language === "en" ? "Finished or Khatam Iqra / Al-Quran?" : "Telah Tamat / Khatam Bacaan Iqra atau Al-Quran?"}</span>
+                <span className="bg-amber-200 text-amber-900 text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
+                  {language === "en" ? "Cycle Reset" : "Reset Kitaran"}
+                </span>
+              </h4>
+              <p className="text-[11px] text-stone-600">
+                {language === "en"
+                  ? "Reset progress to start a fresh cycle. All past log records remain safe in history!"
+                  : "Tekan di sini jika anak telah khatam untuk memulakan kitaran bacaan baru. Rekod sejarah lama tidak dipadam!"}
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setShowResetModal(true)}
+            className="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-stone-900 font-black text-xs shadow-md transition-all cursor-pointer flex items-center gap-1.5 shrink-0 active:scale-95 border border-amber-300"
+          >
+            <RotateCcw className="w-4 h-4 stroke-[2.5]" />
+            <span>{language === "en" ? "Start New Cycle (Reset)" : "Mula Kitaran Baru (Reset)"}</span>
+          </button>
+        </div>
+
         {/* Mode Selector Tabs (Iqra vs Al-Quran) */}
         <div className="flex items-center justify-center">
           <div className="bg-stone-100 p-1.5 rounded-2xl flex items-center gap-2 text-sm font-black w-full max-w-md shadow-inner">
@@ -678,6 +832,198 @@ export const QuranIqraDiary: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Reset Confirmation Modal */}
+      {showResetModal && (
+        <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl p-6 md:p-8 max-w-lg w-full border border-stone-200 shadow-2xl space-y-6 relative max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-stone-100 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-2xl font-black shrink-0">
+                  🔄
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-stone-900">
+                    {language === "en" ? "Reset Reading Cycle" : "Reset & Mula Kitaran Bacaan Baru"}
+                  </h3>
+                  <p className="text-stone-500 text-xs">
+                    {language === "en"
+                      ? "Finished reading? Select cycle reset option"
+                      : "Telah khatam atau tamat jilid? Sila pilih jenis reset"}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowResetModal(false)}
+                className="p-2 rounded-xl hover:bg-stone-100 text-stone-400 hover:text-stone-700 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Info Notice */}
+            <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 flex items-start gap-2.5">
+              <Sparkles className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+              <p className="leading-relaxed font-medium">
+                <strong>Catatan Sejarah Selamat:</strong> Semua catatan dan rekod bacaan yang lalu TIDAK akan dipadam. Ia akan kekal disimpan dalam sejarah diari anak anda!
+              </p>
+            </div>
+
+            {/* Options */}
+            <div className="space-y-3">
+              <label className="text-xs font-black text-stone-900 uppercase tracking-wider">
+                {language === "en" ? "Select Cycle To Reset:" : "Pilih Mod Kitaran Yang Ingin Di-reset:"}
+              </label>
+
+              <div className="grid grid-cols-1 gap-2.5">
+                {/* Option 1: Iqra Only */}
+                <button
+                  type="button"
+                  onClick={() => setResetType("iqra")}
+                  className={`p-4 rounded-2xl border-2 text-left transition-all cursor-pointer flex items-center justify-between ${
+                    resetType === "iqra"
+                      ? "bg-emerald-50 border-emerald-600 ring-2 ring-emerald-500/20"
+                      : "bg-stone-50 border-stone-200 hover:bg-stone-100"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">📗</span>
+                    <div>
+                      <h4 className="font-extrabold text-stone-900 text-sm">
+                        {language === "en" ? "Reset Iqra Reading Only" : "Reset Bacaan Iqra Sahaja"}
+                      </h4>
+                      <p className="text-stone-500 text-xs">
+                        {language === "en" ? "Start again from Iqra Volume 1, Page 1" : "Mula semula dari Iqra Jilid 1, Muka Surat 1"}
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      resetType === "iqra" ? "border-emerald-600 bg-emerald-600 text-white" : "border-stone-300"
+                    }`}
+                  >
+                    {resetType === "iqra" && <Check className="w-3 h-3 stroke-[3]" />}
+                  </div>
+                </button>
+
+                {/* Option 2: Al-Quran Only */}
+                <button
+                  type="button"
+                  onClick={() => setResetType("quran")}
+                  className={`p-4 rounded-2xl border-2 text-left transition-all cursor-pointer flex items-center justify-between ${
+                    resetType === "quran"
+                      ? "bg-emerald-50 border-emerald-600 ring-2 ring-emerald-500/20"
+                      : "bg-stone-50 border-stone-200 hover:bg-stone-100"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">📖</span>
+                    <div>
+                      <h4 className="font-extrabold text-stone-900 text-sm">
+                        {language === "en" ? "Reset Al-Quran (Khatam)" : "Reset Bacaan Al-Quran Sahaja (Khatam)"}
+                      </h4>
+                      <p className="text-stone-500 text-xs">
+                        {language === "en"
+                          ? "Start again from Surah Al-Fatihah, Juz 1, Page 1"
+                          : "Mula semula dari Surah Al-Fatihah, Juzuk 1, M/S 1"}
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      resetType === "quran" ? "border-emerald-600 bg-emerald-600 text-white" : "border-stone-300"
+                    }`}
+                  >
+                    {resetType === "quran" && <Check className="w-3 h-3 stroke-[3]" />}
+                  </div>
+                </button>
+
+                {/* Option 3: Reset Both */}
+                <button
+                  type="button"
+                  onClick={() => setResetType("both")}
+                  className={`p-4 rounded-2xl border-2 text-left transition-all cursor-pointer flex items-center justify-between ${
+                    resetType === "both"
+                      ? "bg-emerald-50 border-emerald-600 ring-2 ring-emerald-500/20"
+                      : "bg-stone-50 border-stone-200 hover:bg-stone-100"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">✨</span>
+                    <div>
+                      <h4 className="font-extrabold text-stone-900 text-sm">
+                        {language === "en" ? "Reset Both (Iqra & Al-Quran)" : "Reset Kedua-duanya (Iqra & Al-Quran)"}
+                      </h4>
+                      <p className="text-stone-500 text-xs">
+                        {language === "en"
+                          ? "Reset both Iqra and Al-Quran progress to page 1"
+                          : "Kembalikan status Iqra dan Al-Quran ke muka surat permulaan"}
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      resetType === "both" ? "border-emerald-600 bg-emerald-600 text-white" : "border-stone-300"
+                    }`}
+                  >
+                    {resetType === "both" && <Check className="w-3 h-3 stroke-[3]" />}
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            {/* Note Input */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-black text-stone-800">
+                {language === "en" ? "Khatam / Milestone Remarks (Optional):" : "Catatan / Ucapan Khatam Kitaran Ini (Opsional):"}
+              </label>
+              <input
+                type="text"
+                value={resetNote}
+                onChange={(e) => setResetNote(e.target.value)}
+                placeholder={
+                  language === "en"
+                    ? "e.g. Alhamdulillah, completed full Iqra cycle with excellent recitation!"
+                    : "Contoh: Alhamdulillah, anak telah khatam Iqra dengan jayanya! Tahniah!"
+                }
+                className="w-full px-4 py-3 rounded-2xl border border-stone-200 bg-stone-50 text-xs font-medium text-stone-800 outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+            </div>
+
+            {/* Reward Bonus Notice */}
+            <div className="p-3 bg-amber-50 rounded-2xl border border-amber-200 flex items-center gap-2 text-xs font-extrabold text-amber-900">
+              <span className="text-xl">🎁</span>
+              <span>
+                {language === "en"
+                  ? "Cycle Reward Bonus: +100 XP & +50 Gold Coins will be awarded!"
+                  : "Ganjaran Menyiapkan Kitaran: +100 XP & +50 Syiling Emas akan diberikan!"}
+              </span>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowResetModal(false)}
+                className="px-5 py-2.5 rounded-xl border border-stone-300 hover:bg-stone-100 font-bold text-xs text-stone-700 cursor-pointer"
+              >
+                {language === "en" ? "Cancel" : "Batal"}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleConfirmReset}
+                className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-md transition-all cursor-pointer flex items-center gap-2 active:scale-95"
+              >
+                <RotateCcw className="w-4 h-4" />
+                <span>{language === "en" ? "Confirm & Start New Cycle" : "Sahkan & Mula Kitaran Baru"}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
