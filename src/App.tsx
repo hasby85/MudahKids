@@ -13,12 +13,13 @@ import { NusantaraWorldMap } from "./components/NusantaraWorldMap";
 import { ShopAndLeaderboard } from "./components/ShopAndLeaderboard";
 import { JakimReferenceModule } from "./components/JakimReferenceModule";
 import { HafazanLearningModule } from "./components/HafazanLearningModule";
+import { QuranIqraDiary } from "./components/QuranIqraDiary";
 import { DocumentationModal } from "./components/DocumentationModal";
 import { MembershipPlan } from "./types";
 
 const MainContent: React.FC = () => {
   const { role, user, toast } = useApp();
-  const [view, setView] = useState<"landing" | "sales" | "app" | "jawi" | "hafazan" | "world" | "shop" | "jakim">("sales");
+  const [view, setView] = useState<"landing" | "sales" | "app" | "jawi" | "hafazan" | "world" | "shop" | "jakim" | "diari">("sales");
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
@@ -117,6 +118,14 @@ const MainContent: React.FC = () => {
                   📜 Modul Hafazan
                 </button>
                 <button
+                  onClick={() => setView("diari")}
+                  className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
+                    view === "diari" ? "bg-emerald-600 text-white shadow-2xs font-extrabold" : "text-stone-600 hover:text-stone-900"
+                  }`}
+                >
+                  📖 Diari Bacaan Iqra/Quran
+                </button>
+                <button
                   onClick={() => setView("world")}
                   className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
                     view === "world" ? "bg-emerald-600 text-white shadow-2xs font-extrabold" : "text-stone-600 hover:text-stone-900"
@@ -174,6 +183,7 @@ const MainContent: React.FC = () => {
 
             {view === "jawi" && <JawiLearningModule />}
             {view === "hafazan" && <HafazanLearningModule />}
+            {view === "diari" && <QuranIqraDiary />}
             {view === "world" && <NusantaraWorldMap />}
             {view === "shop" && <ShopAndLeaderboard />}
             {view === "jakim" && <JakimReferenceModule />}

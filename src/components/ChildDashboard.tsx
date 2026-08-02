@@ -16,8 +16,10 @@ import {
   Compass,
   ShoppingBag,
   Trophy,
-  Hammer
+  Hammer,
+  BookOpen
 } from "lucide-react";
+import { QuranIqraDiary } from "./QuranIqraDiary";
 
 interface ChildDashboardProps {
   onNavigateToWorld: () => void;
@@ -48,7 +50,7 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
     showToast
   } = useApp();
 
-  const [activeCategory, setActiveCategory] = useState<"Islamic" | "Jawi" | "Hafazan" | "Chores">("Islamic");
+  const [activeCategory, setActiveCategory] = useState<"Islamic" | "Jawi" | "Hafazan" | "Chores" | "DiariBacaan">("Islamic");
   const [showProofModal, setShowProofModal] = useState<string | null>(null);
   const [proofNote, setProofNote] = useState("");
   const [dailyClaimed, setDailyClaimed] = useState(false);
@@ -451,6 +453,16 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
                 {language === "en" ? "📜 Hafazan Module" : "📜 Modul Hafazan"}
               </button>
               <button
+                onClick={() => setActiveCategory("DiariBacaan")}
+                className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer ${
+                  activeCategory === "DiariBacaan"
+                    ? "bg-emerald-600 text-white shadow-2xs font-extrabold"
+                    : "text-stone-600 hover:text-stone-900"
+                }`}
+              >
+                {language === "en" ? "📖 Reading Diary" : "📖 Diari Bacaan Iqra/Quran"}
+              </button>
+              <button
                 onClick={() => setActiveCategory("Chores")}
                 className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer ${
                   activeCategory === "Chores"
@@ -512,8 +524,12 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
           </div>
         )}
 
-        {/* Mission Cards List */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* If DiariBacaan category is selected, render the full Quran & Iqra Reading Tracker */}
+        {activeCategory === "DiariBacaan" ? (
+          <QuranIqraDiary />
+        ) : (
+          /* Mission Cards List */
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {categoryMissions.map((m) => (
             <div
               key={m.id}
@@ -599,6 +615,7 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
             </div>
           ))}
         </div>
+        )}
       </div>
 
       {/* Proof Submission Modal */}

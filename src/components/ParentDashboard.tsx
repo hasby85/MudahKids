@@ -605,6 +605,94 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onOpenLoginMod
             )}
           </div>
 
+          {/* Reading Progress Card for Parent */}
+          <div className="bg-white rounded-3xl p-6 border border-stone-200 shadow-2xs space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black text-xl">
+                  📖
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-stone-900 text-base">
+                    Diari Rekod Bacaan Al-Quran & Iqra ({activeChild.name})
+                  </h3>
+                  <p className="text-stone-500 text-xs">
+                    Pantau dan semak kedudukan muka surat bacaan terkini anak anda.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Current reading badge */}
+            {activeChild.quranIqraProgress ? (
+              <div className="bg-emerald-50/70 p-4 rounded-2xl border border-emerald-200 flex flex-wrap items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-200 px-2.5 py-0.5 rounded-full">
+                    Kedudukan Terkini Ditanda Anak
+                  </span>
+                  <div className="text-lg font-black text-stone-900 flex items-center gap-2 pt-1">
+                    {activeChild.quranIqraProgress.currentType === "iqra" ? (
+                      <>
+                        <span>📗 Iqra {activeChild.quranIqraProgress.currentIqraLevel || 1}</span>
+                        <span>•</span>
+                        <span className="text-emerald-700">
+                          Muka Surat {activeChild.quranIqraProgress.currentIqraPage || 1}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <span>📖 Surah {activeChild.quranIqraProgress.currentQuranSurahName || "Al-Fatihah"}</span>
+                        <span>•</span>
+                        <span className="text-emerald-700">
+                          Juz {activeChild.quranIqraProgress.currentQuranJuzuk || 1}, M/S {activeChild.quranIqraProgress.currentQuranPage || 1}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                <div className="text-right text-xs text-stone-500 font-medium">
+                  <div>Kemaskini Terakhir:</div>
+                  <div className="font-bold text-stone-800">
+                    {activeChild.quranIqraProgress.lastUpdated
+                      ? new Date(activeChild.quranIqraProgress.lastUpdated).toLocaleDateString("ms-MY", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric"
+                        })
+                      : "Hari ini"}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 text-stone-600 text-xs font-medium">
+                Anak belum menanda rekod bacaan lagi.
+              </div>
+            )}
+
+            {/* Recent history log */}
+            {activeChild.quranIqraProgress?.history && activeChild.quranIqraProgress.history.length > 0 && (
+              <div className="space-y-2 pt-2">
+                <h4 className="text-xs font-extrabold text-stone-700 uppercase">Sejarah Rekod Terkini:</h4>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {activeChild.quranIqraProgress.history.slice(0, 5).map((log) => (
+                    <div key={log.id} className="p-3 rounded-xl bg-stone-50 border border-stone-200 text-xs flex items-center justify-between gap-2">
+                      <div>
+                        <span className="font-extrabold text-stone-900">{log.title}</span>
+                        {log.parentNote && (
+                          <p className="text-[11px] text-emerald-800 italic mt-0.5">💬 "{log.parentNote}"</p>
+                        )}
+                      </div>
+                      <span className="text-[10px] text-stone-400 font-semibold shrink-0">
+                        {new Date(log.completedAt).toLocaleDateString("ms-MY")}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Missions Management & Action Buttons */}
           <div className="bg-white rounded-3xl p-6 border border-stone-200 shadow-2xs space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-4">

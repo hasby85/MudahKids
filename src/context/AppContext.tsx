@@ -152,7 +152,28 @@ const INITIAL_CHILDREN: ChildProfile[] = [
       { id: "b1", type: "House", name: "Rumah Panggung Umar", x: 2, y: 2 },
       { id: "b2", type: "Mosque", name: "Masjid Kampung", x: 4, y: 3 }
     ],
-    inventory: ["s1", "s4"]
+    inventory: ["s1", "s4"],
+    quranIqraProgress: {
+      currentType: "iqra",
+      currentIqraLevel: 5,
+      currentIqraPage: 3,
+      currentQuranJuzuk: 1,
+      currentQuranSurahName: "Al-Fatihah",
+      currentQuranPage: 1,
+      currentQuranAyat: 1,
+      lastUpdated: new Date().toISOString(),
+      history: [
+        {
+          id: "log-1",
+          type: "iqra",
+          title: "Iqra 5 - Muka Surat 3",
+          iqraLevel: 5,
+          iqraPage: 3,
+          completedAt: new Date().toISOString(),
+          parentNote: "Lancar dan tajwid betul! Syabas abang Umar."
+        }
+      ]
+    }
   },
   {
     id: "child-2",
@@ -187,7 +208,28 @@ const INITIAL_CHILDREN: ChildProfile[] = [
     builtStructures: [
       { id: "b3", type: "House", name: "Pondok Aisyah", x: 1, y: 1 }
     ],
-    inventory: ["s5"]
+    inventory: ["s5"],
+    quranIqraProgress: {
+      currentType: "iqra",
+      currentIqraLevel: 2,
+      currentIqraPage: 12,
+      currentQuranJuzuk: 1,
+      currentQuranSurahName: "Al-Fatihah",
+      currentQuranPage: 1,
+      currentQuranAyat: 1,
+      lastUpdated: new Date().toISOString(),
+      history: [
+        {
+          id: "log-2",
+          type: "iqra",
+          title: "Iqra 2 - Muka Surat 12",
+          iqraLevel: 2,
+          iqraPage: 12,
+          completedAt: new Date().toISOString(),
+          parentNote: "Bagus Aisyah, sambung usaha lagi!"
+        }
+      ]
+    }
   }
 ];
 

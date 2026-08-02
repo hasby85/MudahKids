@@ -82,6 +82,7 @@ export interface ChildProfile {
     completedSurahIds: string[];
     verseProgress?: Record<string, number[]>; // surahId -> array of completed verse numbers
   };
+  quranIqraProgress?: QuranIqraProgress;
   activeTitle?: string;
   customReward?: {
     title: string;
@@ -206,4 +207,30 @@ export interface Achievement {
   progress: number;
   maxProgress: number;
   rewardCoins: number;
+}
+
+export interface ReadingLogEntry {
+  id: string;
+  type: "iqra" | "quran";
+  title: string; // e.g. "Iqra 5 - Muka Surat 3" or "Al-Quran: Surah Al-Baqarah (Juzuk 1), Muka Surat 15"
+  iqraLevel?: number; // 1 to 6
+  iqraPage?: number; // 1 to 30
+  quranJuzuk?: number; // 1 to 30
+  quranSurahName?: string;
+  quranPage?: number; // 1 to 604
+  quranAyat?: number;
+  completedAt: string;
+  parentNote?: string;
+}
+
+export interface QuranIqraProgress {
+  currentType: "iqra" | "quran";
+  currentIqraLevel: number; // 1 to 6
+  currentIqraPage: number; // 1 to 30
+  currentQuranJuzuk: number; // 1 to 30
+  currentQuranSurahName: string;
+  currentQuranPage: number; // 1 to 604
+  currentQuranAyat: number;
+  lastUpdated: string;
+  history: ReadingLogEntry[];
 }
