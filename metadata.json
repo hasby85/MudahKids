@@ -1,0 +1,6 @@
+{
+  "name": "MudahKids",
+  "description": "Akses Lengkap Aplikasi MudahKids: Belajar, Beribadah, Membantu, dan Bermain dengan Gamifikasi Nusantara & Modul Pengurusan Ibu Bapa.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
