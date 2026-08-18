@@ -13,7 +13,9 @@ import {
   Crown,
   LogIn,
   LogOut,
-  BookOpen
+  BookOpen,
+  RefreshCw,
+  CloudCheck
 } from "lucide-react";
 
 interface HeaderProps {
@@ -46,10 +48,32 @@ export const Header: React.FC<HeaderProps> = ({
     activeChildId,
     setActiveChildId,
     soundEnabled,
-    setSoundEnabled
+    setSoundEnabled,
+    syncLatestCloudData,
+    showToast
   } = useApp();
 
   const [showPinModal, setShowPinModal] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const handleManualSync = async () => {
+    if (!user || isSyncing) return;
+    setIsSyncing(true);
+    try {
+      await syncLatestCloudData(user.email, true);
+      showToast(
+        language === "en" ? "Cloud data synchronized successfully!" : "Data Awan berjaya diselaraskan!",
+        "success"
+      );
+    } catch (e) {
+      showToast(
+        language === "en" ? "Failed to sync cloud data." : "Gagal menyelaraskan data awan.",
+        "error"
+      );
+    } finally {
+      setTimeout(() => setIsSyncing(false), 600);
+    }
+  };
 
   const handleSwitchToParent = () => {
     if (role === "child") {
@@ -169,11 +193,24 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Sound Toggle */}
             <button
               onClick={() => setSoundEnabled(!soundEnabled)}
-              className="p-1.5 rounded-xl border border-stone-300 bg-white hover:bg-stone-100 text-stone-600 shadow-2xs"
+              className="p-1.5 rounded-xl border border-stone-300 bg-white hover:bg-stone-100 text-stone-600 shadow-2xs cursor-pointer"
               title="Kesan Bunyi"
             >
               {soundEnabled ? <Volume2 className="w-4 h-4 text-emerald-600" /> : <VolumeX className="w-4 h-4 text-stone-400" />}
             </button>
+
+            {/* Manual Cloud Sync Button (When Logged In) */}
+            {user && (
+              <button
+                onClick={handleManualSync}
+                disabled={isSyncing}
+                className="px-2.5 py-1.5 rounded-xl border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer disabled:opacity-60"
+                title={language === "en" ? "Synchronize with Cloud" : "Selaraskan dengan Awan"}
+              >
+                <RefreshCw className={`w-3.5 h-3.5 text-emerald-600 ${isSyncing ? "animate-spin" : ""}`} />
+                <span className="hidden sm:inline">{language === "en" ? "Sync" : "Awan Sync"}</span>
+              </button>
+            )}
 
             {/* Login / Logout Buttons */}
             {user ? (

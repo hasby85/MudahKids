@@ -25,7 +25,8 @@ import {
   loginAccountCloud,
   resetPasswordCloud,
   saveSyncedDataCloud,
-  fetchSyncedDataCloud
+  fetchSyncedDataCloud,
+  mergeChildProfileObjects
 } from "../services/cloudAuthSync";
 
 interface AppContextType {
@@ -112,6 +113,7 @@ interface AppContextType {
   showToast: (message: string, type?: "success" | "error" | "info") => void;
   soundEnabled: boolean;
   setSoundEnabled: (enabled: boolean) => void;
+  syncLatestCloudData: (targetEmail?: string, forceSync?: boolean) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -301,14 +303,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     isLocalMutationPendingRef.current = true;
   };
 
-  // Sync latest cloud data for a logged-in user across devices
-  const syncLatestCloudData = async (targetEmail?: string) => {
+  // Sync latest cloud data for a logged-in user across devices (with mobile support)
+  const syncLatestCloudData = async (targetEmail?: string, forceSync: boolean = false) => {
     const emailToSync = targetEmail || user?.email;
     if (!emailToSync || !user || user.email.trim().toLowerCase() !== emailToSync.trim().toLowerCase()) return;
 
-    // Guard 1: Skip cloud polling if a local mutation happened recently (< 15 seconds ago) or is pending save
-    if (isLocalMutationPendingRef.current || (Date.now() - lastLocalMutationTimeRef.current < 15000)) {
-      return;
+    // Guard 1: Skip cloud polling if a local mutation happened very recently (< 3 seconds ago) unless forceSync is requested
+    if (!forceSync) {
+      if (isLocalMutationPendingRef.current || (Date.now() - lastLocalMutationTimeRef.current < 3000)) {
+        return;
+      }
     }
 
     try {
@@ -316,7 +320,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
       // Guard 2 (Post-Fetch Guard): Verify active user and mutation timing after async fetch completes
       if (!user || user.email.trim().toLowerCase() !== emailToSync.trim().toLowerCase()) return;
-      if (isLocalMutationPendingRef.current || (Date.now() - lastLocalMutationTimeRef.current < 15000)) {
+      if (!forceSync && (isLocalMutationPendingRef.current || (Date.now() - lastLocalMutationTimeRef.current < 3000))) {
         console.log("🛡️ Post-fetch Guard: Local mutation occurred during cloud fetch. Preserving local state.");
         return;
       }
@@ -338,7 +342,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           setChildrenProfiles((currentLocal) => {
             const profileMap = new Map<string, ChildProfile>();
 
-            // 1. Keep current local profiles belonging strictly to this active user
+            // 1. Keep current local profiles belonging strictly to this active user as baseline
             currentLocal.forEach((p) => {
               if (p && p.id && !deletedChildIdsRef.current.has(p.id)) {
                 if (!p.parentId || p.parentId === currentUserId || p.parentId === user.email || p.parentId === currentUserEmail) {
@@ -347,23 +351,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
               }
             });
 
-            // 2. Non-destructively merge valid cloud profiles for this active user
+            // 2. Non-destructively deep merge valid cloud profiles for this active user
             validCloudProfiles.forEach((cp: ChildProfile) => {
               if (!profileMap.has(cp.id)) {
                 profileMap.set(cp.id, { ...cp, parentId: currentUserId });
               } else {
                 const local = profileMap.get(cp.id)!;
+                const merged = mergeChildProfileObjects(local, cp);
                 profileMap.set(cp.id, {
-                  ...cp,
-                  ...local,
-                  parentId: currentUserId,
-                  level: Math.max(local.level || 1, cp.level || 1),
-                  xp: Math.max(local.xp || 0, cp.xp || 0),
-                  coins: Math.max(local.coins || 0, cp.coins || 0),
-                  diamonds: Math.max(local.diamonds || 0, cp.diamonds || 0),
-                  unlockedWorlds: Array.from(new Set([...(local.unlockedWorlds || []), ...(cp.unlockedWorlds || [])])),
-                  builtStructures: local.builtStructures?.length ? local.builtStructures : (cp.builtStructures || []),
-                  inventory: Array.from(new Set([...(local.inventory || []), ...(cp.inventory || [])]))
+                  ...merged,
+                  parentId: currentUserId
                 });
               }
             });
@@ -438,7 +435,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
 
     if (savedUserEmail) {
-      syncLatestCloudData(savedUserEmail);
+      syncLatestCloudData(savedUserEmail, true);
     }
 
     // Fetch accounts list from server/cloud store for multi-device sync
@@ -457,29 +454,34 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }).catch(() => {});
   }, []);
 
-  // Periodic polling & focus listener for continuous real-time multi-device sync
+  // Periodic polling & mobile event listeners (focus, visibilitychange, pageshow, online) for continuous real-time sync
   useEffect(() => {
     if (!isInitialized || !user?.email) return;
 
-    syncLatestCloudData(user.email);
+    // Initial force sync on mount
+    syncLatestCloudData(user.email, true);
 
     const interval = setInterval(() => {
       syncLatestCloudData(user.email);
-    }, 6000);
+    }, 5000);
 
-    const handleFocus = () => {
+    const handleMobileResume = () => {
       if (document.visibilityState === "visible") {
-        syncLatestCloudData(user.email);
+        syncLatestCloudData(user.email, true);
       }
     };
 
-    window.addEventListener("focus", handleFocus);
-    document.addEventListener("visibilitychange", handleFocus);
+    window.addEventListener("focus", handleMobileResume);
+    window.addEventListener("pageshow", handleMobileResume);
+    window.addEventListener("online", handleMobileResume);
+    document.addEventListener("visibilitychange", handleMobileResume);
 
     return () => {
       clearInterval(interval);
-      window.removeEventListener("focus", handleFocus);
-      document.removeEventListener("visibilitychange", handleFocus);
+      window.removeEventListener("focus", handleMobileResume);
+      window.removeEventListener("pageshow", handleMobileResume);
+      window.removeEventListener("online", handleMobileResume);
+      document.removeEventListener("visibilitychange", handleMobileResume);
     };
   }, [user?.email, isInitialized]);
 
@@ -1316,7 +1318,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         toast,
         showToast,
         soundEnabled,
-        setSoundEnabled
+        setSoundEnabled,
+        syncLatestCloudData
       }}
     >
       {children}

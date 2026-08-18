@@ -446,6 +446,9 @@ app.post("/api/sync/save", (req, res) => {
 
 // 6. Get Synced User Data across devices
 app.all("/api/sync/get", async (req, res) => {
+  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
   try {
     const email = (req.query.email || req.body?.email) as string;
     if (!email) {

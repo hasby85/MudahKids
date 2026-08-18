@@ -91,15 +91,111 @@ export function normalizeDbStore(data: any): MasterDbStore {
   return { accounts, syncedData };
 }
 
-// Fetch directly from Master Cloud Blob and Supabase
+// Helper to deeply merge two child profiles (local and cloud) without losing progress
+export function mergeChildProfileObjects(localP: any, cloudP: any): any {
+  if (!localP) return cloudP;
+  if (!cloudP) return localP;
+
+  // Combine solat progress history
+  let solatProgress = cloudP.solatProgress || localP.solatProgress;
+  if (localP.solatProgress && cloudP.solatProgress) {
+    const historyMap = new Map<string, any>();
+    (localP.solatProgress.history || []).forEach((h: any) => { if (h?.id || h?.date) historyMap.set(h.id || h.date, h); });
+    (cloudP.solatProgress.history || []).forEach((h: any) => { if (h?.id || h?.date) historyMap.set(h.id || h.date, h); });
+    const mergedHistory = Array.from(historyMap.values()).sort((a: any, b: any) => (b.date || "").localeCompare(a.date || ""));
+    solatProgress = {
+      ...cloudP.solatProgress,
+      ...localP.solatProgress,
+      history: mergedHistory,
+      totalFardhuCount: Math.max(localP.solatProgress.totalFardhuCount || 0, cloudP.solatProgress.totalFardhuCount || 0),
+      totalSunatCount: Math.max(localP.solatProgress.totalSunatCount || 0, cloudP.solatProgress.totalSunatCount || 0),
+      currentStreak: Math.max(localP.solatProgress.currentStreak || 0, cloudP.solatProgress.currentStreak || 0)
+    };
+  }
+
+  // Combine Quran / Iqra progress history
+  let quranIqraProgress = cloudP.quranIqraProgress || localP.quranIqraProgress;
+  if (localP.quranIqraProgress && cloudP.quranIqraProgress) {
+    const qHistoryMap = new Map<string, any>();
+    (localP.quranIqraProgress.history || []).forEach((h: any) => { if (h?.id) qHistoryMap.set(h.id, h); });
+    (cloudP.quranIqraProgress.history || []).forEach((h: any) => { if (h?.id) qHistoryMap.set(h.id, h); });
+    const mergedQHistory = Array.from(qHistoryMap.values());
+    const cloudLastUpdated = new Date(cloudP.quranIqraProgress.lastUpdated || 0).getTime();
+    const localLastUpdated = new Date(localP.quranIqraProgress.lastUpdated || 0).getTime();
+    const latestProgressObj = cloudLastUpdated >= localLastUpdated ? cloudP.quranIqraProgress : localP.quranIqraProgress;
+    quranIqraProgress = {
+      ...latestProgressObj,
+      history: mergedQHistory
+    };
+  }
+
+  // Combine Jawi Progress
+  let jawiProgress = cloudP.jawiProgress || localP.jawiProgress;
+  if (localP.jawiProgress && cloudP.jawiProgress) {
+    jawiProgress = {
+      ...cloudP.jawiProgress,
+      unlockedLevel: Math.max(localP.jawiProgress.unlockedLevel || 1, cloudP.jawiProgress.unlockedLevel || 1),
+      completedLevels: Array.from(new Set([...(localP.jawiProgress.completedLevels || []), ...(cloudP.jawiProgress.completedLevels || [])]))
+    };
+  }
+
+  // Combine Hafazan Progress
+  let hafazanProgress = cloudP.hafazanProgress || localP.hafazanProgress;
+  if (localP.hafazanProgress && cloudP.hafazanProgress) {
+    hafazanProgress = {
+      ...cloudP.hafazanProgress,
+      completedSurahIds: Array.from(new Set([...(localP.hafazanProgress.completedSurahIds || []), ...(cloudP.hafazanProgress.completedSurahIds || [])]))
+    };
+  }
+
+  // Pet stats merge (take higher level/xp)
+  let pet = cloudP.pet || localP.pet;
+  if (localP.pet && cloudP.pet) {
+    pet = {
+      ...localP.pet,
+      ...cloudP.pet,
+      level: Math.max(localP.pet.level || 1, cloudP.pet.level || 1),
+      xp: Math.max(localP.pet.xp || 0, cloudP.pet.xp || 0),
+      evolutionStage: Math.max(localP.pet.evolutionStage || 1, cloudP.pet.evolutionStage || 1) as 1 | 2 | 3
+    };
+  }
+
+  return {
+    ...localP,
+    ...cloudP, // Cloud data overrides stale local base
+    level: Math.max(localP.level || 1, cloudP.level || 1),
+    xp: Math.max(localP.xp || 0, cloudP.xp || 0),
+    coins: Math.max(localP.coins || 0, cloudP.coins || 0),
+    diamonds: Math.max(localP.diamonds || 0, cloudP.diamonds || 0),
+    streak: Math.max(localP.streak || 0, cloudP.streak || 0),
+    unlockedWorlds: Array.from(new Set([...(localP.unlockedWorlds || []), ...(cloudP.unlockedWorlds || [])])),
+    builtStructures: cloudP.builtStructures?.length ? cloudP.builtStructures : (localP.builtStructures || []),
+    inventory: Array.from(new Set([...(localP.inventory || []), ...(cloudP.inventory || [])])),
+    solatProgress,
+    quranIqraProgress,
+    jawiProgress,
+    hafazanProgress,
+    pet
+  };
+}
+
+// Fetch directly from Master Cloud Blob and Supabase with Mobile Cache-Busting
 async function fetchMasterCloudStore(): Promise<MasterDbStore> {
   let store: MasterDbStore = { accounts: [], syncedData: {} };
 
-  // 1. Fetch from JsonBlob / Master Cloud
+  // 1. Fetch from JsonBlob / Master Cloud with cache-busting
   try {
-    const res = await fetch(activeMasterUrl, {
+    const cacheBustingUrl = activeMasterUrl.includes("?")
+      ? `${activeMasterUrl}&_t=${Date.now()}`
+      : `${activeMasterUrl}?_t=${Date.now()}`;
+    const res = await fetch(cacheBustingUrl, {
       method: "GET",
-      headers: { "Accept": "application/json" }
+      headers: {
+        "Accept": "application/json",
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache"
+      },
+      cache: "no-store"
     });
     if (res.ok) {
       const data = await res.json();
@@ -601,12 +697,17 @@ export async function fetchSyncedDataCloud(email: string): Promise<any> {
     }
   }
 
-  // 2. Try Local/Server API
+  // 2. Try Local/Server API with Cache-Busting
   if (!fetchedData) {
     try {
-      const res = await fetch(`/api/sync/get?email=${encodeURIComponent(normalizedEmail)}`, {
+      const res = await fetch(`/api/sync/get?email=${encodeURIComponent(normalizedEmail)}&_t=${Date.now()}`, {
         method: "GET",
-        headers: { "Accept": "application/json" }
+        headers: {
+          "Accept": "application/json",
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Pragma": "no-cache"
+        },
+        cache: "no-store"
       });
       if (res.ok && isJsonResponse(res)) {
         const result = await res.json();
@@ -630,19 +731,21 @@ export async function fetchSyncedDataCloud(email: string): Promise<any> {
   let finalPayload = fetchedData || localVaultData || null;
 
   if (finalPayload) {
-    // If we have both localVaultData and fetchedData, merge profiles strictly for this user
+    // If we have both localVaultData and fetchedData, merge profiles strictly for this user, prioritizing fresh fetchedData
     if (localVaultData && fetchedData && Array.isArray(localVaultData.childrenProfiles) && Array.isArray(fetchedData.childrenProfiles)) {
       const profileMap = new Map<string, any>();
-      fetchedData.childrenProfiles.forEach((p: any) => { if (p?.id) profileMap.set(p.id, p); });
-      localVaultData.childrenProfiles.forEach((p: any) => {
+      // 1. Baseline from local vault
+      localVaultData.childrenProfiles.forEach((p: any) => { if (p?.id) profileMap.set(p.id, p); });
+      // 2. Deep merge fresh server fetchedData on top
+      fetchedData.childrenProfiles.forEach((p: any) => {
         if (p?.id) {
-          const existing = profileMap.get(p.id);
-          profileMap.set(p.id, existing ? { ...existing, ...p } : p);
+          const existingLocal = profileMap.get(p.id);
+          profileMap.set(p.id, existingLocal ? mergeChildProfileObjects(existingLocal, p) : p);
         }
       });
       finalPayload = {
-        ...fetchedData,
         ...localVaultData,
+        ...fetchedData, // Fresh server data takes precedence over stale local vault
         childrenProfiles: Array.from(profileMap.values())
       };
     }
