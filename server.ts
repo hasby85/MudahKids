@@ -30,6 +30,7 @@ function getGenAI(): GoogleGenAI | null {
 
 // Persistent JSON Store Path
 const DB_FILE = path.join(process.cwd(), "db_store.json");
+const BLOB_URL_FILE = path.join(process.cwd(), ".active_blob_url.txt");
 
 interface UserAccount {
   id: string;
@@ -63,6 +64,34 @@ const DEFAULT_USER: UserAccount = {
 
 const MASTER_CLOUD_STORE_URL = "https://jsonblob.com/api/jsonBlob/019ff11c-dfc0-7f84-80c6-4b38b28bc3a7";
 let activeMasterUrl = MASTER_CLOUD_STORE_URL;
+
+try {
+  if (fs.existsSync(BLOB_URL_FILE)) {
+    const savedUrl = fs.readFileSync(BLOB_URL_FILE, "utf-8").trim();
+    if (savedUrl && savedUrl.startsWith("http")) {
+      activeMasterUrl = savedUrl;
+    }
+  }
+} catch (e) {}
+
+// Flexible user account matcher
+function matchUserAccount(a: UserAccount, inputClean: string, inputDigits: string): boolean {
+  if (!a) return false;
+  const aEmail = (a.email || "").trim().toLowerCase();
+  const aEmailPrefix = aEmail.split("@")[0];
+  const aPhone = (a.phone || "").trim().replace(/\D/g, "");
+  const aName = (a.name || "").trim().toLowerCase();
+
+  if (aEmail === inputClean) return true;
+  if (aEmailPrefix && aEmailPrefix === inputClean) return true;
+  if (aName && aName === inputClean) return true;
+  if (inputDigits && inputDigits.length >= 4 && aPhone) {
+    if (aPhone === inputDigits || aPhone.endsWith(inputDigits) || inputDigits.endsWith(aPhone)) {
+      return true;
+    }
+  }
+  return false;
+}
 
 function compactStoreForCloud(store: DbStore): DbStore {
   const normalized = normalizeDbStore(store);
@@ -198,6 +227,9 @@ async function saveDbStore(store: DbStore) {
           activeMasterUrl = newLocation.startsWith("http")
             ? newLocation
             : `https://jsonblob.com${newLocation}`;
+          try {
+            fs.writeFileSync(BLOB_URL_FILE, activeMasterUrl, "utf-8");
+          } catch (e) {}
           console.log("Server master cloud store recreated at:", activeMasterUrl);
         }
       }
@@ -323,25 +355,16 @@ app.post("/api/auth/login", async (req, res) => {
       }
     }
 
+    const inputDigits = inputClean.replace(/\D/g, "");
+
     const findAccount = () => {
-      let match = dbStore.accounts.find((a) => {
-        if (!a) return false;
-        const aEmail = (a.email || "").trim().toLowerCase();
-        const aPhone = (a.phone || "").trim().replace(/\D/g, "");
-        const inputDigits = inputClean.replace(/\D/g, "");
-        return aEmail === inputClean || (inputDigits.length >= 6 && aPhone.endsWith(inputDigits));
-      });
+      let match = dbStore.accounts.find((a) => matchUserAccount(a, inputClean, inputDigits));
 
       if (!match && dbStore.syncedData) {
         Object.keys(dbStore.syncedData).forEach((key) => {
           const u = dbStore.syncedData[key]?.user;
-          if (u) {
-            const uEmail = (u.email || "").trim().toLowerCase();
-            const uPhone = (u.phone || "").trim().replace(/\D/g, "");
-            const inputDigits = inputClean.replace(/\D/g, "");
-            if (uEmail === inputClean || (inputDigits.length >= 6 && uPhone.endsWith(inputDigits))) {
-              match = u;
-            }
+          if (u && matchUserAccount(u, inputClean, inputDigits)) {
+            match = u;
           }
         });
       }

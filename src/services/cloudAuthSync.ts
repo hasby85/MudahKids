@@ -450,16 +450,24 @@ export async function loginAccountCloud(
     // API failed, fallthrough
   }
 
-  // Helper function to match an account by email or phone digits
+  // Helper function to match an account flexibly
   const matchAccount = (accList: UserAccount[]): UserAccount | undefined => {
     return accList.find((a) => {
       if (!a) return false;
       const aEmail = (a.email || "").trim().toLowerCase();
+      const aEmailPrefix = aEmail.split("@")[0];
       const aPhone = (a.phone || "").trim().replace(/\D/g, "");
-      return (
-        aEmail === normalizedInput ||
-        (inputDigits.length >= 6 && aPhone.endsWith(inputDigits))
-      );
+      const aName = (a.name || "").trim().toLowerCase();
+
+      if (aEmail === normalizedInput) return true;
+      if (aEmailPrefix && aEmailPrefix === normalizedInput) return true;
+      if (aName && aName === normalizedInput) return true;
+      if (inputDigits && inputDigits.length >= 4 && aPhone) {
+        if (aPhone === inputDigits || aPhone.endsWith(inputDigits) || inputDigits.endsWith(aPhone)) {
+          return true;
+        }
+      }
+      return false;
     });
   };
 
@@ -474,12 +482,8 @@ export async function loginAccountCloud(
     if (!user && store.syncedData) {
       Object.keys(store.syncedData).forEach((key) => {
         const u = store.syncedData[key]?.user;
-        if (u) {
-          const uEmail = (u.email || "").trim().toLowerCase();
-          const uPhone = (u.phone || "").trim().replace(/\D/g, "");
-          if (uEmail === normalizedInput || (inputDigits.length >= 6 && uPhone.endsWith(inputDigits))) {
-            user = u;
-          }
+        if (u && matchAccount([u])) {
+          user = u;
         }
       });
     }

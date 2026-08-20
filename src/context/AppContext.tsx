@@ -293,6 +293,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const isUpdatingFromCloudRef = React.useRef(false);
+  const isFetchingOrLoggingInRef = React.useRef(false);
   const lastSyncedCloudHashRef = React.useRef("");
   const lastLocalMutationTimeRef = React.useRef(0);
   const isLocalMutationPendingRef = React.useRef(false);
@@ -506,7 +507,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // Auto-sync local user data changes to backend/cloud server when logged in
   useEffect(() => {
-    if (!isInitialized || !user) return;
+    if (!isInitialized || !user || isFetchingOrLoggingInRef.current) return;
 
     if (isUpdatingFromCloudRef.current) {
       isUpdatingFromCloudRef.current = false;
@@ -520,6 +521,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       language,
       user
     });
+
+    if (currentHash === lastSyncedCloudHashRef.current) return;
     
     lastSyncedCloudHashRef.current = currentHash;
     lastLocalMutationTimeRef.current = Date.now();
@@ -539,7 +542,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       } finally {
         isLocalMutationPendingRef.current = false;
       }
-    }, 250);
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [user, childrenProfiles, activeChildId, missions, language, isInitialized]);
@@ -724,6 +727,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const loginAccount = async (emailInput: string, passwordInput: string) => {
+    isFetchingOrLoggingInRef.current = true;
+
     // Reset state for new login session
     setUser(null);
     setChildrenProfiles([]);
@@ -737,24 +742,27 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const result = await loginAccountCloud(emailInput, passwordInput, language);
 
     if (!result.success || !result.user) {
+      isFetchingOrLoggingInRef.current = false;
       return { success: false, message: result.message };
     }
 
     const loggedInUser = result.user;
-    setUser(loggedInUser);
-    // Default to mode anak (child) on login as requested
-    setRole("child");
 
-    // Fetch user-specific synced data
+    // Fetch user-specific synced data BEFORE setting user state
     let userSyncedData = result.syncedData;
     if (!userSyncedData) {
       userSyncedData = await fetchSyncedDataCloud(loggedInUser.email);
     }
 
+    let validProfiles: ChildProfile[] = [];
+    let validMissions: Mission[] = [];
+    let activeChildIdToSet = "";
+    let languageToSet = language;
+
     if (userSyncedData) {
       const uId = loggedInUser.id;
       const uEmail = loggedInUser.email.trim().toLowerCase();
-      const validProfiles = Array.isArray(userSyncedData.childrenProfiles)
+      validProfiles = Array.isArray(userSyncedData.childrenProfiles)
         ? userSyncedData.childrenProfiles.filter((p: any) => {
             if (!p) return false;
             if (p.parentId && p.parentId !== uId && p.parentId !== uEmail && p.parentId !== loggedInUser.email) {
@@ -764,13 +772,31 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           }).map((p: any) => ({ ...p, parentId: p.parentId || uId }))
         : [];
 
-      setChildrenProfiles(validProfiles);
-      setActiveChildId(userSyncedData.activeChildId || validProfiles[0]?.id || "");
-      setMissions(Array.isArray(userSyncedData.missions) ? userSyncedData.missions : []);
+      activeChildIdToSet = userSyncedData.activeChildId || validProfiles[0]?.id || "";
+      validMissions = Array.isArray(userSyncedData.missions) ? userSyncedData.missions : [];
       if (userSyncedData.language) {
-        setLanguage(userSyncedData.language);
+        languageToSet = userSyncedData.language;
       }
     }
+
+    // Set state TOGETHER
+    setChildrenProfiles(validProfiles);
+    setActiveChildId(activeChildIdToSet);
+    setMissions(validMissions);
+    setLanguage(languageToSet);
+    setRole("child");
+    setUser(loggedInUser);
+
+    const initialHash = JSON.stringify({
+      childrenProfiles: validProfiles,
+      activeChildId: activeChildIdToSet,
+      missions: validMissions,
+      language: languageToSet,
+      user: loggedInUser
+    });
+    lastSyncedCloudHashRef.current = initialHash;
+    lastLocalMutationTimeRef.current = 0;
+    isLocalMutationPendingRef.current = false;
 
     // Add to local registeredAccounts list if not present
     setRegisteredAccounts((prev) => {
@@ -779,6 +805,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       }
       return prev;
     });
+
+    setTimeout(() => {
+      isFetchingOrLoggingInRef.current = false;
+    }, 1000);
 
     showToast(
       language === "en"
