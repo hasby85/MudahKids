@@ -87,9 +87,12 @@ export const LoginModal: React.FC<LoginModalProps> = ({
               <Mail className="w-4 h-4 text-stone-400 absolute left-3 top-3.5" />
               <input
                 type="text"
-                placeholder="nama@example.com / 017XXXXXXX"
+                placeholder="nama@example.com / 017XXXXXXX / username"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 className="w-full pl-9 pr-3 py-3 rounded-xl border border-stone-300 text-xs text-stone-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               />
             </div>

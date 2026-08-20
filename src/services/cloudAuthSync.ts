@@ -450,20 +450,31 @@ export async function loginAccountCloud(
     // API failed, fallthrough
   }
 
-  // Helper function to match an account flexibly
+  // Helper function to match an account flexibly with substring & fuzzy matching for mobile
   const matchAccount = (accList: UserAccount[]): UserAccount | undefined => {
     return accList.find((a) => {
-      if (!a) return false;
+      if (!a || !normalizedInput) return false;
+      const target = normalizedInput.trim().toLowerCase();
       const aEmail = (a.email || "").trim().toLowerCase();
       const aEmailPrefix = aEmail.split("@")[0];
       const aPhone = (a.phone || "").trim().replace(/\D/g, "");
       const aName = (a.name || "").trim().toLowerCase();
 
-      if (aEmail === normalizedInput) return true;
-      if (aEmailPrefix && aEmailPrefix === normalizedInput) return true;
-      if (aName && aName === normalizedInput) return true;
+      // 1. Exact matches
+      if (aEmail === target) return true;
+      if (aEmailPrefix && aEmailPrefix === target) return true;
+      if (aName && aName === target) return true;
+
+      // 2. Substring & prefix matches
+      if (target.length >= 3) {
+        if (aEmail.startsWith(target) || aEmailPrefix.startsWith(target) || target.startsWith(aEmailPrefix)) return true;
+        if (aEmail.includes(target) || aEmailPrefix.includes(target)) return true;
+        if (aName.includes(target) || target.includes(aName)) return true;
+      }
+
+      // 3. Phone matching
       if (inputDigits && inputDigits.length >= 4 && aPhone) {
-        if (aPhone === inputDigits || aPhone.endsWith(inputDigits) || inputDigits.endsWith(aPhone)) {
+        if (aPhone === inputDigits || aPhone.endsWith(inputDigits) || inputDigits.endsWith(aPhone) || aPhone.includes(inputDigits)) {
           return true;
         }
       }

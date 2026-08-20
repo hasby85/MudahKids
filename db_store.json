@@ -32,6 +32,17 @@
       "accessCode": "MudahKids2026",
       "password": "shira123",
       "createdAt": "2026-08-10T13:05:10.215Z"
+    },
+    {
+      "id": "u-1786368888888",
+      "name": "Asbie",
+      "email": "asbie85@gmail.com",
+      "phone": "0198765432",
+      "role": "parent",
+      "plan": "PREMIUM",
+      "accessCode": "MudahKids2026",
+      "password": "asbie123",
+      "createdAt": "2026-08-10T13:10:00.000Z"
     }
   ],
   "syncedData": {
@@ -192,11 +203,70 @@
         "password": "hasby123",
         "createdAt": "2026-08-10T12:46:19.575Z"
       },
-      "childrenProfiles": [],
-      "activeChildId": "",
+      "childrenProfiles": [
+        {
+          "id": "child-hasby-1",
+          "parentId": "u-1786365979575",
+          "name": "Umar",
+          "age": 10,
+          "gender": "boy",
+          "avatar": { "clothing": "Baju Melayu", "headwear": "Songkok", "accessory": "Cape", "color": "#16a34a" },
+          "pet": { "id": "pet-hasby-1", "type": "cat", "name": "Comel Cat", "level": 2, "xp": 140, "hunger": 80, "happiness": 90, "sleep": 95, "evolutionStage": 1 },
+          "level": 3, "xp": 280, "coins": 480, "diamonds": 15, "energy": 100, "streak": 12,
+          "unlockedWorlds": ["kampung", "masjid", "sekolah"],
+          "builtStructures": [], "inventory": ["s1", "s4"],
+          "quranIqraProgress": { "currentType": "iqra", "currentIqraLevel": 5, "currentIqraPage": 3, "currentQuranJuzuk": 1, "currentQuranSurahName": "Al-Fatihah", "currentQuranPage": 1, "currentQuranAyat": 1, "lastUpdated": "2026-08-10T12:00:00.000Z", "history": [] }
+        },
+        {
+          "id": "child-hasby-2",
+          "parentId": "u-1786365979575",
+          "name": "Aisyah Humaira",
+          "age": 5,
+          "gender": "girl",
+          "avatar": { "clothing": "Baju Kurung", "headwear": "Hijab", "accessory": "Bag", "color": "#0284c7" },
+          "pet": { "id": "pet-hasby-2", "type": "rabbit", "name": "Comel Bunny", "level": 1, "xp": 60, "hunger": 70, "happiness": 85, "sleep": 80, "evolutionStage": 1 },
+          "level": 2, "xp": 150, "coins": 390, "diamonds": 10, "energy": 100, "streak": 9,
+          "unlockedWorlds": ["kampung", "masjid"],
+          "builtStructures": [], "inventory": ["s5"],
+          "quranIqraProgress": { "currentType": "iqra", "currentIqraLevel": 2, "currentIqraPage": 12, "currentQuranJuzuk": 1, "currentQuranSurahName": "Al-Fatihah", "currentQuranPage": 1, "currentQuranAyat": 1, "lastUpdated": "2026-08-10T12:00:00.000Z", "history": [] }
+        }
+      ],
+      "activeChildId": "child-hasby-1",
       "missions": [],
       "language": "bm",
       "lastSyncedAt": "2026-08-10T12:56:03.624Z"
+    },
+    "asbie85@gmail.com": {
+      "user": {
+        "id": "u-1786368888888",
+        "name": "Asbie",
+        "email": "asbie85@gmail.com",
+        "phone": "0198765432",
+        "role": "parent",
+        "plan": "PREMIUM",
+        "accessCode": "MudahKids2026",
+        "password": "asbie123",
+        "createdAt": "2026-08-10T13:10:00.000Z"
+      },
+      "childrenProfiles": [
+        {
+          "id": "child-asbie-1",
+          "parentId": "u-1786368888888",
+          "name": "Ahmad",
+          "age": 8,
+          "gender": "boy",
+          "avatar": { "clothing": "Baju Melayu", "headwear": "Songkok", "accessory": "Cape", "color": "#2563eb" },
+          "pet": { "id": "pet-asbie-1", "type": "cat", "name": "Mimi", "level": 3, "xp": 200, "hunger": 85, "happiness": 90, "sleep": 90, "evolutionStage": 1 },
+          "level": 3, "xp": 310, "coins": 450, "diamonds": 12, "energy": 100, "streak": 7,
+          "unlockedWorlds": ["kampung", "masjid"],
+          "builtStructures": [], "inventory": [],
+          "quranIqraProgress": { "currentType": "iqra", "currentIqraLevel": 3, "currentIqraPage": 5, "currentQuranJuzuk": 1, "currentQuranSurahName": "Al-Fatihah", "currentQuranPage": 1, "currentQuranAyat": 1, "lastUpdated": "2026-08-10T13:00:00.000Z", "history": [] }
+        }
+      ],
+      "activeChildId": "child-asbie-1",
+      "missions": [],
+      "language": "bm",
+      "lastSyncedAt": "2026-08-10T13:10:00.000Z"
     }
   }
 }

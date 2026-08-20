@@ -779,12 +779,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       }
     }
 
+    // Auto-fallback to default children profiles if account has no children yet (prevents blank screen / reset feeling)
+    if (validProfiles.length === 0) {
+      validProfiles = INITIAL_CHILDREN_PROFILES.map((p, idx) => ({
+        ...p,
+        id: `child-${loggedInUser.id}-${idx + 1}`,
+        parentId: loggedInUser.id
+      }));
+      activeChildIdToSet = validProfiles[0]?.id || "";
+    }
+
     // Set state TOGETHER
     setChildrenProfiles(validProfiles);
     setActiveChildId(activeChildIdToSet);
     setMissions(validMissions);
     setLanguage(languageToSet);
-    setRole("child");
+    setRole("parent");
     setUser(loggedInUser);
 
     const initialHash = JSON.stringify({

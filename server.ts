@@ -74,19 +74,30 @@ try {
   }
 } catch (e) {}
 
-// Flexible user account matcher
+// Flexible user account matcher with substring & fuzzy matching for mobile
 function matchUserAccount(a: UserAccount, inputClean: string, inputDigits: string): boolean {
-  if (!a) return false;
+  if (!a || !inputClean) return false;
+  const target = inputClean.trim().toLowerCase();
   const aEmail = (a.email || "").trim().toLowerCase();
   const aEmailPrefix = aEmail.split("@")[0];
   const aPhone = (a.phone || "").trim().replace(/\D/g, "");
   const aName = (a.name || "").trim().toLowerCase();
 
-  if (aEmail === inputClean) return true;
-  if (aEmailPrefix && aEmailPrefix === inputClean) return true;
-  if (aName && aName === inputClean) return true;
+  // 1. Exact matches
+  if (aEmail === target) return true;
+  if (aEmailPrefix && aEmailPrefix === target) return true;
+  if (aName && aName === target) return true;
+
+  // 2. Substring & prefix matches (e.g. "shahirah" matching "shahirah_mahfuzah@yahoo.com" or "hasby" matching "hasby85@gmail.com")
+  if (target.length >= 3) {
+    if (aEmail.startsWith(target) || aEmailPrefix.startsWith(target) || target.startsWith(aEmailPrefix)) return true;
+    if (aEmail.includes(target) || aEmailPrefix.includes(target)) return true;
+    if (aName.includes(target) || target.includes(aName)) return true;
+  }
+
+  // 3. Phone matching
   if (inputDigits && inputDigits.length >= 4 && aPhone) {
-    if (aPhone === inputDigits || aPhone.endsWith(inputDigits) || inputDigits.endsWith(aPhone)) {
+    if (aPhone === inputDigits || aPhone.endsWith(inputDigits) || inputDigits.endsWith(aPhone) || aPhone.includes(inputDigits)) {
       return true;
     }
   }
