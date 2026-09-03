@@ -781,7 +781,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     // Auto-fallback to default children profiles if account has no children yet (prevents blank screen / reset feeling)
     if (validProfiles.length === 0) {
-      validProfiles = INITIAL_CHILDREN_PROFILES.map((p, idx) => ({
+      validProfiles = INITIAL_CHILDREN.map((p, idx) => ({
         ...p,
         id: `child-${loggedInUser.id}-${idx + 1}`,
         parentId: loggedInUser.id

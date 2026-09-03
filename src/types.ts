@@ -236,16 +236,50 @@ export interface QuranIqraProgress {
   history: ReadingLogEntry[];
 }
 
+export type FardhuPrayerKey = "subuh" | "zohor" | "asar" | "maghrib" | "isyak";
+export type FardhuPrayerStatus = "completed" | "missed" | "dimaafkan" | "none";
+
+export interface FardhuPrayerItem {
+  completed: boolean;
+  berjemaah?: boolean;
+  status?: FardhuPrayerStatus; // "completed" = Selesai, "missed" = Ditinggalkan/Perlu Ganti, "dimaafkan" = Di Maafkan (Haid/Uzur), "none" = Belum ditanda
+  qadhaDone?: boolean; // Sama ada solat yang tertinggal ini telah digantikan
+  qadhaDate?: string; // Tarikh penggantian solat qadha dilakukan
+}
+
+export interface QadhaPrayerCount {
+  subuh: number;
+  zohor: number;
+  asar: number;
+  maghrib: number;
+  isyak: number;
+}
+
+export interface QadhaHistoryEntry {
+  id: string;
+  prayerKey: FardhuPrayerKey;
+  prayerName: string;
+  dateReplaced: string; // YYYY-MM-DD
+  timestamp: string;
+  note?: string;
+  rewardEarned?: {
+    xp: number;
+    coins: number;
+  };
+}
+
 export interface SolatLogEntry {
   id: string;
   date: string; // YYYY-MM-DD
   fardhu: {
-    subuh: { completed: boolean; berjemaah?: boolean };
-    zohor: { completed: boolean; berjemaah?: boolean };
-    asar: { completed: boolean; berjemaah?: boolean };
-    maghrib: { completed: boolean; berjemaah?: boolean };
-    isyak: { completed: boolean; berjemaah?: boolean };
+    subuh: FardhuPrayerItem;
+    zohor: FardhuPrayerItem;
+    asar: FardhuPrayerItem;
+    maghrib: FardhuPrayerItem;
+    isyak: FardhuPrayerItem;
   };
+  isDayExcused?: boolean; // Tanda keseluruhan hari dimaafkan (Uzur Syarie / Haid - Cuti Solat)
+  excuseReason?: string; // e.g. "Haid / Uzur Syarie"
   sunat: {
     dhuha?: boolean;
     tahajjud?: boolean;
@@ -264,5 +298,9 @@ export interface SolatProgress {
   totalFardhuCount: number;
   totalSunatCount: number;
   currentStreak: number;
+  qadhaPending?: QadhaPrayerCount; // Bilangan solat fardhu yang perlu diganti mengikut waktu
+  qadhaCompleted?: QadhaPrayerCount; // Bilangan solat yang telah selesai diganti
+  qadhaHistory?: QadhaHistoryEntry[]; // Log rekod solat yang telah digantikan
 }
+
 
