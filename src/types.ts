@@ -259,6 +259,7 @@ export interface QadhaHistoryEntry {
   id: string;
   prayerKey: FardhuPrayerKey;
   prayerName: string;
+  originalMissedDate?: string; // Tarikh asal solat ditinggalkan (YYYY-MM-DD atau 'Anggaran Silam')
   dateReplaced: string; // YYYY-MM-DD
   timestamp: string;
   note?: string;

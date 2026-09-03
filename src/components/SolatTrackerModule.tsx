@@ -47,9 +47,13 @@ export const SolatTrackerModule: React.FC = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const [activeTab, setActiveTab] = useState<"diary" | "qadha" | "fiqh">("diary");
+  const [activeTab, setActiveTab] = useState<"diary" | "fiqh">("diary");
   const [selectedDate, setSelectedDate] = useState<string>(getTodayString());
   const [dailyNote, setDailyNote] = useState<string>("");
+
+  // Filters for Missed Prayers Tracker By Date (Gabungan Tracker & Diari)
+  const [missedFilterStatus, setMissedFilterStatus] = useState<"all" | "pending" | "completed">("all");
+  const [missedPrayerFilter, setMissedPrayerFilter] = useState<"all" | FardhuPrayerKey>("all");
 
   // Modal / Inputs for Manual Qadha adjustment
   const [showManualQadhaModal, setShowManualQadhaModal] = useState<boolean>(false);
@@ -587,36 +591,272 @@ export const SolatTrackerModule: React.FC = () => {
     );
   };
 
-  // Replace Qadha Prayer (Telah Menggantikan Solat Yang Ditinggalkan)
-  const handlePerformQadha = (prayerKey: FardhuPrayerKey) => {
-    const currentPending = qadhaPending[prayerKey];
+  // Format Malay Date Helper
+  const formatMalayDate = (dateStr?: string) => {
+    if (!dateStr) return "";
+    try {
+      const parts = dateStr.split("-");
+      if (parts.length === 3) {
+        const year = parseInt(parts[0], 10);
+        const monthIdx = parseInt(parts[1], 10) - 1;
+        const day = parseInt(parts[2], 10);
+        const monthsBm = [
+          "Januari", "Februari", "Mac", "April", "Mei", "Jun",
+          "Julai", "Ogos", "September", "Oktober", "November", "Disember"
+        ];
+        const daysBm = ["Ahad", "Isnin", "Selasa", "Rabu", "Khamis", "Jumaat", "Sabtu"];
+        const d = new Date(year, monthIdx, day);
+        const dayName = daysBm[d.getDay()] || "";
+        return `${dayName}, ${day} ${monthsBm[monthIdx]} ${year}`;
+      }
+      return dateStr;
+    } catch {
+      return dateStr;
+    }
+  };
+
+  // Extract all missed prayers across all recorded dates in solatHistory
+  interface RecordedMissedPrayer {
+    date: string;
+    prayerKey: FardhuPrayerKey;
+    prayerName: string;
+    rakaat: string;
+    icon: string;
+    qadhaDone: boolean;
+    qadhaDate?: string;
+  }
+
+  const recordedMissedPrayers: RecordedMissedPrayer[] = [];
+  solatHistory.forEach((log) => {
+    if (log.isDayExcused) return;
+    (Object.keys(log.fardhu) as FardhuPrayerKey[]).forEach((pKey) => {
+      const item = log.fardhu[pKey];
+      if (item && item.status === "missed") {
+        const pMeta = fardhuList.find((f) => f.key === pKey);
+        recordedMissedPrayers.push({
+          date: log.date,
+          prayerKey: pKey,
+          prayerName: pMeta?.nameBm || pKey,
+          rakaat: pMeta?.rakaatBm || "",
+          icon: pMeta?.icon || "🕌",
+          qadhaDone: !!item.qadhaDone,
+          qadhaDate: item.qadhaDate
+        });
+      }
+    });
+  });
+
+  // Sort descending by date (latest first)
+  recordedMissedPrayers.sort((a, b) => b.date.localeCompare(a.date));
+
+  const pendingMissedPrayers = recordedMissedPrayers.filter((item) => !item.qadhaDone);
+  const completedMissedPrayers = recordedMissedPrayers.filter((item) => item.qadhaDone);
+
+  const filteredMissedPrayers = recordedMissedPrayers.filter((item) => {
+    if (missedFilterStatus === "pending" && item.qadhaDone) return false;
+    if (missedFilterStatus === "completed" && !item.qadhaDone) return false;
+    if (missedPrayerFilter !== "all" && item.prayerKey !== missedPrayerFilter) return false;
+    return true;
+  });
+
+  // Replace Qadha Prayer for a SPECIFIC DATE (Telah Ganti Solat Tertinggal Bagi Tarikh Berkenaan)
+  const handlePerformQadhaForDate = (targetDate: string, prayerKey: FardhuPrayerKey) => {
+    const existingIndex = solatHistory.findIndex((entry) => entry.date === targetDate);
+    const prayerInfo = fardhuList.find((f) => f.key === prayerKey);
+    const prayerTitle = prayerInfo?.nameBm || prayerKey;
+    const todayStr = getTodayString();
+
+    let newHistory: SolatLogEntry[] = [...solatHistory];
+
+    if (existingIndex >= 0) {
+      const existingLog = solatHistory[existingIndex];
+      const existingItem = existingLog.fardhu[prayerKey] || { completed: false, status: "missed" };
+      const updatedLog: SolatLogEntry = {
+        ...existingLog,
+        fardhu: {
+          ...existingLog.fardhu,
+          [prayerKey]: {
+            ...existingItem,
+            status: "missed",
+            qadhaDone: true,
+            qadhaDate: todayStr
+          }
+        },
+        updatedAt: new Date().toISOString()
+      };
+      newHistory[existingIndex] = updatedLog;
+    } else {
+      const newEntry: SolatLogEntry = {
+        id: `solat-${targetDate}`,
+        date: targetDate,
+        isDayExcused: false,
+        fardhu: {
+          subuh: { completed: false, status: prayerKey === "subuh" ? "missed" : "none", qadhaDone: prayerKey === "subuh", qadhaDate: prayerKey === "subuh" ? todayStr : undefined },
+          zohor: { completed: false, status: prayerKey === "zohor" ? "missed" : "none", qadhaDone: prayerKey === "zohor", qadhaDate: prayerKey === "zohor" ? todayStr : undefined },
+          asar: { completed: false, status: prayerKey === "asar" ? "missed" : "none", qadhaDone: prayerKey === "asar", qadhaDate: prayerKey === "asar" ? todayStr : undefined },
+          maghrib: { completed: false, status: prayerKey === "maghrib" ? "missed" : "none", qadhaDone: prayerKey === "maghrib", qadhaDate: prayerKey === "maghrib" ? todayStr : undefined },
+          isyak: { completed: false, status: prayerKey === "isyak" ? "missed" : "none", qadhaDone: prayerKey === "isyak", qadhaDate: prayerKey === "isyak" ? todayStr : undefined }
+        },
+        sunat: {},
+        updatedAt: new Date().toISOString()
+      };
+      newHistory = [newEntry, ...newHistory];
+    }
+
+    // Decrement pending, increment completed
+    const newPendingCount = Math.max(0, (qadhaPending[prayerKey] || 0) - 1);
+    const newCompletedCount = (qadhaCompleted[prayerKey] || 0) + 1;
+
+    const newHistoryEntry: QadhaHistoryEntry = {
+      id: `qadha-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+      prayerKey,
+      prayerName: prayerTitle,
+      originalMissedDate: targetDate,
+      dateReplaced: todayStr,
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      note: `Solat ${prayerTitle} (Tertinggal pada: ${formatMalayDate(targetDate)}) telah selesai diqadha pada ${formatMalayDate(todayStr)}`,
+      rewardEarned: { xp: 35, coins: 15 }
+    };
+
+    const newXp = activeChild.xp + 35;
+    const newCoins = activeChild.coins + 15;
+
+    updateChildProfile({
+      xp: newXp,
+      coins: newCoins,
+      solatProgress: {
+        ...(activeChild.solatProgress || {
+          totalFardhuCount: 0,
+          totalSunatCount: 0,
+          currentStreak: 0
+        }),
+        history: newHistory,
+        qadhaPending: {
+          ...qadhaPending,
+          [prayerKey]: newPendingCount
+        },
+        qadhaCompleted: {
+          ...qadhaCompleted,
+          [prayerKey]: newCompletedCount
+        },
+        qadhaHistory: [newHistoryEntry, ...qadhaHistory]
+      }
+    });
+
+    triggerCelebration();
+    showToast(
+      language === "en"
+        ? `🎉 Alhamdulillah! Solat ${prayerTitle} from ${targetDate} replaced today! (+35 XP, +15 Coins)`
+        : `🎉 Alhamdulillah! Solat ${prayerTitle} bagi tarikh ${formatMalayDate(targetDate)} telah selesai digantikan hari ini! (+35 XP, +15 Syiling)`,
+      "success"
+    );
+  };
+
+  // Undo Qadha replacement for a specific date (Set Semula ke Belum Ganti)
+  const handleUndoQadhaForDate = (targetDate: string, prayerKey: FardhuPrayerKey) => {
+    const existingIndex = solatHistory.findIndex((entry) => entry.date === targetDate);
+    if (existingIndex < 0) return;
+
+    const existingLog = solatHistory[existingIndex];
+    const existingItem = existingLog.fardhu[prayerKey];
+    if (!existingItem) return;
+
+    const updatedLog: SolatLogEntry = {
+      ...existingLog,
+      fardhu: {
+        ...existingLog.fardhu,
+        [prayerKey]: {
+          ...existingItem,
+          qadhaDone: false,
+          qadhaDate: undefined
+        }
+      },
+      updatedAt: new Date().toISOString()
+    };
+
+    const newHistory = [...solatHistory];
+    newHistory[existingIndex] = updatedLog;
+
+    const newPendingCount = (qadhaPending[prayerKey] || 0) + 1;
+    const newCompletedCount = Math.max(0, (qadhaCompleted[prayerKey] || 0) - 1);
+
+    const updatedQadhaHistory = qadhaHistory.filter(
+      (h) => !(h.prayerKey === prayerKey && h.originalMissedDate === targetDate)
+    );
+
+    updateChildProfile({
+      solatProgress: {
+        ...(activeChild.solatProgress || {
+          totalFardhuCount: 0,
+          totalSunatCount: 0,
+          currentStreak: 0
+        }),
+        history: newHistory,
+        qadhaPending: {
+          ...qadhaPending,
+          [prayerKey]: newPendingCount
+        },
+        qadhaCompleted: {
+          ...qadhaCompleted,
+          [prayerKey]: newCompletedCount
+        },
+        qadhaHistory: updatedQadhaHistory
+      }
+    });
+
+    showToast(
+      language === "en"
+        ? `Reset: ${prayerKey.toUpperCase()} from ${targetDate} set back to pending.`
+        : `Status disetkan semula: Solat ${prayerKey.toUpperCase()} bagi tarikh ${formatMalayDate(targetDate)} dikembalikan sebagai belum diganti.`,
+      "info"
+    );
+  };
+
+  // Generic / Historical Qadha (Oldest Pending or Unassigned)
+  const handlePerformGenericQadha = (prayerKey: FardhuPrayerKey) => {
+    // Check if there is an unreplaced missed prayer in recorded history first!
+    const oldestPending = [...solatHistory]
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .find(
+        (log) =>
+          !log.isDayExcused &&
+          log.fardhu[prayerKey]?.status === "missed" &&
+          !log.fardhu[prayerKey]?.qadhaDone
+      );
+
+    if (oldestPending) {
+      handlePerformQadhaForDate(oldestPending.date, prayerKey);
+      return;
+    }
+
+    const currentPending = qadhaPending[prayerKey] || 0;
     if (currentPending <= 0) {
       showToast(
         language === "en"
           ? `No pending ${prayerKey.toUpperCase()} prayers need to be replaced!`
-          : `Tiada baki solat ${prayerKey.toUpperCase()} yang perlu digantikan! Anda boleh tambah kuantiti jika ada hutang lama.`,
+          : `Tiada baki solat ${prayerKey.toUpperCase()} yang perlu digantikan! Anda boleh tekan 'Laras Baki' jika ada hutang lama.`,
         "info"
       );
       return;
     }
 
-    const newPendingCount = currentPending - 1;
+    const newPendingCount = Math.max(0, currentPending - 1);
     const newCompletedCount = (qadhaCompleted[prayerKey] || 0) + 1;
-
     const prayerInfo = fardhuList.find((f) => f.key === prayerKey);
     const prayerTitle = prayerInfo?.nameBm || prayerKey;
+    const todayStr = getTodayString();
 
     const newHistoryEntry: QadhaHistoryEntry = {
-      id: `qadha-${Date.now()}`,
+      id: `qadha-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
       prayerKey,
       prayerName: prayerTitle,
-      dateReplaced: getTodayString(),
+      originalMissedDate: "Rekod Anggaran Silam",
+      dateReplaced: todayStr,
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      note: `Telah selesai qadha solat fardhu ${prayerTitle}`,
+      note: `Telah selesai qadha solat fardhu ${prayerTitle} (Rekod Anggaran Silam)`,
       rewardEarned: { xp: 35, coins: 15 }
     };
 
-    // Reward child for making up missed prayers
     const newXp = activeChild.xp + 35;
     const newCoins = activeChild.coins + 15;
 
@@ -646,9 +886,18 @@ export const SolatTrackerModule: React.FC = () => {
     showToast(
       language === "en"
         ? `🎉 Alhamdulillah! Successfully made up 1 ${prayerTitle} prayer! (+35 XP, +15 Coins)`
-        : `🎉 Alhamdulillah! 1 Solat Qadha ${prayerTitle} telah selesai diganti! (+35 XP, +15 Syiling)`,
+        : `🎉 Alhamdulillah! 1 Solat Qadha ${prayerTitle} (Rekod Anggaran Silam) telah selesai diganti! (+35 XP, +15 Syiling)`,
       "success"
     );
+  };
+
+  // Replace Qadha Prayer (With optional specific date parameter)
+  const handlePerformQadha = (prayerKey: FardhuPrayerKey, optionalDate?: string) => {
+    if (optionalDate) {
+      handlePerformQadhaForDate(optionalDate, prayerKey);
+    } else {
+      handlePerformGenericQadha(prayerKey);
+    }
   };
 
   // Add manual missed count to Qadha pending (e.g. +1 for a prayer)
@@ -868,24 +1117,15 @@ export const SolatTrackerModule: React.FC = () => {
                 : "bg-white/10 hover:bg-white/20 text-white"
             }`}
           >
-            <span>📅</span>
-            <span>{language === "en" ? "Daily Diary (5 Times)" : "Diari Solat Harian"}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab("qadha")}
-            className={`px-4 py-2 rounded-xl font-extrabold text-xs flex items-center gap-2 transition-all cursor-pointer relative ${
-              activeTab === "qadha"
-                ? "bg-amber-400 text-stone-900 shadow-md scale-102"
-                : "bg-white/10 hover:bg-white/20 text-white"
-            }`}
-          >
-            <span>🔄</span>
-            <span>{language === "en" ? "Qadha Tracker" : "Tracker Ganti Solat (Qadha)"}</span>
-            {totalQadhaPending > 0 && (
-              <span className="px-1.5 py-0.5 rounded-full bg-rose-500 text-white text-[10px] font-black animate-pulse">
-                {totalQadhaPending}
+            <span>🕌</span>
+            <span>{language === "en" ? "Prayer Diary & Qadha Tracker" : "Diari & Tracker Ganti Solat (Gabungan)"}</span>
+            {totalQadhaPending > 0 ? (
+              <span className="px-2 py-0.5 rounded-full bg-rose-500 text-white text-[10px] font-black animate-pulse">
+                {totalQadhaPending} Hutang
+              </span>
+            ) : (
+              <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-black">
+                ✓ Selesai
               </span>
             )}
           </button>
@@ -895,12 +1135,12 @@ export const SolatTrackerModule: React.FC = () => {
             onClick={() => setActiveTab("fiqh")}
             className={`px-4 py-2 rounded-xl font-extrabold text-xs flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === "fiqh"
-                ? "bg-white text-emerald-900 shadow-md scale-102"
+                ? "bg-amber-400 text-stone-900 shadow-md scale-102"
                 : "bg-white/10 hover:bg-white/20 text-white"
             }`}
           >
             <span>📖</span>
-            <span>{language === "en" ? "JAKIM Fiqh Guide" : "Panduan & Fiqh Ganti Solat"}</span>
+            <span>{language === "en" ? "JAKIM Fiqh & Niat Guide" : "Panduan & Fiqh Ganti Solat"}</span>
           </button>
         </div>
       </div>
@@ -1193,17 +1433,39 @@ export const SolatTrackerModule: React.FC = () => {
                       )}
 
                       {isMissed && (
-                        <div className="space-y-1">
-                          <div className="text-[9px] font-extrabold text-rose-700 bg-rose-100/80 rounded-lg py-1 px-1.5 text-center leading-tight">
-                            Masuk dalam senarai Qadha
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => handlePerformQadha(p.key)}
-                            className="w-full py-1.5 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black flex items-center justify-center gap-1 shadow-2xs cursor-pointer"
-                          >
-                            <span>✓ Telah Ganti Sekarang</span>
-                          </button>
+                        <div className="space-y-1.5">
+                          {prayerState.qadhaDone ? (
+                            <div className="bg-emerald-50 border border-emerald-300 rounded-xl p-2 space-y-1 text-center">
+                              <div className="inline-flex items-center gap-1 text-[11px] font-black text-emerald-800">
+                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                                <span>Telah Selesai Diganti!</span>
+                              </div>
+                              <p className="text-[10px] text-emerald-700 font-semibold leading-tight">
+                                Qadha pada: {formatMalayDate(prayerState.qadhaDate || getTodayString())}
+                              </p>
+                              <button
+                                type="button"
+                                onClick={() => handleUndoQadhaForDate(selectedDate, p.key)}
+                                className="text-[9px] text-stone-500 hover:text-rose-600 underline font-bold cursor-pointer pt-0.5 block mx-auto transition-colors"
+                              >
+                                Batal / Reset Status
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="space-y-1.5">
+                              <div className="text-[9px] font-extrabold text-rose-800 bg-rose-100/90 border border-rose-200 rounded-lg py-1 px-1.5 text-center leading-tight">
+                                ⚠️ Tertinggal ({formatMalayDate(selectedDate)})
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handlePerformQadhaForDate(selectedDate, p.key)}
+                                className="w-full py-1.5 px-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-[10px] font-black flex items-center justify-center gap-1 shadow-2xs cursor-pointer transition-all active:scale-95"
+                              >
+                                <Check className="w-3 h-3 stroke-[3]" />
+                                <span>✓ Ganti Solat Tarikh Ini</span>
+                              </button>
+                            </div>
+                          )}
                         </div>
                       )}
 
@@ -1216,6 +1478,321 @@ export const SolatTrackerModule: React.FC = () => {
                   </div>
                 );
               })}
+            </div>
+          </div>
+
+          {/* ========================================================================= */}
+          {/* SECTION 2: TRACKER SOLAT TERTINGGAL MENGIKUT TARIKH (GABUNGAN BERSAMA DIARI) */}
+          {/* ========================================================================= */}
+          <div className="bg-white rounded-3xl p-6 md:p-8 border-2 border-stone-200 shadow-sm space-y-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-stone-100 pb-5">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-900 text-xs font-black mb-1.5">
+                  <RotateCcw className="w-3.5 h-3.5 text-rose-600" />
+                  <span>{language === "en" ? "Missed Prayers by Date" : "Senarai Solat Tertinggal Mengikut Tarikh"}</span>
+                </div>
+                <h3 className="text-xl font-black text-stone-900 flex items-center gap-2">
+                  <span>📅</span>
+                  <span>Tracker Solat Tertinggal & Rekod Penggantian Mengikut Tarikh</span>
+                </h3>
+                <p className="text-xs text-stone-500 max-w-2xl mt-0.5 leading-relaxed">
+                  Ketahui dengan tepat pada tarikh mana solat ditinggalkan, semak status sama ada telah digantikan, dan tekan butang ganti untuk tarikh berkenaan secara langsung.
+                </p>
+              </div>
+
+              {/* Action: Manual adjustment / Past records */}
+              <button
+                type="button"
+                onClick={() => {
+                  setManualCounts({ ...qadhaPending });
+                  setShowManualQadhaModal(true);
+                }}
+                className="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-black transition-all cursor-pointer flex items-center gap-2 shrink-0 border border-stone-300"
+              >
+                <span>⚙️</span>
+                <span>Laras Baki Hutang Silam</span>
+              </button>
+            </div>
+
+            {/* Quick Filter Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-3 bg-stone-50 p-3 rounded-2xl border border-stone-200">
+              {/* Status Filters */}
+              <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                <span className="font-bold text-stone-500 text-[11px] mr-1">Status:</span>
+                <button
+                  type="button"
+                  onClick={() => setMissedFilterStatus("all")}
+                  className={`px-3 py-1.5 rounded-xl font-extrabold text-xs transition-all cursor-pointer ${
+                    missedFilterStatus === "all"
+                      ? "bg-stone-900 text-white shadow-xs"
+                      : "bg-white text-stone-700 hover:bg-stone-200 border border-stone-200"
+                  }`}
+                >
+                  Semua ({recordedMissedPrayers.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMissedFilterStatus("pending")}
+                  className={`px-3 py-1.5 rounded-xl font-extrabold text-xs transition-all cursor-pointer flex items-center gap-1 ${
+                    missedFilterStatus === "pending"
+                      ? "bg-rose-600 text-white shadow-xs"
+                      : "bg-white text-rose-700 hover:bg-rose-50 border border-rose-200"
+                  }`}
+                >
+                  <span>🔴 Belum Ganti ({pendingMissedPrayers.length})</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMissedFilterStatus("completed")}
+                  className={`px-3 py-1.5 rounded-xl font-extrabold text-xs transition-all cursor-pointer flex items-center gap-1 ${
+                    missedFilterStatus === "completed"
+                      ? "bg-emerald-600 text-white shadow-xs"
+                      : "bg-white text-emerald-800 hover:bg-emerald-50 border border-emerald-200"
+                  }`}
+                >
+                  <span>🟢 Selesai Diganti ({completedMissedPrayers.length})</span>
+                </button>
+              </div>
+
+              {/* Prayer Filter (Subuh, Zohor, etc.) */}
+              <div className="flex items-center gap-1 text-xs">
+                <span className="font-bold text-stone-500 text-[11px] mr-1">Waktu:</span>
+                <select
+                  value={missedPrayerFilter}
+                  onChange={(e) => setMissedPrayerFilter(e.target.value as any)}
+                  className="px-3 py-1.5 rounded-xl border border-stone-300 bg-white font-bold text-xs text-stone-800 outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
+                >
+                  <option value="all">Semua Waktu</option>
+                  <option value="subuh">🌅 Subuh</option>
+                  <option value="zohor">☀️ Zohor</option>
+                  <option value="asar">🌤️ Asar</option>
+                  <option value="maghrib">🌇 Maghrib</option>
+                  <option value="isyak">🌙 Isyak</option>
+                </select>
+              </div>
+            </div>
+
+            {/* List of Missed Prayers by Date */}
+            {filteredMissedPrayers.length === 0 ? (
+              <div className="rounded-3xl p-8 bg-emerald-50/70 border border-emerald-200 text-center space-y-3">
+                <div className="w-14 h-14 mx-auto rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-2xl shadow-xs">
+                  ✨
+                </div>
+                <div>
+                  <h4 className="font-black text-stone-900 text-base">
+                    {missedFilterStatus === "pending"
+                      ? "Alhamdulillah! Tiada Solat Tertinggal Yang Belum Diganti"
+                      : "Tiada Rekod Solat Tertinggal Dijumpai"}
+                  </h4>
+                  <p className="text-xs text-stone-600 max-w-md mx-auto mt-1 leading-relaxed">
+                    {missedFilterStatus === "pending"
+                      ? "Semua solat fardhu dalam diari telah ditunaikan tepat waktu, dimaafkan (uzur), atau telah selesai digantikan!"
+                      : "Tandakan status solat di diari harian sekiranya ada solat yang tertinggal untuk dimasukkan ke dalam tracker ini secara automatik."}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                {filteredMissedPrayers.map((item, idx) => {
+                  const isPending = !item.qadhaDone;
+
+                  return (
+                    <div
+                      key={`${item.date}-${item.prayerKey}-${idx}`}
+                      className={`p-4 rounded-2xl border-2 transition-all space-y-3 ${
+                        isPending
+                          ? "bg-rose-50/50 border-rose-200 hover:border-rose-400 hover:shadow-xs"
+                          : "bg-emerald-50/40 border-emerald-200 hover:border-emerald-300"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-2.5">
+                          <span className="text-2xl shrink-0">{item.icon}</span>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-black text-stone-900 text-sm">
+                                Solat {item.prayerName}
+                              </h4>
+                              <span className="text-[10px] font-bold px-2 py-0.2 rounded-md bg-stone-200 text-stone-700">
+                                {item.rakaat}
+                              </span>
+                            </div>
+                            <p className="text-xs font-bold text-stone-700 mt-0.5 flex items-center gap-1">
+                              <Calendar className="w-3.5 h-3.5 text-stone-500" />
+                              <span>Tertinggal pada:</span>
+                              <span className="text-rose-900 underline font-black">
+                                {formatMalayDate(item.date)}
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Status Badge */}
+                        {isPending ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-rose-500 text-white text-[10px] font-black animate-pulse shrink-0 shadow-2xs">
+                            <AlertCircle className="w-3 h-3" />
+                            <span>Belum Diganti</span>
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[10px] font-black shrink-0 shadow-2xs">
+                            <Check className="w-3 h-3 stroke-[3]" />
+                            <span>Selesai Qadha</span>
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Replacement Details & Actions */}
+                      <div className="pt-2 border-t border-stone-200/60 flex flex-wrap items-center justify-between gap-2 text-xs">
+                        {isPending ? (
+                          <div className="text-[11px] text-stone-500 font-medium">
+                            Hutang solat fardhu wajib digantikan segera.
+                          </div>
+                        ) : (
+                          <div className="text-[11px] text-emerald-800 font-semibold flex items-center gap-1">
+                            <span>✅ Digantikan pada:</span>
+                            <span className="font-black">{formatMalayDate(item.qadhaDate || getTodayString())}</span>
+                          </div>
+                        )}
+
+                        <div className="flex items-center gap-2 ml-auto">
+                          {/* Jump to Diary Date */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedDate(item.date);
+                              showToast(`Memaparkan diari bagi tarikh ${formatMalayDate(item.date)}`, "info");
+                              window.scrollTo({ top: 150, behavior: "smooth" });
+                            }}
+                            className="px-2.5 py-1.5 rounded-xl bg-white hover:bg-stone-100 text-stone-700 font-bold text-[11px] border border-stone-300 transition-all cursor-pointer flex items-center gap-1 shadow-2xs"
+                            title="Buka dan lihat rekod hari ini di diari"
+                          >
+                            <Calendar className="w-3 h-3 text-stone-600" />
+                            <span>Buka di Diari</span>
+                          </button>
+
+                          {/* Perform / Undo Action */}
+                          {isPending ? (
+                            <button
+                              type="button"
+                              onClick={() => handlePerformQadhaForDate(item.date, item.prayerKey)}
+                              className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px] transition-all cursor-pointer flex items-center gap-1 shadow-xs active:scale-95"
+                            >
+                              <Check className="w-3.5 h-3.5 stroke-[3]" />
+                              <span>Ganti Solat Ini</span>
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => handleUndoQadhaForDate(item.date, item.prayerKey)}
+                              className="px-2.5 py-1.5 rounded-xl bg-stone-100 hover:bg-rose-100 text-stone-600 hover:text-rose-700 font-bold text-[10px] border border-stone-300 transition-all cursor-pointer"
+                              title="Set semula ke belum ganti jika tersilap"
+                            >
+                              <span>Batal Ganti</span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Unassigned / Historical Past Debts Box */}
+            <div className="p-5 rounded-2xl bg-amber-50/70 border border-amber-200 text-amber-950 space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h4 className="font-black text-sm flex items-center gap-1.5 text-stone-900">
+                    <span>⏳</span>
+                    <span>Solat Ganti Anggaran / Masa Lalu (Sebelum Penggunaan Aplikasi)</span>
+                  </h4>
+                  <p className="text-xs text-stone-600 mt-0.5">
+                    Jika mempunyai solat yang tertinggal pada masa lalu tanpa tarikh khusus di diari, anda boleh terus menekan butang 'Ganti 1 Waktu' di bawah:
+                  </p>
+                </div>
+
+                <div className="text-xs font-black px-3 py-1 rounded-xl bg-amber-200 text-amber-900 shrink-0 self-start sm:self-center">
+                  Baki Anggaran: {totalQadhaPending} Waktu
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-1">
+                {fardhuList.map((p) => {
+                  const pCount = qadhaPending[p.key] || 0;
+                  return (
+                    <div
+                      key={p.key}
+                      className="p-2.5 rounded-xl bg-white border border-amber-200 flex flex-col justify-between space-y-2 text-center"
+                    >
+                      <div className="flex items-center justify-center gap-1">
+                        <span>{p.icon}</span>
+                        <span className="font-extrabold text-xs text-stone-800">{p.nameBm}</span>
+                      </div>
+                      <div className="text-base font-black text-rose-700">
+                        {pCount} <span className="text-[10px] text-stone-500 font-bold">waktu</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handlePerformGenericQadha(p.key)}
+                        className="py-1 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[10px] shadow-2xs cursor-pointer transition-all active:scale-95"
+                      >
+                        ✓ Ganti 1 Waktu
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Log / Sejarah Penggantian Solat Qadha */}
+            <div className="pt-3 border-t border-stone-100 space-y-3">
+              <div className="flex items-center justify-between">
+                <h4 className="font-black text-stone-900 text-sm flex items-center gap-2">
+                  <History className="w-4 h-4 text-emerald-600" />
+                  <span>Sejarah Solat Yang Selesai Digantikan (Log Qadha):</span>
+                </h4>
+                <span className="text-[11px] font-bold text-stone-500">
+                  {qadhaHistory.length} rekod penggantian
+                </span>
+              </div>
+
+              {qadhaHistory.length === 0 ? (
+                <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 text-center text-xs text-stone-500">
+                  Belum ada solat qadha yang direkodkan selesai digantikan.
+                </div>
+              ) : (
+                <div className="max-h-60 overflow-y-auto space-y-2 pr-1">
+                  {qadhaHistory.map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-3 rounded-xl bg-stone-50 hover:bg-emerald-50/50 border border-stone-200 flex items-center justify-between text-xs transition-all"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 font-black text-xs flex items-center justify-center shrink-0">
+                          ✓
+                        </span>
+                        <div>
+                          <div className="font-black text-stone-900">
+                            Solat {item.prayerName}
+                          </div>
+                          <div className="text-[11px] text-stone-500 flex flex-wrap items-center gap-1.5">
+                            {item.originalMissedDate && (
+                              <span className="text-rose-700 font-bold bg-rose-50 px-1.5 py-0.2 rounded border border-rose-200">
+                                Asal Tertinggal: {formatMalayDate(item.originalMissedDate)}
+                              </span>
+                            )}
+                            <span>➔ Selesai digantikan pada: {formatMalayDate(item.dateReplaced)} ({item.timestamp})</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="text-right shrink-0 font-extrabold text-[11px] text-emerald-700">
+                        +{item.rewardEarned?.xp || 35} XP • +{item.rewardEarned?.coins || 15} 🪙
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -1430,220 +2007,7 @@ export const SolatTrackerModule: React.FC = () => {
       )}
 
       {/* ======================================================== */}
-      {/* TAB 2: TRACKER GANTI SOLAT (QADHA) - PUSAT PENGURUSAN     */}
-      {/* ======================================================== */}
-      {activeTab === "qadha" && (
-        <div className="space-y-6 animate-fadeIn">
-          {/* Main Qadha Overview Card */}
-          <div className="bg-white rounded-3xl p-6 md:p-8 border border-stone-200 shadow-sm space-y-6">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-stone-100 pb-6">
-              <div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-extrabold mb-2">
-                  <RotateCcw className="w-3.5 h-3.5" />
-                  <span>Pengurusan Solat Tertinggal & Qadha</span>
-                </div>
-                <h3 className="text-xl font-black text-stone-900">
-                  Tracker Solat Yang Perlu Diganti (Qadha)
-                </h3>
-                <p className="text-xs text-stone-600 max-w-2xl mt-1 leading-relaxed">
-                  Setiap solat fardhu yang ditinggalkan secara sengaja mahupun tidak sengaja (terlupa/tertidur) adalah hutang kepada Allah SWT yang wajib diqadha (digantikan). Anda boleh merekodkan solat yang telah selesai digantikan di bawah untuk mengemaskini baki hutang solat.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setManualCounts({ ...qadhaPending });
-                  setShowManualQadhaModal(true);
-                }}
-                className="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-black transition-all cursor-pointer flex items-center gap-2 shrink-0"
-              >
-                <span>⚙️</span>
-                <span>Tetapkan / Laras Baki Hutang Silam</span>
-              </button>
-            </div>
-
-            {/* 3 Summary Big Metric Boxes */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {/* Box 1: Baki Perlu Ganti */}
-              <div className="rounded-3xl p-5 bg-gradient-to-br from-rose-50 to-orange-50 border-2 border-rose-200 space-y-1">
-                <span className="text-[11px] font-black uppercase text-rose-700 tracking-wider flex items-center gap-1.5">
-                  <AlertCircle className="w-4 h-4 text-rose-600" />
-                  <span>Baki Solat Perlu Diganti</span>
-                </span>
-                <div className="text-3xl font-black text-rose-900">
-                  {totalQadhaPending}{" "}
-                  <span className="text-sm font-bold text-rose-700">Waktu</span>
-                </div>
-                <p className="text-[11px] text-stone-500">
-                  {totalQadhaPending === 0
-                    ? "Alhamdulillah! Tiada rekod solat yang tertunggak."
-                    : "Segerakan menggantikan solat untuk ketenangan jiwa."}
-                </p>
-              </div>
-
-              {/* Box 2: Telah Selesai Diganti */}
-              <div className="rounded-3xl p-5 bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200 space-y-1">
-                <span className="text-[11px] font-black uppercase text-emerald-800 tracking-wider flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>Telah Berjaya Diganti (Qadha)</span>
-                </span>
-                <div className="text-3xl font-black text-emerald-900">
-                  {totalQadhaCompleted}{" "}
-                  <span className="text-sm font-bold text-emerald-700">Waktu</span>
-                </div>
-                <p className="text-[11px] text-stone-500">
-                  Setiap ganti solat diberi ganjaran istiqamah +35 XP & +15 Syiling!
-                </p>
-              </div>
-
-              {/* Box 3: Status Khas Di Maafkan (Haid / Uzur) */}
-              <div className="rounded-3xl p-5 bg-gradient-to-br from-pink-50 to-purple-50 border-2 border-pink-200 space-y-1">
-                <span className="text-[11px] font-black uppercase text-pink-800 tracking-wider flex items-center gap-1.5">
-                  <span>🌸</span>
-                  <span>Di Maafkan (Uzur / Haid)</span>
-                </span>
-                <div className="text-xl font-black text-purple-950 pt-1">
-                  0 Waktu Hutang
-                </div>
-                <p className="text-[11px] text-stone-600 leading-snug">
-                  Bagi wanita uzur/haid, syariat memaafkan solat fardhu tanpa perlu diqadha.
-                </p>
-              </div>
-            </div>
-
-            {/* Fardhu Prayer Qadha Action Cards (Subuh, Zohor, Asar, Maghrib, Isyak) */}
-            <div className="space-y-4 pt-2">
-              <h4 className="font-black text-stone-900 text-sm flex items-center gap-2">
-                <span>📋</span>
-                <span>Pecahan Baki & Butang Kemaskini Penggantian (Tekan 'Telah Ganti' Selepas Solat):</span>
-              </h4>
-
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                {fardhuList.map((p) => {
-                  const pendingCount = qadhaPending[p.key] || 0;
-                  const completedCount = qadhaCompleted[p.key] || 0;
-
-                  return (
-                    <div
-                      key={p.key}
-                      className="rounded-2xl p-4 border-2 border-stone-200 bg-stone-50/50 hover:bg-white transition-all space-y-3 flex flex-col justify-between"
-                    >
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-2xl">{p.icon}</span>
-                          <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-stone-200 text-stone-700">
-                            {p.rakaatBm}
-                          </span>
-                        </div>
-
-                        <div>
-                          <h5 className="font-black text-stone-900 text-base">{p.nameBm}</h5>
-                          <div className="flex items-baseline gap-1 mt-1">
-                            <span className="text-2xl font-black text-rose-700">
-                              {pendingCount}
-                            </span>
-                            <span className="text-[11px] font-bold text-stone-500">
-                              perlu diganti
-                            </span>
-                          </div>
-                          <div className="text-[10px] font-bold text-emerald-700 mt-0.5">
-                            ✓ {completedCount} telah digantikan
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2 pt-2 border-t border-stone-200">
-                        {/* Primary Button: Telah Ganti (+1 Selesai Qadha) */}
-                        <button
-                          type="button"
-                          onClick={() => handlePerformQadha(p.key)}
-                          disabled={pendingCount <= 0}
-                          className={`w-full py-2 px-3 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs ${
-                            pendingCount > 0
-                              ? "bg-emerald-600 hover:bg-emerald-700 text-white active:scale-95"
-                              : "bg-stone-200 text-stone-400 cursor-not-allowed"
-                          }`}
-                        >
-                          <Check className="w-3.5 h-3.5 stroke-[3]" />
-                          <span>Telah Ganti (+1)</span>
-                        </button>
-
-                        {/* Secondary Button: Tambah Hutang (+1 jika tertinggal) */}
-                        <button
-                          type="button"
-                          onClick={() => handleAddPendingQadha(p.key, 1)}
-                          className="w-full py-1.5 px-2 rounded-xl text-[10px] font-bold text-stone-600 hover:text-stone-900 bg-white hover:bg-stone-100 border border-stone-300 flex items-center justify-center gap-1 cursor-pointer transition-all"
-                        >
-                          <Plus className="w-3 h-3" />
-                          <span>Tambah +1 Hutang</span>
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Qadha Replacement History Log */}
-            <div className="pt-6 border-t border-stone-100 space-y-3">
-              <div className="flex items-center justify-between">
-                <h4 className="font-black text-stone-900 text-sm flex items-center gap-2">
-                  <History className="w-4 h-4 text-emerald-600" />
-                  <span>Diari & Sejarah Penggantian Solat Qadha</span>
-                </h4>
-                <span className="text-xs text-stone-500 font-bold">
-                  {qadhaHistory.length} Rekod Penggantian
-                </span>
-              </div>
-
-              {qadhaHistory.length === 0 ? (
-                <div className="text-center py-8 bg-stone-50 rounded-2xl border border-dashed border-stone-300 text-stone-500 text-xs">
-                  <p className="font-extrabold text-stone-700">Belum ada rekod penggantian solat qadha.</p>
-                  <p className="text-[11px] mt-0.5">
-                    Apabila anda selesai menunaikan solat ganti dan menekan butang <strong>"Telah Ganti (+1)"</strong>, sejarah penggantian akan dipaparkan di sini.
-                  </p>
-                </div>
-              ) : (
-                <div className="divide-y divide-stone-100 border border-stone-200 rounded-2xl overflow-hidden bg-white max-h-72 overflow-y-auto">
-                  {qadhaHistory.map((item) => (
-                    <div
-                      key={item.id}
-                      className="p-3.5 flex items-center justify-between hover:bg-stone-50 text-xs transition-all"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black">
-                          ✓
-                        </div>
-                        <div>
-                          <div className="font-extrabold text-stone-900">
-                            Solat Qadha {item.prayerName}
-                          </div>
-                          <div className="text-[10px] text-stone-500">
-                            Tarikh: {item.dateReplaced} • Masa: {item.timestamp}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">
-                          +35 XP & +15 🪙
-                        </span>
-                        <span className="px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 text-[10px] font-bold">
-                          Selesai Diganti
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ======================================================== */}
-      {/* TAB 3: PANDUAN FIQH & RUJUKAN JAKIM QADHA & HAID/UZUR    */}
+      {/* TAB 2: PANDUAN FIQH & RUJUKAN JAKIM QADHA & HAID/UZUR    */}
       {/* ======================================================== */}
       {activeTab === "fiqh" && (
         <div className="space-y-6 animate-fadeIn">
