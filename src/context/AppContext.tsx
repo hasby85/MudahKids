@@ -696,6 +696,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     markLocalMutation();
     const currentUser = user;
     if (currentUser) {
+      const normEmail = currentUser.email?.trim().toLowerCase();
       try {
         await saveSyncedDataCloud(currentUser.email, {
           user: currentUser,
@@ -707,6 +708,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         });
       } catch (e) {
         console.warn("Failed to sync reset state to cloud:", e);
+      }
+      if (normEmail) {
+        try {
+          localStorage.removeItem(`mudahkids_user_sync_${normEmail}`);
+        } catch (e) {}
       }
     }
 
@@ -897,6 +903,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const logoutAccount = () => {
+    const currentEmail = user?.email?.trim().toLowerCase();
     setUser(null);
     setChildrenProfiles([]);
     setActiveChildId("");
@@ -909,6 +916,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     try {
       localStorage.removeItem(LOCAL_STORAGE_KEY);
       localStorage.removeItem("mudahkids_deleted_child_ids");
+      if (currentEmail) {
+        localStorage.removeItem(`mudahkids_user_sync_${currentEmail}`);
+      }
     } catch (e) {}
 
     showToast(

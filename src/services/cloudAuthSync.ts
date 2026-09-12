@@ -95,42 +95,14 @@ export function normalizeDbStore(data: any): MasterDbStore {
     }
   });
 
-  const seedSyncedData = buildSeedSyncedData();
   const rawSynced = data?.syncedData || {};
-  const syncedData: Record<string, any> = { ...seedSyncedData };
+  const syncedData: Record<string, any> = {};
 
   if (rawSynced) {
     Object.keys(rawSynced).forEach((emailKey) => {
       const normEmail = emailKey.trim().toLowerCase();
       const incoming = rawSynced[emailKey];
-      if (!syncedData[normEmail]) {
-        syncedData[normEmail] = incoming;
-      } else {
-        const existing = syncedData[normEmail];
-        let incomingProfiles = Array.isArray(incoming?.childrenProfiles) ? incoming.childrenProfiles : [];
-        // Filter out legacy "Umar" and "Aisyah" profiles
-        incomingProfiles = incomingProfiles.filter((p: any) => {
-          const n = (p?.name || "").trim().toLowerCase();
-          return !n.includes("umar") && !n.includes("aisyah");
-        });
-
-        const hasExplicitChildren = Array.isArray(incoming?.childrenProfiles);
-        const childrenToUse = hasExplicitChildren ? incomingProfiles : existing.childrenProfiles;
-
-        const hasExplicitMissions = Array.isArray(incoming?.missions);
-        const missionsToUse = hasExplicitMissions
-          ? incoming.missions.filter((m: any) => !((m?.id || "").includes("umar")))
-          : existing.missions;
-
-        syncedData[normEmail] = {
-          ...existing,
-          ...incoming,
-          user: incoming?.user || existing.user,
-          childrenProfiles: childrenToUse,
-          missions: missionsToUse
-        };
-      }
-
+      syncedData[normEmail] = incoming;
       const u = incoming?.user;
       if (u && u.email) {
         const normU = u.email.trim().toLowerCase();
@@ -140,6 +112,14 @@ export function normalizeDbStore(data: any): MasterDbStore {
       }
     });
   }
+
+  const seedSyncedData = buildSeedSyncedData();
+  Object.keys(seedSyncedData).forEach((seedKey) => {
+    const normSeed = seedKey.trim().toLowerCase();
+    if (!syncedData[normSeed]) {
+      syncedData[normSeed] = seedSyncedData[seedKey];
+    }
+  });
 
   return { accounts: Array.from(accountMap.values()), syncedData };
 }
@@ -788,45 +768,27 @@ export async function fetchSyncedDataCloud(email: string): Promise<any> {
 
   let finalPayload = fetchedData || localVaultData || null;
 
-  if (finalPayload) {
-    // If we have both localVaultData and fetchedData, merge profiles strictly for this user, prioritizing fresh fetchedData
-    if (localVaultData && fetchedData && Array.isArray(localVaultData.childrenProfiles) && Array.isArray(fetchedData.childrenProfiles)) {
-      const profileMap = new Map<string, any>();
-      // 1. Baseline from local vault
-      localVaultData.childrenProfiles.forEach((p: any) => { if (p?.id) profileMap.set(p.id, p); });
-      // 2. Deep merge fresh server fetchedData on top
-      fetchedData.childrenProfiles.forEach((p: any) => {
-        if (p?.id) {
-          const existingLocal = profileMap.get(p.id);
-          profileMap.set(p.id, existingLocal ? mergeChildProfileObjects(existingLocal, p) : p);
-        }
-      });
-      finalPayload = {
-        ...localVaultData,
-        ...fetchedData, // Fresh server data takes precedence over stale local vault
-        childrenProfiles: Array.from(profileMap.values())
-      };
-    }
-
-    // Filter out any child profiles that belong to a different parentId/email
-    if (Array.isArray(finalPayload.childrenProfiles)) {
-      const activeUserId = finalPayload.user?.id;
-      finalPayload.childrenProfiles = finalPayload.childrenProfiles.filter((p: any) => {
-        if (!p) return false;
-        if (p.parentId && p.parentId !== activeUserId && p.parentId !== finalPayload.user?.email && p.parentId !== normalizedEmail) {
-          return false;
-        }
-        return true;
-      });
-    }
+  if (fetchedData) {
+    // Fresh server data is the single authoritative source of truth
+    try {
+      const vaultKey = `mudahkids_user_sync_${normalizedEmail}`;
+      localStorage.setItem(vaultKey, JSON.stringify(fetchedData));
+    } catch (e) {}
+    finalPayload = fetchedData;
+  } else if (localVaultData) {
+    finalPayload = localVaultData;
   }
 
-  // Guaranteed fallback for seed users if no active children profiles found
-  if (!finalPayload || !Array.isArray(finalPayload.childrenProfiles) || finalPayload.childrenProfiles.length === 0) {
-    const seedData = buildSeedSyncedData();
-    if (seedData[normalizedEmail]) {
-      finalPayload = seedData[normalizedEmail];
-    }
+  // Filter out any child profiles that belong to a different parentId/email
+  if (finalPayload && Array.isArray(finalPayload.childrenProfiles)) {
+    const activeUserId = finalPayload.user?.id;
+    finalPayload.childrenProfiles = finalPayload.childrenProfiles.filter((p: any) => {
+      if (!p) return false;
+      if (p.parentId && p.parentId !== activeUserId && p.parentId !== finalPayload.user?.email && p.parentId !== normalizedEmail) {
+        return false;
+      }
+      return true;
+    });
   }
 
   return finalPayload;

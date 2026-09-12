@@ -111,48 +111,22 @@ function normalizeDbStore(store: any): DbStore {
     }
   });
 
-  // Baseline synced data with seed data
-  const seedSyncedData = buildSeedSyncedData();
+  // Load raw synced data from store
   const rawSynced = store?.syncedData || {};
-  const syncedData: Record<string, any> = { ...seedSyncedData };
+  const syncedData: Record<string, any> = {};
 
-  // Merge stored user data
+  // 1. Copy rawSynced (actual saved user state in db_store.json)
   Object.keys(rawSynced).forEach((key) => {
     const normKey = key.trim().toLowerCase();
-    if (!syncedData[normKey]) {
-      syncedData[normKey] = rawSynced[key];
-    } else {
-      // Merge smartly to preserve full profiles, solat, and quran history
-      const existing = syncedData[normKey];
-      const incoming = rawSynced[key];
+    syncedData[normKey] = rawSynced[key];
+  });
 
-      let mergedProfiles = existing.childrenProfiles || [];
-      if (Array.isArray(incoming.childrenProfiles)) {
-        const cleanIncoming = incoming.childrenProfiles.filter((p: any) => {
-          const n = (p?.name || "").trim().toLowerCase();
-          return !n.includes("umar") && !n.includes("aisyah");
-        });
-
-        if (incoming.childrenProfiles.length === 0) {
-          // Explicit reset/clean slate by user
-          mergedProfiles = [];
-        } else if (cleanIncoming.length > 0) {
-          mergedProfiles = cleanIncoming;
-        }
-      }
-
-      const hasExplicitMissions = Array.isArray(incoming.missions);
-      const missionsToUse = hasExplicitMissions
-        ? incoming.missions.filter((m: any) => !((m?.id || "").includes("umar")))
-        : existing.missions;
-
-      syncedData[normKey] = {
-        ...existing,
-        ...incoming,
-        user: incoming.user || existing.user,
-        childrenProfiles: mergedProfiles,
-        missions: missionsToUse
-      };
+  // 2. Only add seedSyncedData for accounts that do NOT yet exist in syncedData
+  const seedSyncedData = buildSeedSyncedData();
+  Object.keys(seedSyncedData).forEach((seedKey) => {
+    const normSeedKey = seedKey.trim().toLowerCase();
+    if (!syncedData[normSeedKey]) {
+      syncedData[normSeedKey] = seedSyncedData[seedKey];
     }
   });
 

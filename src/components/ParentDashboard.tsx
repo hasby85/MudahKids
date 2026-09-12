@@ -55,6 +55,7 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onOpenLoginMod
   const [showAddModal, setShowAddModal] = useState(false);
   const [showAddChildModal, setShowAddChildModal] = useState(false);
   const [showAiModal, setShowAiModal] = useState(false);
+  const [showResetConfirmModal, setShowResetConfirmModal] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiSuggestions, setAiSuggestions] = useState<any[]>([]);
 
@@ -306,11 +307,7 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onOpenLoginMod
               <span>Data Demo</span>
             </button>
             <button
-              onClick={async () => {
-                if (window.confirm("Adakah anda pasti ingin mengosongkan semua data profil dan tugasan?")) {
-                  await resetToCleanData();
-                }
-              }}
+              onClick={() => setShowResetConfirmModal(true)}
               title="Reset dan kosongkan semua data"
               className="px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-extrabold text-xs flex items-center gap-1 transition-all cursor-pointer border border-rose-200"
             >
@@ -1367,6 +1364,52 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onOpenLoginMod
                 )}
               </div>
             )}
+          </div>
+        </div>
+      )}
+      {/* Reset Confirmation Modal */}
+      {showResetConfirmModal && (
+        <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-5 border border-stone-100">
+            <div className="flex items-center gap-3 text-rose-600">
+              <div className="w-10 h-10 rounded-2xl bg-rose-100 flex items-center justify-center shrink-0">
+                <Trash2 className="w-5 h-5 text-rose-600" />
+              </div>
+              <div>
+                <h3 className="text-base font-extrabold text-stone-900">
+                  {language === "en" ? "Reset All App Data?" : "Kosongkan Semua Data Profil?"}
+                </h3>
+                <p className="text-xs text-stone-500">
+                  {language === "en" ? "Clean slate synchronization" : "Penyelarasan status bersih ke pelayan"}
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs text-stone-600 leading-relaxed bg-rose-50/60 p-3.5 rounded-2xl border border-rose-100">
+              {language === "en"
+                ? "This will delete all child profiles and missions across all your devices. You can add new profiles anytime or reload demo data."
+                : "Tindakan ini akan memadamkan semua profil anak dan tugasan untuk akaun anda pada semua peranti. Anda boleh menambah profil baharu bila-bila masa atau memuatkan Data Demo."}
+            </p>
+
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowResetConfirmModal(false)}
+                className="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-extrabold text-xs transition-colors cursor-pointer"
+              >
+                {language === "en" ? "Cancel" : "Batal"}
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  setShowResetConfirmModal(false);
+                  await resetToCleanData();
+                }}
+                className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow-md shadow-rose-600/20 transition-all cursor-pointer"
+              >
+                {language === "en" ? "Yes, Reset Everything" : "Ya, Kosongkan Data Sekarang"}
+              </button>
+            </div>
           </div>
         </div>
       )}
