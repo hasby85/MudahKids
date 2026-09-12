@@ -5770,16 +5770,6 @@
       ],
       "language": "bm",
       "lastSyncedAt": "2026-09-12T11:40:03.968Z"
-    },
-    "test_sync@example.com": {
-      "user": {
-        "email": "test_sync@example.com",
-        "name": "Test User"
-      },
-      "childrenProfiles": [],
-      "missions": [],
-      "activeChildId": "",
-      "lastSyncedAt": "2026-09-12T12:00:05.381Z"
     }
   }
 }
