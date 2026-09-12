@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Fredoka', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Fredoka', sans-serif;
+  }
+}
+
+/* Custom Kid-Friendly Utilities */
+.font-display {
+  font-family: 'Fredoka', cursive, sans-serif;
+}
+
+@keyframes bounceSlow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.animate-bounce-slow {
+  animation: bounceSlow 3s infinite ease-in-out;
+}
+
