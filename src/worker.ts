@@ -1,92 +1,58 @@
+import { SEED_ACCOUNTS, buildSeedSyncedData } from "./data/seedStore";
+
 export interface Env {
   ASSETS: { fetch: (request: Request) => Promise<Response> };
+  MUDAHKIDS_KV?: any;
 }
 
-const MASTER_CLOUD_STORE_URL = "https://jsonblob.com/api/jsonBlob/019ff11c-dfc0-7f84-80c6-4b38b28bc3a7";
-let activeMasterUrl = MASTER_CLOUD_STORE_URL;
-
-function compactStoreForCloud(store: any) {
-  const normalized = normalizeStore(store);
-  if (normalized.syncedData) {
-    Object.keys(normalized.syncedData).forEach((k) => {
-      const s = normalized.syncedData[k];
-      if (s && Array.isArray(s.childrenProfiles)) {
-        s.childrenProfiles.forEach((c: any) => {
-          if (c?.solatProgress && Array.isArray(c.solatProgress.history)) {
-            c.solatProgress.history = c.solatProgress.history.slice(-15);
-          }
-          if (c?.quranIqraProgress && Array.isArray(c.quranIqraProgress.history)) {
-            c.quranIqraProgress.history = c.quranIqraProgress.history.slice(-15);
-          }
-        });
-      }
-    });
-  }
-  return normalized;
-}
+let inMemoryStore: any = normalizeStore({
+  accounts: SEED_ACCOUNTS,
+  syncedData: buildSeedSyncedData()
+});
 
 function normalizeStore(data: any) {
-  if (!data) return { accounts: [], syncedData: {} };
-  const accounts: any[] = Array.isArray(data.accounts) ? [...data.accounts] : [];
-  const syncedData: Record<string, any> = data.syncedData || {};
+  const accounts: any[] = Array.isArray(data?.accounts) ? [...data.accounts] : [];
+  const accountMap = new Map<string, any>();
 
-  if (syncedData) {
-    Object.keys(syncedData).forEach((emailKey) => {
-      const u = syncedData[emailKey]?.user;
-      if (u && u.email) {
-        const normEmail = u.email.trim().toLowerCase();
-        const existingIdx = accounts.findIndex((a: any) => a.email && a.email.trim().toLowerCase() === normEmail);
-        if (existingIdx === -1) {
-          accounts.push(u);
-        } else {
-          if (u.password) accounts[existingIdx].password = u.password;
-          if (u.name) accounts[existingIdx].name = u.name;
-          if (u.phone) accounts[existingIdx].phone = u.phone;
-        }
+  // Ensure default seed accounts are always present
+  SEED_ACCOUNTS.forEach((seedAcc) => {
+    accountMap.set(seedAcc.email.trim().toLowerCase(), { ...seedAcc });
+  });
+
+  accounts.forEach((a: any) => {
+    if (a && a.email) {
+      const normEmail = a.email.trim().toLowerCase();
+      accountMap.set(normEmail, { ...a, email: normEmail });
+    }
+  });
+
+  const seedSyncedData = buildSeedSyncedData();
+  const rawSynced = data?.syncedData || {};
+  const syncedData: Record<string, any> = { ...seedSyncedData, ...rawSynced };
+
+  return { accounts: Array.from(accountMap.values()), syncedData };
+}
+
+async function fetchMasterStore(env?: Env) {
+  if (env?.MUDAHKIDS_KV) {
+    try {
+      const kvVal = await env.MUDAHKIDS_KV.get("store_data", "json");
+      if (kvVal) {
+        inMemoryStore = normalizeStore(kvVal);
+        return inMemoryStore;
       }
-    });
+    } catch (e) {}
   }
-
-  return { accounts, syncedData };
+  return inMemoryStore;
 }
 
-async function fetchMasterStore() {
-  try {
-    const res = await fetch(activeMasterUrl, {
-      headers: { "Accept": "application/json" }
-    });
-    if (res.ok) {
-      const data = await res.json();
-      return normalizeStore(data);
-    }
-  } catch (e) {}
-  return { accounts: [], syncedData: {} };
-}
-
-async function saveMasterStore(store: any) {
-  try {
-    const compact = compactStoreForCloud(store);
-    const bodyStr = JSON.stringify(compact);
-    const res = await fetch(activeMasterUrl, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: bodyStr
-    });
-
-    if (!res.ok && (res.status === 404 || res.status === 413)) {
-      const createRes = await fetch("https://jsonblob.com/api/jsonBlob", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: bodyStr
-      });
-      if (createRes.ok) {
-        const newLoc = createRes.headers.get("location");
-        if (newLoc) {
-          activeMasterUrl = newLoc.startsWith("http") ? newLoc : `https://jsonblob.com${newLoc}`;
-        }
-      }
-    }
-  } catch (e) {}
+async function saveMasterStore(store: any, env?: Env) {
+  inMemoryStore = normalizeStore(store);
+  if (env?.MUDAHKIDS_KV) {
+    try {
+      await env.MUDAHKIDS_KV.put("store_data", JSON.stringify(inMemoryStore));
+    } catch (e) {}
+  }
 }
 
 export default {

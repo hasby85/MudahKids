@@ -6,6 +6,7 @@ import {
   saveSyncedDataToSupabase,
   fetchSyncedDataFromSupabase
 } from "../lib/supabaseSync";
+import { SEED_ACCOUNTS, buildSeedSyncedData } from "../data/seedStore";
 
 const MASTER_CLOUD_STORE_URL = "https://jsonblob.com/api/jsonBlob/019ff11c-dfc0-7f84-80c6-4b38b28bc3a7";
 let activeMasterUrl = MASTER_CLOUD_STORE_URL;
@@ -15,12 +16,24 @@ const VAULT_KEY = "mudahkids_registered_accounts_v2";
 export function getLocalAccountsVault(): UserAccount[] {
   try {
     const raw = localStorage.getItem(VAULT_KEY);
+    const map = new Map<string, UserAccount>();
+    SEED_ACCOUNTS.forEach(a => map.set((a.email || "").trim().toLowerCase(), a));
+
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) {
+        parsed.forEach((a: UserAccount) => {
+          if (a && a.email) {
+            const eKey = a.email.trim().toLowerCase();
+            const existing = map.get(eKey);
+            map.set(eKey, { ...existing, ...a });
+          }
+        });
+      }
     }
+    return Array.from(map.values());
   } catch (e) {}
-  return [];
+  return [...SEED_ACCOUNTS];
 }
 
 export function saveLocalAccountsVault(account: UserAccount): void {
@@ -66,29 +79,63 @@ export function compactStoreForCloud(store: MasterDbStore): MasterDbStore {
 
 // Helper to normalize store and recover user accounts embedded in syncedData
 export function normalizeDbStore(data: any): MasterDbStore {
-  if (!data) return { accounts: [], syncedData: {} };
+  const accounts: UserAccount[] = Array.isArray(data?.accounts) ? [...data.accounts] : [];
+  const accountMap = new Map<string, UserAccount>();
 
-  const accounts: UserAccount[] = Array.isArray(data.accounts) ? [...data.accounts] : [];
-  const syncedData: Record<string, any> = data.syncedData || {};
+  // Ensure default seed accounts are always present
+  SEED_ACCOUNTS.forEach((seedAcc) => {
+    accountMap.set(seedAcc.email.trim().toLowerCase(), { ...seedAcc });
+  });
 
-  if (syncedData) {
-    Object.keys(syncedData).forEach((emailKey) => {
-      const u = syncedData[emailKey]?.user;
+  accounts.forEach((a) => {
+    if (a && a.email) {
+      const eKey = a.email.trim().toLowerCase();
+      const existing = accountMap.get(eKey);
+      accountMap.set(eKey, { ...existing, ...a });
+    }
+  });
+
+  const seedSyncedData = buildSeedSyncedData();
+  const rawSynced = data?.syncedData || {};
+  const syncedData: Record<string, any> = { ...seedSyncedData };
+
+  if (rawSynced) {
+    Object.keys(rawSynced).forEach((emailKey) => {
+      const normEmail = emailKey.trim().toLowerCase();
+      const incoming = rawSynced[emailKey];
+      if (!syncedData[normEmail]) {
+        syncedData[normEmail] = incoming;
+      } else {
+        const existing = syncedData[normEmail];
+        let incomingProfiles = Array.isArray(incoming?.childrenProfiles) ? incoming.childrenProfiles : [];
+        // Filter out legacy "Umar" and "Aisyah" profiles
+        incomingProfiles = incomingProfiles.filter((p: any) => {
+          const n = (p?.name || "").trim().toLowerCase();
+          return !n.includes("umar") && !n.includes("aisyah");
+        });
+
+        syncedData[normEmail] = {
+          ...existing,
+          ...incoming,
+          user: incoming?.user || existing.user,
+          childrenProfiles: incomingProfiles.length > 0 ? incomingProfiles : existing.childrenProfiles,
+          missions: Array.isArray(incoming?.missions) && incoming.missions.length > 0 && !incoming.missions.some((m: any) => (m?.id || "").includes("umar"))
+            ? incoming.missions
+            : existing.missions
+        };
+      }
+
+      const u = incoming?.user;
       if (u && u.email) {
-        const normEmail = u.email.trim().toLowerCase();
-        const existingIdx = accounts.findIndex((a) => a.email && a.email.trim().toLowerCase() === normEmail);
-        if (existingIdx === -1) {
-          accounts.push(u);
-        } else {
-          if (u.password) accounts[existingIdx].password = u.password;
-          if (u.name) accounts[existingIdx].name = u.name;
-          if (u.phone) accounts[existingIdx].phone = u.phone;
+        const normU = u.email.trim().toLowerCase();
+        if (!accountMap.has(normU)) {
+          accountMap.set(normU, u);
         }
       }
     });
   }
 
-  return { accounts, syncedData };
+  return { accounts: Array.from(accountMap.values()), syncedData };
 }
 
 // Helper to deeply merge two child profiles (local and cloud) without losing progress
@@ -181,7 +228,7 @@ export function mergeChildProfileObjects(localP: any, cloudP: any): any {
 
 // Fetch directly from Master Cloud Blob and Supabase with Mobile Cache-Busting
 async function fetchMasterCloudStore(): Promise<MasterDbStore> {
-  let store: MasterDbStore = { accounts: [], syncedData: {} };
+  let store: MasterDbStore = normalizeDbStore({ accounts: SEED_ACCOUNTS, syncedData: buildSeedSyncedData() });
 
   // 1. Fetch from JsonBlob / Master Cloud with cache-busting
   try {
@@ -775,6 +822,14 @@ export async function fetchSyncedDataCloud(email: string): Promise<any> {
         }
         return true;
       });
+    }
+  }
+
+  // Guaranteed fallback for seed users if no active children profiles found
+  if (!finalPayload || !Array.isArray(finalPayload.childrenProfiles) || finalPayload.childrenProfiles.length === 0) {
+    const seedData = buildSeedSyncedData();
+    if (seedData[normalizedEmail]) {
+      finalPayload = seedData[normalizedEmail];
     }
   }
 

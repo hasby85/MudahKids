@@ -510,9 +510,9 @@ export const SHOP_ITEMS: ShopItem[] = [
 ];
 
 export const INITIAL_LEADERBOARD: LeaderboardEntry[] = [
-  { id: "lb1", name: "Umar Al-Farooq", avatarEmoji: "👦🏻", xp: 1250, coins: 480, streak: 12, category: "family" },
-  { id: "lb2", name: "Aisyah Humaira", avatarEmoji: "👧🏽", xp: 1100, coins: 390, streak: 9, category: "family" },
-  { id: "lb3", name: "Maryam Jameelah", avatarEmoji: "👧🏻", xp: 850, coins: 260, streak: 5, category: "family" },
+  { id: "lb1", name: "Irfan", avatarEmoji: "👦🏻", xp: 1420, coins: 550, streak: 14, category: "family" },
+  { id: "lb2", name: "Afiq", avatarEmoji: "👦🏽", xp: 1260, coins: 480, streak: 10, category: "family" },
+  { id: "lb3", name: "Ulfah", avatarEmoji: "👧🏻", xp: 1190, coins: 440, streak: 8, category: "family" },
   { id: "lb4", name: "Ahmad Zaki", avatarEmoji: "👦🏽", xp: 1400, coins: 520, streak: 15, category: "school" },
   { id: "lb5", name: "Nur Fatima", avatarEmoji: "👧🏼", xp: 980, coins: 310, streak: 7, category: "school" },
   { id: "lb6", name: "Adam Harith", avatarEmoji: "👦🏼", xp: 910, coins: 280, streak: 6, category: "friends" }
