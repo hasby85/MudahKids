@@ -97,15 +97,39 @@ export function normalizeDbStore(data: any): MasterDbStore {
 
   const seedSyncedData = buildSeedSyncedData();
   const rawSynced = data?.syncedData || {};
-  const syncedData: Record<string, any> = { ...seedSyncedData, ...rawSynced };
+  const syncedData: Record<string, any> = { ...seedSyncedData };
 
   if (rawSynced) {
     Object.keys(rawSynced).forEach((emailKey) => {
-      const u = rawSynced[emailKey]?.user;
+      const normEmail = emailKey.trim().toLowerCase();
+      const incoming = rawSynced[emailKey];
+      if (!syncedData[normEmail]) {
+        syncedData[normEmail] = incoming;
+      } else {
+        const existing = syncedData[normEmail];
+        let incomingProfiles = Array.isArray(incoming?.childrenProfiles) ? incoming.childrenProfiles : [];
+        // Filter out legacy "Umar" and "Aisyah" profiles
+        incomingProfiles = incomingProfiles.filter((p: any) => {
+          const n = (p?.name || "").trim().toLowerCase();
+          return !n.includes("umar") && !n.includes("aisyah");
+        });
+
+        syncedData[normEmail] = {
+          ...existing,
+          ...incoming,
+          user: incoming?.user || existing.user,
+          childrenProfiles: incomingProfiles.length > 0 ? incomingProfiles : existing.childrenProfiles,
+          missions: Array.isArray(incoming?.missions) && incoming.missions.length > 0 && !incoming.missions.some((m: any) => (m?.id || "").includes("umar"))
+            ? incoming.missions
+            : existing.missions
+        };
+      }
+
+      const u = incoming?.user;
       if (u && u.email) {
-        const normEmail = u.email.trim().toLowerCase();
-        if (!accountMap.has(normEmail)) {
-          accountMap.set(normEmail, u);
+        const normU = u.email.trim().toLowerCase();
+        if (!accountMap.has(normU)) {
+          accountMap.set(normU, u);
         }
       }
     });

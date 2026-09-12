@@ -128,11 +128,11 @@ export const WIREFRAMES_ASCII = `
 ===================================================================================
                              CHILD DASHBOARD WIREFRAME
 ===================================================================================
-[ HEADER: MudahKids Logo | Child Selector (Umar) | 🪙 480 | ⭐ Lvl 3 | 🌐 BM/EN ]
+[ HEADER: MudahKids Logo | Child Selector (Irfan / Afiq / Ulfah) | 🪙 350 | ⭐ Lvl 4 | 🌐 BM/EN ]
 -----------------------------------------------------------------------------------
 [ HERO CARD: BANNER ]
-  [ Big Interactive Avatar & Pet ]    [ Daily Spin Wheel / Mystery Box ]
-  [ "Syabas Umar! Solat Subuh Selesai" ] [ Streak: 🔥 12 Hari Berturut-turut ]
+  [ Big Interactive Avatar & Pet (Bella) ]    [ Daily Spin Wheel / Mystery Box ]
+  [ "Syabas Irfan! Solat Subuh Selesai" ] [ Streak: 🔥 14 Hari Berturut-turut ]
 -----------------------------------------------------------------------------------
 [ TABS: 🕌 Islamic Missions | ✏️ Jawi Learning | 🧹 Chores | 🗺️ Nusantara World ]
 -----------------------------------------------------------------------------------

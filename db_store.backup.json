@@ -60,40 +60,49 @@
       },
       "childrenProfiles": [
         {
-          "id": "child-hasby-1",
+          "id": "child-hasby-irfan",
           "parentId": "u-1786365979575",
-          "name": "Umar",
-          "age": 10,
+          "name": "Irfan",
+          "age": 13,
           "gender": "boy",
           "avatar": {
             "clothing": "Baju Melayu",
             "headwear": "Songkok",
-            "accessory": "Cape",
-            "color": "#16a34a"
+            "accessory": "None",
+            "color": "#059669"
           },
           "pet": {
-            "id": "pet-hasby-1",
+            "id": "pet-irfan-1",
             "type": "cat",
-            "name": "Comel Cat",
-            "level": 2,
-            "xp": 140,
-            "hunger": 80,
+            "name": "Bella",
+            "level": 8,
+            "xp": 350,
+            "hunger": 85,
             "happiness": 90,
             "sleep": 95,
-            "evolutionStage": 1
+            "evolutionStage": 3
           },
-          "level": 3,
-          "xp": 380,
-          "coins": 480,
+          "level": 4,
+          "xp": 420,
+          "coins": 350,
           "diamonds": 15,
           "energy": 100,
-          "streak": 12,
+          "streak": 14,
           "unlockedWorlds": [
             "kampung",
             "masjid",
-            "sekolah"
+            "sekolah",
+            "perpustakaan"
           ],
-          "builtStructures": [],
+          "builtStructures": [
+            {
+              "id": "b1",
+              "type": "Mosque",
+              "name": "Masjid Al-Irfan",
+              "x": 2,
+              "y": 2
+            }
+          ],
           "inventory": [
             "s1",
             "s4"
@@ -101,7 +110,7 @@
           "solatProgress": {
             "history": [
               {
-                "id": "solat-umar-2026-09-12",
+                "id": "solat-irfan-2026-09-12",
                 "date": "2026-09-12",
                 "fardhu": {
                   "subuh": {
@@ -139,11 +148,11 @@
                   "hajat": false,
                   "taubat": false
                 },
-                "note": "Alhamdulillah solat awal waktu di masjid",
-                "updatedAt": "2026-09-12T09:21:27.769Z"
+                "note": "Alhamdulillah solat awal waktu dan berjemaah di masjid bersama ayah",
+                "updatedAt": "2026-09-12T09:40:03.967Z"
               },
               {
-                "id": "solat-umar-2026-09-11",
+                "id": "solat-irfan-2026-09-11",
                 "date": "2026-09-11",
                 "fardhu": {
                   "subuh": {
@@ -176,16 +185,16 @@
                   "dhuha": false,
                   "tahajjud": false,
                   "witir": false,
-                  "rawatib": false,
+                  "rawatib": true,
                   "tarawih": false,
                   "hajat": false,
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-11T09:21:27.769Z"
+                "updatedAt": "2026-09-11T09:40:03.967Z"
               },
               {
-                "id": "solat-umar-2026-09-10",
+                "id": "solat-irfan-2026-09-10",
                 "date": "2026-09-10",
                 "fardhu": {
                   "subuh": {
@@ -215,7 +224,7 @@
                   }
                 },
                 "sunat": {
-                  "dhuha": false,
+                  "dhuha": true,
                   "tahajjud": false,
                   "witir": false,
                   "rawatib": true,
@@ -224,57 +233,15 @@
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-10T09:21:27.770Z"
+                "updatedAt": "2026-09-10T09:40:03.967Z"
               },
               {
-                "id": "solat-umar-2026-09-09",
+                "id": "solat-irfan-2026-09-09",
                 "date": "2026-09-09",
                 "fardhu": {
                   "subuh": {
                     "completed": true,
                     "berjemaah": false,
-                    "status": "completed"
-                  },
-                  "zohor": {
-                    "completed": true,
-                    "berjemaah": false,
-                    "status": "completed"
-                  },
-                  "asar": {
-                    "completed": true,
-                    "berjemaah": false,
-                    "status": "completed"
-                  },
-                  "maghrib": {
-                    "completed": true,
-                    "berjemaah": true,
-                    "status": "completed"
-                  },
-                  "isyak": {
-                    "completed": true,
-                    "berjemaah": true,
-                    "status": "completed"
-                  }
-                },
-                "sunat": {
-                  "dhuha": true,
-                  "tahajjud": false,
-                  "witir": false,
-                  "rawatib": false,
-                  "tarawih": false,
-                  "hajat": false,
-                  "taubat": false
-                },
-                "note": "",
-                "updatedAt": "2026-09-09T09:21:27.770Z"
-              },
-              {
-                "id": "solat-umar-2026-09-08",
-                "date": "2026-09-08",
-                "fardhu": {
-                  "subuh": {
-                    "completed": true,
-                    "berjemaah": true,
                     "status": "completed"
                   },
                   "zohor": {
@@ -308,10 +275,52 @@
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-08T09:21:27.770Z"
+                "updatedAt": "2026-09-09T09:40:03.967Z"
               },
               {
-                "id": "solat-umar-2026-09-07",
+                "id": "solat-irfan-2026-09-08",
+                "date": "2026-09-08",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-08T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-07",
                 "date": "2026-09-07",
                 "fardhu": {
                   "subuh": {
@@ -344,17 +353,101 @@
                   "dhuha": false,
                   "tahajjud": false,
                   "witir": false,
-                  "rawatib": false,
+                  "rawatib": true,
                   "tarawih": false,
                   "hajat": false,
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-07T09:21:27.770Z"
+                "updatedAt": "2026-09-07T09:40:03.967Z"
               },
               {
-                "id": "solat-umar-2026-09-06",
+                "id": "solat-irfan-2026-09-06",
                 "date": "2026-09-06",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": true,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-06T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-05",
+                "date": "2026-09-05",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-05T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-04",
+                "date": "2026-09-04",
                 "fardhu": {
                   "subuh": {
                     "completed": true,
@@ -392,57 +485,15 @@
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-06T09:21:27.770Z"
+                "updatedAt": "2026-09-04T09:40:03.967Z"
               },
               {
-                "id": "solat-umar-2026-09-05",
-                "date": "2026-09-05",
+                "id": "solat-irfan-2026-09-03",
+                "date": "2026-09-03",
                 "fardhu": {
                   "subuh": {
                     "completed": true,
                     "berjemaah": false,
-                    "status": "completed"
-                  },
-                  "zohor": {
-                    "completed": true,
-                    "berjemaah": false,
-                    "status": "completed"
-                  },
-                  "asar": {
-                    "completed": true,
-                    "berjemaah": false,
-                    "status": "completed"
-                  },
-                  "maghrib": {
-                    "completed": true,
-                    "berjemaah": true,
-                    "status": "completed"
-                  },
-                  "isyak": {
-                    "completed": true,
-                    "berjemaah": true,
-                    "status": "completed"
-                  }
-                },
-                "sunat": {
-                  "dhuha": false,
-                  "tahajjud": false,
-                  "witir": false,
-                  "rawatib": false,
-                  "tarawih": false,
-                  "hajat": false,
-                  "taubat": false
-                },
-                "note": "",
-                "updatedAt": "2026-09-05T09:21:27.770Z"
-              },
-              {
-                "id": "solat-umar-2026-09-04",
-                "date": "2026-09-04",
-                "fardhu": {
-                  "subuh": {
-                    "completed": true,
-                    "berjemaah": true,
                     "status": "completed"
                   },
                   "zohor": {
@@ -476,15 +527,15 @@
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-04T09:21:27.770Z"
+                "updatedAt": "2026-09-03T09:40:03.967Z"
               },
               {
-                "id": "solat-umar-2026-09-03",
-                "date": "2026-09-03",
+                "id": "solat-irfan-2026-09-02",
+                "date": "2026-09-02",
                 "fardhu": {
                   "subuh": {
                     "completed": true,
-                    "berjemaah": false,
+                    "berjemaah": true,
                     "status": "completed"
                   },
                   "zohor": {
@@ -512,21 +563,21 @@
                   "dhuha": true,
                   "tahajjud": false,
                   "witir": false,
-                  "rawatib": false,
+                  "rawatib": true,
                   "tarawih": false,
                   "hajat": false,
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-03T09:21:27.770Z"
+                "updatedAt": "2026-09-02T09:40:03.967Z"
               },
               {
-                "id": "solat-umar-2026-09-02",
-                "date": "2026-09-02",
+                "id": "solat-irfan-2026-09-01",
+                "date": "2026-09-01",
                 "fardhu": {
                   "subuh": {
                     "completed": true,
-                    "berjemaah": true,
+                    "berjemaah": false,
                     "status": "completed"
                   },
                   "zohor": {
@@ -560,52 +611,10 @@
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-02T09:21:27.770Z"
+                "updatedAt": "2026-09-01T09:40:03.967Z"
               },
               {
-                "id": "solat-umar-2026-09-01",
-                "date": "2026-09-01",
-                "fardhu": {
-                  "subuh": {
-                    "completed": true,
-                    "berjemaah": false,
-                    "status": "completed"
-                  },
-                  "zohor": {
-                    "completed": true,
-                    "berjemaah": false,
-                    "status": "completed"
-                  },
-                  "asar": {
-                    "completed": true,
-                    "berjemaah": false,
-                    "status": "completed"
-                  },
-                  "maghrib": {
-                    "completed": true,
-                    "berjemaah": true,
-                    "status": "completed"
-                  },
-                  "isyak": {
-                    "completed": true,
-                    "berjemaah": true,
-                    "status": "completed"
-                  }
-                },
-                "sunat": {
-                  "dhuha": false,
-                  "tahajjud": false,
-                  "witir": false,
-                  "rawatib": false,
-                  "tarawih": false,
-                  "hajat": false,
-                  "taubat": false
-                },
-                "note": "",
-                "updatedAt": "2026-09-01T09:21:27.770Z"
-              },
-              {
-                "id": "solat-umar-2026-08-31",
+                "id": "solat-irfan-2026-08-31",
                 "date": "2026-08-31",
                 "fardhu": {
                   "subuh": {
@@ -644,10 +653,10 @@
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-08-31T09:21:27.770Z"
+                "updatedAt": "2026-08-31T09:40:03.967Z"
               },
               {
-                "id": "solat-umar-2026-08-30",
+                "id": "solat-irfan-2026-08-30",
                 "date": "2026-08-30",
                 "fardhu": {
                   "subuh": {
@@ -680,18 +689,18 @@
                   "dhuha": false,
                   "tahajjud": false,
                   "witir": false,
-                  "rawatib": false,
+                  "rawatib": true,
                   "tarawih": false,
                   "hajat": false,
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-08-30T09:21:27.770Z"
+                "updatedAt": "2026-08-30T09:40:03.967Z"
               }
             ],
-            "totalFardhuCount": 68,
-            "totalSunatCount": 14,
-            "currentStreak": 12,
+            "totalFardhuCount": 70,
+            "totalSunatCount": 18,
+            "currentStreak": 14,
             "qadhaPending": {
               "subuh": 0,
               "zohor": 0,
@@ -700,7 +709,7 @@
               "isyak": 0
             },
             "qadhaCompleted": {
-              "subuh": 1,
+              "subuh": 0,
               "zohor": 1,
               "asar": 0,
               "maghrib": 0,
@@ -708,26 +717,13 @@
             },
             "qadhaHistory": [
               {
-                "id": "q-umar-1",
+                "id": "q-irfan-1",
                 "prayerKey": "zohor",
                 "prayerName": "Zohor",
                 "originalMissedDate": "2026-09-07",
                 "dateReplaced": "2026-09-08",
-                "timestamp": "2026-09-08T10:21:27.770Z",
-                "note": "Ganti zohor (tertidur kepenatan)",
-                "rewardEarned": {
-                  "xp": 15,
-                  "coins": 5
-                }
-              },
-              {
-                "id": "q-umar-2",
-                "prayerKey": "subuh",
-                "prayerName": "Subuh",
-                "originalMissedDate": "2026-09-04",
-                "dateReplaced": "2026-09-05",
-                "timestamp": "2026-09-05T09:21:27.770Z",
-                "note": "Ganti subuh bangun lewat",
+                "timestamp": "2026-09-08T10:40:03.968Z",
+                "note": "Ganti zohor (tertidur kepenatan selepas sekolah)",
                 "rewardEarned": {
                   "xp": 15,
                   "coins": 5
@@ -736,86 +732,132 @@
             ]
           },
           "quranIqraProgress": {
-            "currentType": "iqra",
-            "currentIqraLevel": 5,
-            "currentIqraPage": 3,
-            "currentQuranJuzuk": 1,
-            "currentQuranSurahName": "Al-Fatihah",
-            "currentQuranPage": 1,
-            "currentQuranAyat": 1,
-            "lastUpdated": "2026-09-12T10:21:27.770Z",
+            "currentType": "quran",
+            "currentIqraLevel": 6,
+            "currentIqraPage": 30,
+            "currentQuranJuzuk": 2,
+            "currentQuranSurahName": "Al-Baqarah",
+            "currentQuranPage": 25,
+            "currentQuranAyat": 160,
+            "lastUpdated": "2026-09-12T10:40:03.968Z",
             "history": [
               {
-                "id": "log-umar-1",
-                "type": "iqra",
-                "title": "Iqra 5 - Muka Surat 1",
-                "iqraLevel": 5,
-                "iqraPage": 1,
-                "completedAt": "2026-09-09T07:21:27.770Z",
-                "parentNote": "Lancar membaca hukum mad dan waqaf."
+                "id": "log-irfan-1",
+                "type": "quran",
+                "title": "Al-Quran - Surah Al-Baqarah (Ayat 142 - 152)",
+                "quranSurahName": "Al-Baqarah",
+                "quranAyat": 152,
+                "quranJuzuk": 2,
+                "completedAt": "2026-09-09T07:40:03.968Z",
+                "parentNote": "Lancar membaca hukum mad dan tajwid makhraj sangat baik!"
               },
               {
-                "id": "log-umar-2",
-                "type": "iqra",
-                "title": "Iqra 5 - Muka Surat 2",
-                "iqraLevel": 5,
-                "iqraPage": 2,
-                "completedAt": "2026-09-10T08:21:27.770Z",
-                "parentNote": "Sangat baik! Sebutan makhraj huruf jelas."
+                "id": "log-irfan-2",
+                "type": "quran",
+                "title": "Al-Quran - Surah Al-Baqarah (Ayat 153 - 160)",
+                "quranSurahName": "Al-Baqarah",
+                "quranAyat": 160,
+                "quranJuzuk": 2,
+                "completedAt": "2026-09-11T08:40:03.968Z",
+                "parentNote": "Alhamdulillah sangat tekun. Teruskan hafazan surah pilihan."
               },
               {
-                "id": "log-umar-3",
+                "id": "log-irfan-3",
                 "type": "iqra",
-                "title": "Iqra 5 - Muka Surat 3",
-                "iqraLevel": 5,
-                "iqraPage": 3,
-                "completedAt": "2026-09-12T09:21:27.770Z",
-                "parentNote": "Alhamdulillah siap tugasan Iqra hari ini."
+                "title": "Iqra 6 - Penamat & Ujian Tajwid",
+                "iqraLevel": 6,
+                "iqraPage": 30,
+                "completedAt": "2026-08-29T09:40:03.968Z",
+                "parentNote": "Syabas Irfan khatam Iqra 6 dengan cemerlang!"
               }
+            ]
+          },
+          "jawiProgress": {
+            "unlockedLevel": 4,
+            "completedLevels": [
+              1,
+              2,
+              3
+            ],
+            "levelActivities": {
+              "1": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              },
+              "2": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              },
+              "3": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              }
+            }
+          },
+          "hafazanProgress": {
+            "completedSurahIds": [
+              "1",
+              "112",
+              "113",
+              "114",
+              "78",
+              "67"
             ]
           }
         },
         {
-          "id": "child-hasby-2",
+          "id": "child-hasby-afiq",
           "parentId": "u-1786365979575",
-          "name": "Aisyah Humaira",
-          "age": 5,
-          "gender": "girl",
+          "name": "Afiq",
+          "age": 10,
+          "gender": "boy",
           "avatar": {
-            "clothing": "Baju Kurung",
-            "headwear": "Hijab",
-            "accessory": "Bag",
-            "color": "#0284c7"
+            "clothing": "Baju Melayu",
+            "headwear": "Songkok",
+            "accessory": "Cap",
+            "color": "#2563eb"
           },
           "pet": {
-            "id": "pet-hasby-2",
-            "type": "rabbit",
-            "name": "Comel Bunny",
-            "level": 1,
-            "xp": 60,
-            "hunger": 70,
+            "id": "pet-afiq-1",
+            "type": "cat",
+            "name": "Oyen",
+            "level": 3,
+            "xp": 180,
+            "hunger": 80,
             "happiness": 85,
-            "sleep": 80,
-            "evolutionStage": 1
+            "sleep": 90,
+            "evolutionStage": 2
           },
-          "level": 2,
-          "xp": 220,
-          "coins": 390,
-          "diamonds": 10,
+          "level": 3,
+          "xp": 260,
+          "coins": 280,
+          "diamonds": 12,
           "energy": 100,
-          "streak": 9,
+          "streak": 10,
           "unlockedWorlds": [
             "kampung",
-            "masjid"
+            "masjid",
+            "sekolah"
           ],
-          "builtStructures": [],
+          "builtStructures": [
+            {
+              "id": "b2",
+              "type": "House",
+              "name": "Rumah Afiq",
+              "x": 1,
+              "y": 2
+            }
+          ],
           "inventory": [
-            "s5"
+            "s2"
           ],
           "solatProgress": {
             "history": [
               {
-                "id": "solat-aisyah-2026-09-12",
+                "id": "solat-afiq-2026-09-12",
                 "date": "2026-09-12",
                 "fardhu": {
                   "subuh": {
@@ -839,25 +881,25 @@
                     "status": "completed"
                   },
                   "isyak": {
-                    "completed": false,
+                    "completed": true,
                     "berjemaah": true,
-                    "status": "none"
+                    "status": "completed"
                   }
                 },
                 "sunat": {
                   "dhuha": true,
                   "tahajjud": false,
                   "witir": false,
-                  "rawatib": false,
+                  "rawatib": true,
                   "tarawih": false,
                   "hajat": false,
                   "taubat": false
                 },
-                "note": "Belajar solat bersama ibu",
-                "updatedAt": "2026-09-12T08:21:27.770Z"
+                "note": "Solat 5 waktu lengkap dengan khusyuk",
+                "updatedAt": "2026-09-12T08:40:03.968Z"
               },
               {
-                "id": "solat-aisyah-2026-09-11",
+                "id": "solat-afiq-2026-09-11",
                 "date": "2026-09-11",
                 "fardhu": {
                   "subuh": {
@@ -896,10 +938,10 @@
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-11T08:21:27.770Z"
+                "updatedAt": "2026-09-11T08:40:03.968Z"
               },
               {
-                "id": "solat-aisyah-2026-09-10",
+                "id": "solat-afiq-2026-09-10",
                 "date": "2026-09-10",
                 "fardhu": {
                   "subuh": {
@@ -929,19 +971,19 @@
                   }
                 },
                 "sunat": {
-                  "dhuha": true,
+                  "dhuha": false,
                   "tahajjud": false,
                   "witir": false,
-                  "rawatib": false,
+                  "rawatib": true,
                   "tarawih": false,
                   "hajat": false,
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-10T08:21:27.770Z"
+                "updatedAt": "2026-09-10T08:40:03.968Z"
               },
               {
-                "id": "solat-aisyah-2026-09-09",
+                "id": "solat-afiq-2026-09-09",
                 "date": "2026-09-09",
                 "fardhu": {
                   "subuh": {
@@ -965,13 +1007,13 @@
                     "status": "completed"
                   },
                   "isyak": {
-                    "completed": false,
+                    "completed": true,
                     "berjemaah": true,
-                    "status": "none"
+                    "status": "completed"
                   }
                 },
                 "sunat": {
-                  "dhuha": false,
+                  "dhuha": true,
                   "tahajjud": false,
                   "witir": false,
                   "rawatib": false,
@@ -980,10 +1022,10 @@
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-09T08:21:27.770Z"
+                "updatedAt": "2026-09-09T08:40:03.968Z"
               },
               {
-                "id": "solat-aisyah-2026-09-08",
+                "id": "solat-afiq-2026-09-08",
                 "date": "2026-09-08",
                 "fardhu": {
                   "subuh": {
@@ -1013,19 +1055,19 @@
                   }
                 },
                 "sunat": {
-                  "dhuha": true,
+                  "dhuha": false,
                   "tahajjud": false,
                   "witir": false,
-                  "rawatib": false,
+                  "rawatib": true,
                   "tarawih": false,
                   "hajat": false,
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-08T08:21:27.770Z"
+                "updatedAt": "2026-09-08T08:40:03.968Z"
               },
               {
-                "id": "solat-aisyah-2026-09-07",
+                "id": "solat-afiq-2026-09-07",
                 "date": "2026-09-07",
                 "fardhu": {
                   "subuh": {
@@ -1064,10 +1106,10 @@
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-07T08:21:27.770Z"
+                "updatedAt": "2026-09-07T08:40:03.968Z"
               },
               {
-                "id": "solat-aisyah-2026-09-06",
+                "id": "solat-afiq-2026-09-06",
                 "date": "2026-09-06",
                 "fardhu": {
                   "subuh": {
@@ -1091,25 +1133,25 @@
                     "status": "completed"
                   },
                   "isyak": {
-                    "completed": false,
+                    "completed": true,
                     "berjemaah": true,
-                    "status": "none"
+                    "status": "completed"
                   }
                 },
                 "sunat": {
                   "dhuha": true,
                   "tahajjud": false,
                   "witir": false,
-                  "rawatib": false,
+                  "rawatib": true,
                   "tarawih": false,
                   "hajat": false,
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-06T08:21:27.770Z"
+                "updatedAt": "2026-09-06T08:40:03.968Z"
               },
               {
-                "id": "solat-aisyah-2026-09-05",
+                "id": "solat-afiq-2026-09-05",
                 "date": "2026-09-05",
                 "fardhu": {
                   "subuh": {
@@ -1148,11 +1190,53 @@
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-05T08:21:27.770Z"
+                "updatedAt": "2026-09-05T08:40:03.968Z"
               },
               {
-                "id": "solat-aisyah-2026-09-04",
+                "id": "solat-afiq-2026-09-04",
                 "date": "2026-09-04",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-04T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-03",
+                "date": "2026-09-03",
                 "fardhu": {
                   "subuh": {
                     "completed": true,
@@ -1190,11 +1274,273 @@
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-04T08:21:27.770Z"
+                "updatedAt": "2026-09-03T08:40:03.968Z"
+              }
+            ],
+            "totalFardhuCount": 48,
+            "totalSunatCount": 6,
+            "currentStreak": 10,
+            "qadhaPending": {
+              "subuh": 0,
+              "zohor": 0,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 0
+            },
+            "qadhaCompleted": {
+              "subuh": 0,
+              "zohor": 0,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 0
+            },
+            "qadhaHistory": []
+          },
+          "quranIqraProgress": {
+            "currentType": "iqra",
+            "currentIqraLevel": 4,
+            "currentIqraPage": 18,
+            "currentQuranJuzuk": 1,
+            "currentQuranSurahName": "Al-Fatihah",
+            "currentQuranPage": 1,
+            "currentQuranAyat": 1,
+            "lastUpdated": "2026-09-12T09:40:03.968Z",
+            "history": [
+              {
+                "id": "log-afiq-1",
+                "type": "iqra",
+                "title": "Iqra 4 - Muka Surat 16",
+                "iqraLevel": 4,
+                "iqraPage": 16,
+                "completedAt": "2026-09-09T08:40:03.968Z",
+                "parentNote": "Mengenal tanda sukun dan tanwin dengan tepat."
               },
               {
-                "id": "solat-aisyah-2026-09-03",
-                "date": "2026-09-03",
+                "id": "log-afiq-2",
+                "type": "iqra",
+                "title": "Iqra 4 - Muka Surat 17",
+                "iqraLevel": 4,
+                "iqraPage": 17,
+                "completedAt": "2026-09-11T07:40:03.968Z",
+                "parentNote": "Bagus Afiq, sebutan huruf makin jelas."
+              },
+              {
+                "id": "log-afiq-3",
+                "type": "iqra",
+                "title": "Iqra 4 - Muka Surat 18",
+                "iqraLevel": 4,
+                "iqraPage": 18,
+                "completedAt": "2026-09-12T09:40:03.968Z",
+                "parentNote": "Alhamdulillah siap tugasan Iqra hari ini."
+              }
+            ]
+          },
+          "jawiProgress": {
+            "unlockedLevel": 3,
+            "completedLevels": [
+              1,
+              2
+            ],
+            "levelActivities": {
+              "1": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              },
+              "2": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              }
+            }
+          },
+          "hafazanProgress": {
+            "completedSurahIds": [
+              "1",
+              "112",
+              "113",
+              "114",
+              "93",
+              "94"
+            ]
+          }
+        },
+        {
+          "id": "child-hasby-ulfah",
+          "parentId": "u-1786365979575",
+          "name": "Ulfah",
+          "age": 7,
+          "gender": "girl",
+          "avatar": {
+            "clothing": "Baju Kurung",
+            "headwear": "Hijab",
+            "accessory": "Ribbon",
+            "color": "#ec4899"
+          },
+          "pet": {
+            "id": "pet-ulfah-1",
+            "type": "rabbit",
+            "name": "Comel Bunny",
+            "level": 2,
+            "xp": 120,
+            "hunger": 75,
+            "happiness": 90,
+            "sleep": 85,
+            "evolutionStage": 1
+          },
+          "level": 2,
+          "xp": 190,
+          "coins": 240,
+          "diamonds": 10,
+          "energy": 100,
+          "streak": 8,
+          "unlockedWorlds": [
+            "kampung",
+            "masjid"
+          ],
+          "builtStructures": [
+            {
+              "id": "b3",
+              "type": "Garden",
+              "name": "Taman Bunga Ulfah",
+              "x": 3,
+              "y": 1
+            }
+          ],
+          "inventory": [
+            "s5"
+          ],
+          "solatProgress": {
+            "history": [
+              {
+                "id": "solat-ulfah-2026-09-12",
+                "date": "2026-09-12",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": false,
+                    "berjemaah": true,
+                    "status": "none"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "Belajar solat dan doa bersama ibu",
+                "updatedAt": "2026-09-12T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-11",
+                "date": "2026-09-11",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-11T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-10",
+                "date": "2026-09-10",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-10T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-09",
+                "date": "2026-09-09",
                 "fardhu": {
                   "subuh": {
                     "completed": true,
@@ -1232,306 +1578,11 @@
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-03T08:21:27.770Z"
-              }
-            ],
-            "totalFardhuCount": 46,
-            "totalSunatCount": 5,
-            "currentStreak": 9,
-            "qadhaPending": {
-              "subuh": 0,
-              "zohor": 0,
-              "asar": 0,
-              "maghrib": 0,
-              "isyak": 0
-            },
-            "qadhaCompleted": {
-              "subuh": 0,
-              "zohor": 0,
-              "asar": 0,
-              "maghrib": 0,
-              "isyak": 0
-            },
-            "qadhaHistory": []
-          },
-          "quranIqraProgress": {
-            "currentType": "iqra",
-            "currentIqraLevel": 2,
-            "currentIqraPage": 12,
-            "currentQuranJuzuk": 1,
-            "currentQuranSurahName": "Al-Fatihah",
-            "currentQuranPage": 1,
-            "currentQuranAyat": 1,
-            "lastUpdated": "2026-09-12T08:21:27.770Z",
-            "history": [
-              {
-                "id": "log-aisyah-1",
-                "type": "iqra",
-                "title": "Iqra 2 - Muka Surat 10",
-                "iqraLevel": 2,
-                "iqraPage": 10,
-                "completedAt": "2026-09-09T06:21:27.770Z",
-                "parentNote": "Mengenal huruf bersambung dengan betul."
+                "updatedAt": "2026-09-09T07:40:03.968Z"
               },
               {
-                "id": "log-aisyah-2",
-                "type": "iqra",
-                "title": "Iqra 2 - Muka Surat 11",
-                "iqraLevel": 2,
-                "iqraPage": 11,
-                "completedAt": "2026-09-10T07:21:27.770Z",
-                "parentNote": "Rajin mengulang baris kasrah."
-              },
-              {
-                "id": "log-aisyah-3",
-                "type": "iqra",
-                "title": "Iqra 2 - Muka Surat 12",
-                "iqraLevel": 2,
-                "iqraPage": 12,
-                "completedAt": "2026-09-12T08:21:27.770Z",
-                "parentNote": "Pandai Aisyah! Teruskan belajar ya."
-              }
-            ]
-          }
-        }
-      ],
-      "activeChildId": "child-hasby-1",
-      "missions": [
-        {
-          "id": "m-umar-1",
-          "childId": "child-hasby-1",
-          "title": "Solat Subuh Berjemaah di Masjid",
-          "description": "Pergi ke masjid bersama ayah untuk solat Subuh berjemaah",
-          "category": "Islamic",
-          "xpReward": 50,
-          "coinReward": 20,
-          "status": "approved",
-          "difficulty": "Sederhana",
-          "parentComment": "Alhamdulillah sangat berdisiplin Umar!",
-          "completedAt": "2026-09-11T07:21:27.770Z",
-          "approvedAt": "2026-09-11T09:21:27.770Z"
-        },
-        {
-          "id": "m-umar-2",
-          "childId": "child-hasby-1",
-          "title": "Bantu Kemas Tempat Tidur & Bilik",
-          "description": "Kemas katil dan susun buku selepas bangun pagi",
-          "category": "Chores",
-          "xpReward": 30,
-          "coinReward": 10,
-          "status": "approved",
-          "difficulty": "Mudah",
-          "parentComment": "Bilik nampak bersih dan selesa.",
-          "completedAt": "2026-09-12T05:21:27.770Z",
-          "approvedAt": "2026-09-12T07:21:27.770Z"
-        },
-        {
-          "id": "m-umar-3",
-          "childId": "child-hasby-1",
-          "title": "Ulang Hafazan Surah An-Naba'",
-          "description": "Hafaz 5 ayat baharu surah An-Naba'",
-          "category": "Islamic",
-          "xpReward": 40,
-          "coinReward": 15,
-          "status": "todo",
-          "difficulty": "Cabar"
-        }
-      ],
-      "language": "bm",
-      "lastSyncedAt": "2026-09-12T11:21:27.770Z"
-    },
-    "shahirah_mahfuzah@yahoo.com": {
-      "user": {
-        "id": "u-1786367110215",
-        "name": "Shira",
-        "email": "shahirah_mahfuzah@yahoo.com",
-        "phone": "0123179556",
-        "role": "parent",
-        "plan": "PREMIUM",
-        "accessCode": "MudahKids2026",
-        "password": "shira123",
-        "createdAt": "2026-08-10T13:05:10.215Z"
-      },
-      "childrenProfiles": [
-        {
-          "id": "child-1786254477676",
-          "parentId": "u-1786367110215",
-          "name": "Irfan",
-          "age": 13,
-          "gender": "boy",
-          "avatar": {
-            "clothing": "Baju Melayu",
-            "headwear": "Songkok",
-            "accessory": "None",
-            "color": "#059669"
-          },
-          "pet": {
-            "id": "pet-1786254477676",
-            "type": "cat",
-            "name": "Bella",
-            "level": 8,
-            "xp": 350,
-            "hunger": 80,
-            "happiness": 85,
-            "sleep": 90,
-            "evolutionStage": 3
-          },
-          "level": 1,
-          "xp": 350,
-          "coins": 328,
-          "diamonds": 11,
-          "energy": 100,
-          "streak": 4,
-          "unlockedWorlds": [
-            "kampung"
-          ],
-          "builtStructures": [],
-          "inventory": [],
-          "solatProgress": {
-            "history": [
-              {
-                "id": "solat-irfan-2026-09-11",
-                "date": "2026-09-11",
-                "fardhu": {
-                  "subuh": {
-                    "completed": true,
-                    "berjemaah": false,
-                    "status": "completed"
-                  },
-                  "zohor": {
-                    "completed": true,
-                    "berjemaah": false,
-                    "status": "completed"
-                  },
-                  "asar": {
-                    "completed": true,
-                    "berjemaah": false,
-                    "status": "completed"
-                  },
-                  "maghrib": {
-                    "completed": true,
-                    "berjemaah": false,
-                    "status": "completed"
-                  },
-                  "isyak": {
-                    "completed": true,
-                    "berjemaah": false,
-                    "status": "completed"
-                  }
-                },
-                "sunat": {
-                  "dhuha": false,
-                  "tahajjud": false,
-                  "witir": false,
-                  "rawatib": false,
-                  "tarawih": false,
-                  "hajat": false,
-                  "taubat": false
-                },
-                "note": "",
-                "updatedAt": "2026-09-11T09:21:27.770Z"
-              }
-            ],
-            "totalFardhuCount": 15,
-            "totalSunatCount": 2,
-            "currentStreak": 4,
-            "qadhaPending": {
-              "subuh": 0,
-              "zohor": 0,
-              "asar": 0,
-              "maghrib": 0,
-              "isyak": 0
-            },
-            "qadhaCompleted": {
-              "subuh": 0,
-              "zohor": 0,
-              "asar": 0,
-              "maghrib": 0,
-              "isyak": 0
-            },
-            "qadhaHistory": []
-          },
-          "quranIqraProgress": {
-            "currentType": "iqra",
-            "currentIqraLevel": 5,
-            "currentIqraPage": 3,
-            "currentQuranJuzuk": 1,
-            "currentQuranSurahName": "Al-Fatihah",
-            "currentQuranPage": 1,
-            "currentQuranAyat": 1,
-            "lastUpdated": "2026-09-11T09:21:27.770Z",
-            "history": [
-              {
-                "id": "log-irfan-1",
-                "type": "iqra",
-                "title": "Iqra 5 - Muka Surat 3",
-                "iqraLevel": 5,
-                "iqraPage": 3,
-                "completedAt": "2026-09-11T08:21:27.770Z",
-                "parentNote": "Awal perintis bacaan tajwid lancar."
-              }
-            ]
-          }
-        }
-      ],
-      "activeChildId": "child-1786254477676",
-      "missions": [],
-      "language": "bm",
-      "lastSyncedAt": "2026-09-11T10:21:27.770Z"
-    },
-    "asbie85@gmail.com": {
-      "user": {
-        "id": "u-1786368888888",
-        "name": "Asbie",
-        "email": "asbie85@gmail.com",
-        "phone": "0198765432",
-        "role": "parent",
-        "plan": "PREMIUM",
-        "accessCode": "MudahKids2026",
-        "password": "asbie123",
-        "createdAt": "2026-08-10T13:10:00.000Z"
-      },
-      "childrenProfiles": [
-        {
-          "id": "child-asbie-1",
-          "parentId": "u-1786368888888",
-          "name": "Ahmad",
-          "age": 8,
-          "gender": "boy",
-          "avatar": {
-            "clothing": "Baju Melayu",
-            "headwear": "Songkok",
-            "accessory": "Cape",
-            "color": "#2563eb"
-          },
-          "pet": {
-            "id": "pet-asbie-1",
-            "type": "cat",
-            "name": "Mimi",
-            "level": 3,
-            "xp": 200,
-            "hunger": 85,
-            "happiness": 90,
-            "sleep": 90,
-            "evolutionStage": 1
-          },
-          "level": 3,
-          "xp": 310,
-          "coins": 450,
-          "diamonds": 12,
-          "energy": 100,
-          "streak": 7,
-          "unlockedWorlds": [
-            "kampung",
-            "masjid"
-          ],
-          "builtStructures": [],
-          "inventory": [],
-          "solatProgress": {
-            "history": [
-              {
-                "id": "solat-ahmad-2026-09-12",
-                "date": "2026-09-12",
+                "id": "solat-ulfah-2026-09-08",
+                "date": "2026-09-08",
                 "fardhu": {
                   "subuh": {
                     "completed": true,
@@ -1568,13 +1619,139 @@
                   "hajat": false,
                   "taubat": false
                 },
-                "note": "Solat tepat pada waktu",
-                "updatedAt": "2026-09-12T10:21:27.770Z"
+                "note": "",
+                "updatedAt": "2026-09-08T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-07",
+                "date": "2026-09-07",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-07T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-06",
+                "date": "2026-09-06",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": false,
+                    "berjemaah": true,
+                    "status": "none"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-06T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-05",
+                "date": "2026-09-05",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-05T07:40:03.968Z"
               }
             ],
-            "totalFardhuCount": 35,
-            "totalSunatCount": 5,
-            "currentStreak": 7,
+            "totalFardhuCount": 38,
+            "totalSunatCount": 4,
+            "currentStreak": 8,
             "qadhaPending": {
               "subuh": 0,
               "zohor": 0,
@@ -1593,31 +1770,4002 @@
           },
           "quranIqraProgress": {
             "currentType": "iqra",
-            "currentIqraLevel": 3,
-            "currentIqraPage": 5,
+            "currentIqraLevel": 2,
+            "currentIqraPage": 10,
             "currentQuranJuzuk": 1,
             "currentQuranSurahName": "Al-Fatihah",
             "currentQuranPage": 1,
             "currentQuranAyat": 1,
-            "lastUpdated": "2026-09-12T10:21:27.770Z",
+            "lastUpdated": "2026-09-12T08:40:03.968Z",
             "history": [
               {
-                "id": "log-ahmad-1",
+                "id": "log-ulfah-1",
                 "type": "iqra",
-                "title": "Iqra 3 - Muka Surat 5",
-                "iqraLevel": 3,
-                "iqraPage": 5,
-                "completedAt": "2026-09-12T09:21:27.770Z",
-                "parentNote": "Lancar sebutan tanda mati."
+                "title": "Iqra 2 - Muka Surat 8",
+                "iqraLevel": 2,
+                "iqraPage": 8,
+                "completedAt": "2026-09-09T06:40:03.968Z",
+                "parentNote": "Mengenal huruf bersambung dengan betul."
+              },
+              {
+                "id": "log-ulfah-2",
+                "type": "iqra",
+                "title": "Iqra 2 - Muka Surat 9",
+                "iqraLevel": 2,
+                "iqraPage": 9,
+                "completedAt": "2026-09-10T07:40:03.968Z",
+                "parentNote": "Rajin mengulang baris kasrah bersama ibu."
+              },
+              {
+                "id": "log-ulfah-3",
+                "type": "iqra",
+                "title": "Iqra 2 - Muka Surat 10",
+                "iqraLevel": 2,
+                "iqraPage": 10,
+                "completedAt": "2026-09-12T08:40:03.968Z",
+                "parentNote": "Pandai Ulfah! Teruskan belajar ya sayang."
               }
+            ]
+          },
+          "jawiProgress": {
+            "unlockedLevel": 2,
+            "completedLevels": [
+              1
+            ],
+            "levelActivities": {
+              "1": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              }
+            }
+          },
+          "hafazanProgress": {
+            "completedSurahIds": [
+              "1",
+              "112",
+              "113",
+              "114"
             ]
           }
         }
       ],
-      "activeChildId": "child-asbie-1",
-      "missions": [],
+      "activeChildId": "child-hasby-irfan",
+      "missions": [
+        {
+          "id": "m-irfan-1",
+          "childId": "child-hasby-irfan",
+          "title": "Solat Subuh Berjemaah di Masjid bersama Ayah",
+          "description": "Tunaikan solat Subuh berjemaah di masjid untuk membina sahsiah diri",
+          "category": "Islamic",
+          "xpReward": 50,
+          "coinReward": 20,
+          "status": "approved",
+          "difficulty": "Sederhana",
+          "parentComment": "Alhamdulillah sangat berdisiplin Irfan!",
+          "completedAt": "2026-09-11T07:40:03.968Z",
+          "approvedAt": "2026-09-11T09:40:03.968Z"
+        },
+        {
+          "id": "m-irfan-2",
+          "childId": "child-hasby-irfan",
+          "title": "Bantu Kemas Ruang Tamu & Susun Buku",
+          "description": "Susun buku-buku sekolah dan bantu kemaskan ruang keluarga",
+          "category": "Chores",
+          "xpReward": 30,
+          "coinReward": 10,
+          "status": "approved",
+          "difficulty": "Mudah",
+          "parentComment": "Rumah nampak kemas dan teratur. Syabas abang Irfan!",
+          "completedAt": "2026-09-12T05:40:03.968Z",
+          "approvedAt": "2026-09-12T07:40:03.968Z"
+        },
+        {
+          "id": "m-irfan-3",
+          "childId": "child-hasby-irfan",
+          "title": "Ulang Kaji Hafazan Surah An-Naba'",
+          "description": "Hafaz dan ulang 10 ayat Surah An-Naba' bersama bacaan tajwid",
+          "category": "Islamic",
+          "xpReward": 40,
+          "coinReward": 15,
+          "status": "todo",
+          "difficulty": "Cabar"
+        },
+        {
+          "id": "m-afiq-1",
+          "childId": "child-hasby-afiq",
+          "title": "Solat Asar Tepat Pada Waktu",
+          "description": "Ambil wuduk dan solat sebaik sahaja azan Asar berkumandang",
+          "category": "Islamic",
+          "xpReward": 40,
+          "coinReward": 15,
+          "status": "approved",
+          "difficulty": "Mudah",
+          "parentComment": "Bagus Afiq, solat tepat pada waktunya!",
+          "completedAt": "2026-09-11T08:40:03.968Z",
+          "approvedAt": "2026-09-11T10:40:03.968Z"
+        },
+        {
+          "id": "m-afiq-2",
+          "childId": "child-hasby-afiq",
+          "title": "Baca Iqra 4 Sebanyak 2 Muka Surat",
+          "description": "Membaca Iqra 4 dengan bimbingan dan semakan ibu bapa",
+          "category": "Islamic",
+          "xpReward": 35,
+          "coinReward": 12,
+          "status": "approved",
+          "difficulty": "Sederhana",
+          "parentComment": "Hebat Afiq! Teruskan usaha hingga khatam.",
+          "completedAt": "2026-09-12T06:40:03.968Z",
+          "approvedAt": "2026-09-12T08:40:03.968Z"
+        },
+        {
+          "id": "m-afiq-3",
+          "childId": "child-hasby-afiq",
+          "title": "Kemas Tempat Tidur & Bilik Sendiri",
+          "description": "Lipat selimut dan susun bantal setiap pagi selepas bangun",
+          "category": "Chores",
+          "xpReward": 25,
+          "coinReward": 10,
+          "status": "todo",
+          "difficulty": "Mudah"
+        },
+        {
+          "id": "m-ulfah-1",
+          "childId": "child-hasby-ulfah",
+          "title": "Belajar Praktikal Wuduk Sempurna bersama Ibu",
+          "description": "Lakukan rukun wuduk mengikut tertib yang betul dari niat hingga doa",
+          "category": "Islamic",
+          "xpReward": 40,
+          "coinReward": 15,
+          "status": "approved",
+          "difficulty": "Mudah",
+          "parentComment": "Alhamdulillah Ulfah pandai ambil wuduk sendiri!",
+          "completedAt": "2026-09-11T09:40:03.968Z",
+          "approvedAt": "2026-09-11T10:40:03.968Z"
+        },
+        {
+          "id": "m-ulfah-2",
+          "childId": "child-hasby-ulfah",
+          "title": "Hafaz Surah Al-Ikhlas dengan Tajwid Jelas",
+          "description": "Perdengarkan bacaan Surah Al-Ikhlas di hadapan ibu atau ayah",
+          "category": "Islamic",
+          "xpReward": 35,
+          "coinReward": 12,
+          "status": "approved",
+          "difficulty": "Mudah",
+          "parentComment": "Sedap bacaan Ulfah! Comel sangat.",
+          "completedAt": "2026-09-12T07:40:03.968Z",
+          "approvedAt": "2026-09-12T09:40:03.968Z"
+        },
+        {
+          "id": "m-ulfah-3",
+          "childId": "child-hasby-ulfah",
+          "title": "Bantu Lipat Pakaian & Susun Kasut",
+          "description": "Bantu ibu lipat pakaian sendiri dan susun kasut di rak",
+          "category": "Chores",
+          "xpReward": 25,
+          "coinReward": 10,
+          "status": "todo",
+          "difficulty": "Mudah"
+        }
+      ],
       "language": "bm",
-      "lastSyncedAt": "2026-09-12T10:21:27.770Z"
+      "lastSyncedAt": "2026-09-12T11:40:03.968Z"
+    },
+    "shahirah_mahfuzah@yahoo.com": {
+      "user": {
+        "id": "u-1786367110215",
+        "name": "Shira",
+        "email": "shahirah_mahfuzah@yahoo.com",
+        "phone": "0123179556",
+        "role": "parent",
+        "plan": "PREMIUM",
+        "accessCode": "MudahKids2026",
+        "password": "shira123",
+        "createdAt": "2026-08-10T13:05:10.215Z"
+      },
+      "childrenProfiles": [
+        {
+          "id": "child-hasby-irfan",
+          "parentId": "u-1786367110215",
+          "name": "Irfan",
+          "age": 13,
+          "gender": "boy",
+          "avatar": {
+            "clothing": "Baju Melayu",
+            "headwear": "Songkok",
+            "accessory": "None",
+            "color": "#059669"
+          },
+          "pet": {
+            "id": "pet-irfan-1",
+            "type": "cat",
+            "name": "Bella",
+            "level": 8,
+            "xp": 350,
+            "hunger": 85,
+            "happiness": 90,
+            "sleep": 95,
+            "evolutionStage": 3
+          },
+          "level": 4,
+          "xp": 420,
+          "coins": 350,
+          "diamonds": 15,
+          "energy": 100,
+          "streak": 14,
+          "unlockedWorlds": [
+            "kampung",
+            "masjid",
+            "sekolah",
+            "perpustakaan"
+          ],
+          "builtStructures": [
+            {
+              "id": "b1",
+              "type": "Mosque",
+              "name": "Masjid Al-Irfan",
+              "x": 2,
+              "y": 2
+            }
+          ],
+          "inventory": [
+            "s1",
+            "s4"
+          ],
+          "solatProgress": {
+            "history": [
+              {
+                "id": "solat-irfan-2026-09-12",
+                "date": "2026-09-12",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": true,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "Alhamdulillah solat awal waktu dan berjemaah di masjid bersama ayah",
+                "updatedAt": "2026-09-12T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-11",
+                "date": "2026-09-11",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-11T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-10",
+                "date": "2026-09-10",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-10T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-09",
+                "date": "2026-09-09",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": true,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-09T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-08",
+                "date": "2026-09-08",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-08T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-07",
+                "date": "2026-09-07",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-07T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-06",
+                "date": "2026-09-06",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": true,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-06T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-05",
+                "date": "2026-09-05",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-05T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-04",
+                "date": "2026-09-04",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-04T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-03",
+                "date": "2026-09-03",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": true,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-03T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-02",
+                "date": "2026-09-02",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-02T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-01",
+                "date": "2026-09-01",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-01T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-08-31",
+                "date": "2026-08-31",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": true,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-08-31T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-08-30",
+                "date": "2026-08-30",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-08-30T09:40:03.967Z"
+              }
+            ],
+            "totalFardhuCount": 70,
+            "totalSunatCount": 18,
+            "currentStreak": 14,
+            "qadhaPending": {
+              "subuh": 0,
+              "zohor": 0,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 0
+            },
+            "qadhaCompleted": {
+              "subuh": 0,
+              "zohor": 1,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 0
+            },
+            "qadhaHistory": [
+              {
+                "id": "q-irfan-1",
+                "prayerKey": "zohor",
+                "prayerName": "Zohor",
+                "originalMissedDate": "2026-09-07",
+                "dateReplaced": "2026-09-08",
+                "timestamp": "2026-09-08T10:40:03.968Z",
+                "note": "Ganti zohor (tertidur kepenatan selepas sekolah)",
+                "rewardEarned": {
+                  "xp": 15,
+                  "coins": 5
+                }
+              }
+            ]
+          },
+          "quranIqraProgress": {
+            "currentType": "quran",
+            "currentIqraLevel": 6,
+            "currentIqraPage": 30,
+            "currentQuranJuzuk": 2,
+            "currentQuranSurahName": "Al-Baqarah",
+            "currentQuranPage": 25,
+            "currentQuranAyat": 160,
+            "lastUpdated": "2026-09-12T10:40:03.968Z",
+            "history": [
+              {
+                "id": "log-irfan-1",
+                "type": "quran",
+                "title": "Al-Quran - Surah Al-Baqarah (Ayat 142 - 152)",
+                "quranSurahName": "Al-Baqarah",
+                "quranAyat": 152,
+                "quranJuzuk": 2,
+                "completedAt": "2026-09-09T07:40:03.968Z",
+                "parentNote": "Lancar membaca hukum mad dan tajwid makhraj sangat baik!"
+              },
+              {
+                "id": "log-irfan-2",
+                "type": "quran",
+                "title": "Al-Quran - Surah Al-Baqarah (Ayat 153 - 160)",
+                "quranSurahName": "Al-Baqarah",
+                "quranAyat": 160,
+                "quranJuzuk": 2,
+                "completedAt": "2026-09-11T08:40:03.968Z",
+                "parentNote": "Alhamdulillah sangat tekun. Teruskan hafazan surah pilihan."
+              },
+              {
+                "id": "log-irfan-3",
+                "type": "iqra",
+                "title": "Iqra 6 - Penamat & Ujian Tajwid",
+                "iqraLevel": 6,
+                "iqraPage": 30,
+                "completedAt": "2026-08-29T09:40:03.968Z",
+                "parentNote": "Syabas Irfan khatam Iqra 6 dengan cemerlang!"
+              }
+            ]
+          },
+          "jawiProgress": {
+            "unlockedLevel": 4,
+            "completedLevels": [
+              1,
+              2,
+              3
+            ],
+            "levelActivities": {
+              "1": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              },
+              "2": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              },
+              "3": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              }
+            }
+          },
+          "hafazanProgress": {
+            "completedSurahIds": [
+              "1",
+              "112",
+              "113",
+              "114",
+              "78",
+              "67"
+            ]
+          }
+        },
+        {
+          "id": "child-hasby-afiq",
+          "parentId": "u-1786367110215",
+          "name": "Afiq",
+          "age": 10,
+          "gender": "boy",
+          "avatar": {
+            "clothing": "Baju Melayu",
+            "headwear": "Songkok",
+            "accessory": "Cap",
+            "color": "#2563eb"
+          },
+          "pet": {
+            "id": "pet-afiq-1",
+            "type": "cat",
+            "name": "Oyen",
+            "level": 3,
+            "xp": 180,
+            "hunger": 80,
+            "happiness": 85,
+            "sleep": 90,
+            "evolutionStage": 2
+          },
+          "level": 3,
+          "xp": 260,
+          "coins": 280,
+          "diamonds": 12,
+          "energy": 100,
+          "streak": 10,
+          "unlockedWorlds": [
+            "kampung",
+            "masjid",
+            "sekolah"
+          ],
+          "builtStructures": [
+            {
+              "id": "b2",
+              "type": "House",
+              "name": "Rumah Afiq",
+              "x": 1,
+              "y": 2
+            }
+          ],
+          "inventory": [
+            "s2"
+          ],
+          "solatProgress": {
+            "history": [
+              {
+                "id": "solat-afiq-2026-09-12",
+                "date": "2026-09-12",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "Solat 5 waktu lengkap dengan khusyuk",
+                "updatedAt": "2026-09-12T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-11",
+                "date": "2026-09-11",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-11T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-10",
+                "date": "2026-09-10",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-10T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-09",
+                "date": "2026-09-09",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-09T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-08",
+                "date": "2026-09-08",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-08T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-07",
+                "date": "2026-09-07",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-07T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-06",
+                "date": "2026-09-06",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-06T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-05",
+                "date": "2026-09-05",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-05T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-04",
+                "date": "2026-09-04",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-04T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-03",
+                "date": "2026-09-03",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-03T08:40:03.968Z"
+              }
+            ],
+            "totalFardhuCount": 48,
+            "totalSunatCount": 6,
+            "currentStreak": 10,
+            "qadhaPending": {
+              "subuh": 0,
+              "zohor": 0,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 0
+            },
+            "qadhaCompleted": {
+              "subuh": 0,
+              "zohor": 0,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 0
+            },
+            "qadhaHistory": []
+          },
+          "quranIqraProgress": {
+            "currentType": "iqra",
+            "currentIqraLevel": 4,
+            "currentIqraPage": 18,
+            "currentQuranJuzuk": 1,
+            "currentQuranSurahName": "Al-Fatihah",
+            "currentQuranPage": 1,
+            "currentQuranAyat": 1,
+            "lastUpdated": "2026-09-12T09:40:03.968Z",
+            "history": [
+              {
+                "id": "log-afiq-1",
+                "type": "iqra",
+                "title": "Iqra 4 - Muka Surat 16",
+                "iqraLevel": 4,
+                "iqraPage": 16,
+                "completedAt": "2026-09-09T08:40:03.968Z",
+                "parentNote": "Mengenal tanda sukun dan tanwin dengan tepat."
+              },
+              {
+                "id": "log-afiq-2",
+                "type": "iqra",
+                "title": "Iqra 4 - Muka Surat 17",
+                "iqraLevel": 4,
+                "iqraPage": 17,
+                "completedAt": "2026-09-11T07:40:03.968Z",
+                "parentNote": "Bagus Afiq, sebutan huruf makin jelas."
+              },
+              {
+                "id": "log-afiq-3",
+                "type": "iqra",
+                "title": "Iqra 4 - Muka Surat 18",
+                "iqraLevel": 4,
+                "iqraPage": 18,
+                "completedAt": "2026-09-12T09:40:03.968Z",
+                "parentNote": "Alhamdulillah siap tugasan Iqra hari ini."
+              }
+            ]
+          },
+          "jawiProgress": {
+            "unlockedLevel": 3,
+            "completedLevels": [
+              1,
+              2
+            ],
+            "levelActivities": {
+              "1": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              },
+              "2": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              }
+            }
+          },
+          "hafazanProgress": {
+            "completedSurahIds": [
+              "1",
+              "112",
+              "113",
+              "114",
+              "93",
+              "94"
+            ]
+          }
+        },
+        {
+          "id": "child-hasby-ulfah",
+          "parentId": "u-1786367110215",
+          "name": "Ulfah",
+          "age": 7,
+          "gender": "girl",
+          "avatar": {
+            "clothing": "Baju Kurung",
+            "headwear": "Hijab",
+            "accessory": "Ribbon",
+            "color": "#ec4899"
+          },
+          "pet": {
+            "id": "pet-ulfah-1",
+            "type": "rabbit",
+            "name": "Comel Bunny",
+            "level": 2,
+            "xp": 120,
+            "hunger": 75,
+            "happiness": 90,
+            "sleep": 85,
+            "evolutionStage": 1
+          },
+          "level": 2,
+          "xp": 190,
+          "coins": 240,
+          "diamonds": 10,
+          "energy": 100,
+          "streak": 8,
+          "unlockedWorlds": [
+            "kampung",
+            "masjid"
+          ],
+          "builtStructures": [
+            {
+              "id": "b3",
+              "type": "Garden",
+              "name": "Taman Bunga Ulfah",
+              "x": 3,
+              "y": 1
+            }
+          ],
+          "inventory": [
+            "s5"
+          ],
+          "solatProgress": {
+            "history": [
+              {
+                "id": "solat-ulfah-2026-09-12",
+                "date": "2026-09-12",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": false,
+                    "berjemaah": true,
+                    "status": "none"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "Belajar solat dan doa bersama ibu",
+                "updatedAt": "2026-09-12T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-11",
+                "date": "2026-09-11",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-11T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-10",
+                "date": "2026-09-10",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-10T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-09",
+                "date": "2026-09-09",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": false,
+                    "berjemaah": true,
+                    "status": "none"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-09T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-08",
+                "date": "2026-09-08",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-08T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-07",
+                "date": "2026-09-07",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-07T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-06",
+                "date": "2026-09-06",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": false,
+                    "berjemaah": true,
+                    "status": "none"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-06T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-05",
+                "date": "2026-09-05",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-05T07:40:03.968Z"
+              }
+            ],
+            "totalFardhuCount": 38,
+            "totalSunatCount": 4,
+            "currentStreak": 8,
+            "qadhaPending": {
+              "subuh": 0,
+              "zohor": 0,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 0
+            },
+            "qadhaCompleted": {
+              "subuh": 0,
+              "zohor": 0,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 0
+            },
+            "qadhaHistory": []
+          },
+          "quranIqraProgress": {
+            "currentType": "iqra",
+            "currentIqraLevel": 2,
+            "currentIqraPage": 10,
+            "currentQuranJuzuk": 1,
+            "currentQuranSurahName": "Al-Fatihah",
+            "currentQuranPage": 1,
+            "currentQuranAyat": 1,
+            "lastUpdated": "2026-09-12T08:40:03.968Z",
+            "history": [
+              {
+                "id": "log-ulfah-1",
+                "type": "iqra",
+                "title": "Iqra 2 - Muka Surat 8",
+                "iqraLevel": 2,
+                "iqraPage": 8,
+                "completedAt": "2026-09-09T06:40:03.968Z",
+                "parentNote": "Mengenal huruf bersambung dengan betul."
+              },
+              {
+                "id": "log-ulfah-2",
+                "type": "iqra",
+                "title": "Iqra 2 - Muka Surat 9",
+                "iqraLevel": 2,
+                "iqraPage": 9,
+                "completedAt": "2026-09-10T07:40:03.968Z",
+                "parentNote": "Rajin mengulang baris kasrah bersama ibu."
+              },
+              {
+                "id": "log-ulfah-3",
+                "type": "iqra",
+                "title": "Iqra 2 - Muka Surat 10",
+                "iqraLevel": 2,
+                "iqraPage": 10,
+                "completedAt": "2026-09-12T08:40:03.968Z",
+                "parentNote": "Pandai Ulfah! Teruskan belajar ya sayang."
+              }
+            ]
+          },
+          "jawiProgress": {
+            "unlockedLevel": 2,
+            "completedLevels": [
+              1
+            ],
+            "levelActivities": {
+              "1": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              }
+            }
+          },
+          "hafazanProgress": {
+            "completedSurahIds": [
+              "1",
+              "112",
+              "113",
+              "114"
+            ]
+          }
+        }
+      ],
+      "activeChildId": "child-hasby-irfan",
+      "missions": [
+        {
+          "id": "m-irfan-1",
+          "childId": "child-hasby-irfan",
+          "title": "Solat Subuh Berjemaah di Masjid bersama Ayah",
+          "description": "Tunaikan solat Subuh berjemaah di masjid untuk membina sahsiah diri",
+          "category": "Islamic",
+          "xpReward": 50,
+          "coinReward": 20,
+          "status": "approved",
+          "difficulty": "Sederhana",
+          "parentComment": "Alhamdulillah sangat berdisiplin Irfan!",
+          "completedAt": "2026-09-11T07:40:03.968Z",
+          "approvedAt": "2026-09-11T09:40:03.968Z"
+        },
+        {
+          "id": "m-irfan-2",
+          "childId": "child-hasby-irfan",
+          "title": "Bantu Kemas Ruang Tamu & Susun Buku",
+          "description": "Susun buku-buku sekolah dan bantu kemaskan ruang keluarga",
+          "category": "Chores",
+          "xpReward": 30,
+          "coinReward": 10,
+          "status": "approved",
+          "difficulty": "Mudah",
+          "parentComment": "Rumah nampak kemas dan teratur. Syabas abang Irfan!",
+          "completedAt": "2026-09-12T05:40:03.968Z",
+          "approvedAt": "2026-09-12T07:40:03.968Z"
+        },
+        {
+          "id": "m-irfan-3",
+          "childId": "child-hasby-irfan",
+          "title": "Ulang Kaji Hafazan Surah An-Naba'",
+          "description": "Hafaz dan ulang 10 ayat Surah An-Naba' bersama bacaan tajwid",
+          "category": "Islamic",
+          "xpReward": 40,
+          "coinReward": 15,
+          "status": "todo",
+          "difficulty": "Cabar"
+        },
+        {
+          "id": "m-afiq-1",
+          "childId": "child-hasby-afiq",
+          "title": "Solat Asar Tepat Pada Waktu",
+          "description": "Ambil wuduk dan solat sebaik sahaja azan Asar berkumandang",
+          "category": "Islamic",
+          "xpReward": 40,
+          "coinReward": 15,
+          "status": "approved",
+          "difficulty": "Mudah",
+          "parentComment": "Bagus Afiq, solat tepat pada waktunya!",
+          "completedAt": "2026-09-11T08:40:03.968Z",
+          "approvedAt": "2026-09-11T10:40:03.968Z"
+        },
+        {
+          "id": "m-afiq-2",
+          "childId": "child-hasby-afiq",
+          "title": "Baca Iqra 4 Sebanyak 2 Muka Surat",
+          "description": "Membaca Iqra 4 dengan bimbingan dan semakan ibu bapa",
+          "category": "Islamic",
+          "xpReward": 35,
+          "coinReward": 12,
+          "status": "approved",
+          "difficulty": "Sederhana",
+          "parentComment": "Hebat Afiq! Teruskan usaha hingga khatam.",
+          "completedAt": "2026-09-12T06:40:03.968Z",
+          "approvedAt": "2026-09-12T08:40:03.968Z"
+        },
+        {
+          "id": "m-afiq-3",
+          "childId": "child-hasby-afiq",
+          "title": "Kemas Tempat Tidur & Bilik Sendiri",
+          "description": "Lipat selimut dan susun bantal setiap pagi selepas bangun",
+          "category": "Chores",
+          "xpReward": 25,
+          "coinReward": 10,
+          "status": "todo",
+          "difficulty": "Mudah"
+        },
+        {
+          "id": "m-ulfah-1",
+          "childId": "child-hasby-ulfah",
+          "title": "Belajar Praktikal Wuduk Sempurna bersama Ibu",
+          "description": "Lakukan rukun wuduk mengikut tertib yang betul dari niat hingga doa",
+          "category": "Islamic",
+          "xpReward": 40,
+          "coinReward": 15,
+          "status": "approved",
+          "difficulty": "Mudah",
+          "parentComment": "Alhamdulillah Ulfah pandai ambil wuduk sendiri!",
+          "completedAt": "2026-09-11T09:40:03.968Z",
+          "approvedAt": "2026-09-11T10:40:03.968Z"
+        },
+        {
+          "id": "m-ulfah-2",
+          "childId": "child-hasby-ulfah",
+          "title": "Hafaz Surah Al-Ikhlas dengan Tajwid Jelas",
+          "description": "Perdengarkan bacaan Surah Al-Ikhlas di hadapan ibu atau ayah",
+          "category": "Islamic",
+          "xpReward": 35,
+          "coinReward": 12,
+          "status": "approved",
+          "difficulty": "Mudah",
+          "parentComment": "Sedap bacaan Ulfah! Comel sangat.",
+          "completedAt": "2026-09-12T07:40:03.968Z",
+          "approvedAt": "2026-09-12T09:40:03.968Z"
+        },
+        {
+          "id": "m-ulfah-3",
+          "childId": "child-hasby-ulfah",
+          "title": "Bantu Lipat Pakaian & Susun Kasut",
+          "description": "Bantu ibu lipat pakaian sendiri dan susun kasut di rak",
+          "category": "Chores",
+          "xpReward": 25,
+          "coinReward": 10,
+          "status": "todo",
+          "difficulty": "Mudah"
+        }
+      ],
+      "language": "bm",
+      "lastSyncedAt": "2026-09-12T11:40:03.968Z"
+    },
+    "asbie85@gmail.com": {
+      "user": {
+        "id": "u-1786368888888",
+        "name": "Asbie",
+        "email": "asbie85@gmail.com",
+        "phone": "0198765432",
+        "role": "parent",
+        "plan": "PREMIUM",
+        "accessCode": "MudahKids2026",
+        "password": "asbie123",
+        "createdAt": "2026-08-10T13:10:00.000Z"
+      },
+      "childrenProfiles": [
+        {
+          "id": "child-hasby-irfan",
+          "parentId": "u-1786368888888",
+          "name": "Irfan",
+          "age": 13,
+          "gender": "boy",
+          "avatar": {
+            "clothing": "Baju Melayu",
+            "headwear": "Songkok",
+            "accessory": "None",
+            "color": "#059669"
+          },
+          "pet": {
+            "id": "pet-irfan-1",
+            "type": "cat",
+            "name": "Bella",
+            "level": 8,
+            "xp": 350,
+            "hunger": 85,
+            "happiness": 90,
+            "sleep": 95,
+            "evolutionStage": 3
+          },
+          "level": 4,
+          "xp": 420,
+          "coins": 350,
+          "diamonds": 15,
+          "energy": 100,
+          "streak": 14,
+          "unlockedWorlds": [
+            "kampung",
+            "masjid",
+            "sekolah",
+            "perpustakaan"
+          ],
+          "builtStructures": [
+            {
+              "id": "b1",
+              "type": "Mosque",
+              "name": "Masjid Al-Irfan",
+              "x": 2,
+              "y": 2
+            }
+          ],
+          "inventory": [
+            "s1",
+            "s4"
+          ],
+          "solatProgress": {
+            "history": [
+              {
+                "id": "solat-irfan-2026-09-12",
+                "date": "2026-09-12",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": true,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "Alhamdulillah solat awal waktu dan berjemaah di masjid bersama ayah",
+                "updatedAt": "2026-09-12T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-11",
+                "date": "2026-09-11",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-11T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-10",
+                "date": "2026-09-10",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-10T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-09",
+                "date": "2026-09-09",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": true,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-09T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-08",
+                "date": "2026-09-08",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-08T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-07",
+                "date": "2026-09-07",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-07T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-06",
+                "date": "2026-09-06",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": true,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-06T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-05",
+                "date": "2026-09-05",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-05T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-04",
+                "date": "2026-09-04",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-04T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-03",
+                "date": "2026-09-03",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": true,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-03T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-02",
+                "date": "2026-09-02",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-02T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-09-01",
+                "date": "2026-09-01",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-01T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-08-31",
+                "date": "2026-08-31",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": true,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-08-31T09:40:03.967Z"
+              },
+              {
+                "id": "solat-irfan-2026-08-30",
+                "date": "2026-08-30",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-08-30T09:40:03.967Z"
+              }
+            ],
+            "totalFardhuCount": 70,
+            "totalSunatCount": 18,
+            "currentStreak": 14,
+            "qadhaPending": {
+              "subuh": 0,
+              "zohor": 0,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 0
+            },
+            "qadhaCompleted": {
+              "subuh": 0,
+              "zohor": 1,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 0
+            },
+            "qadhaHistory": [
+              {
+                "id": "q-irfan-1",
+                "prayerKey": "zohor",
+                "prayerName": "Zohor",
+                "originalMissedDate": "2026-09-07",
+                "dateReplaced": "2026-09-08",
+                "timestamp": "2026-09-08T10:40:03.968Z",
+                "note": "Ganti zohor (tertidur kepenatan selepas sekolah)",
+                "rewardEarned": {
+                  "xp": 15,
+                  "coins": 5
+                }
+              }
+            ]
+          },
+          "quranIqraProgress": {
+            "currentType": "quran",
+            "currentIqraLevel": 6,
+            "currentIqraPage": 30,
+            "currentQuranJuzuk": 2,
+            "currentQuranSurahName": "Al-Baqarah",
+            "currentQuranPage": 25,
+            "currentQuranAyat": 160,
+            "lastUpdated": "2026-09-12T10:40:03.968Z",
+            "history": [
+              {
+                "id": "log-irfan-1",
+                "type": "quran",
+                "title": "Al-Quran - Surah Al-Baqarah (Ayat 142 - 152)",
+                "quranSurahName": "Al-Baqarah",
+                "quranAyat": 152,
+                "quranJuzuk": 2,
+                "completedAt": "2026-09-09T07:40:03.968Z",
+                "parentNote": "Lancar membaca hukum mad dan tajwid makhraj sangat baik!"
+              },
+              {
+                "id": "log-irfan-2",
+                "type": "quran",
+                "title": "Al-Quran - Surah Al-Baqarah (Ayat 153 - 160)",
+                "quranSurahName": "Al-Baqarah",
+                "quranAyat": 160,
+                "quranJuzuk": 2,
+                "completedAt": "2026-09-11T08:40:03.968Z",
+                "parentNote": "Alhamdulillah sangat tekun. Teruskan hafazan surah pilihan."
+              },
+              {
+                "id": "log-irfan-3",
+                "type": "iqra",
+                "title": "Iqra 6 - Penamat & Ujian Tajwid",
+                "iqraLevel": 6,
+                "iqraPage": 30,
+                "completedAt": "2026-08-29T09:40:03.968Z",
+                "parentNote": "Syabas Irfan khatam Iqra 6 dengan cemerlang!"
+              }
+            ]
+          },
+          "jawiProgress": {
+            "unlockedLevel": 4,
+            "completedLevels": [
+              1,
+              2,
+              3
+            ],
+            "levelActivities": {
+              "1": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              },
+              "2": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              },
+              "3": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              }
+            }
+          },
+          "hafazanProgress": {
+            "completedSurahIds": [
+              "1",
+              "112",
+              "113",
+              "114",
+              "78",
+              "67"
+            ]
+          }
+        },
+        {
+          "id": "child-hasby-afiq",
+          "parentId": "u-1786368888888",
+          "name": "Afiq",
+          "age": 10,
+          "gender": "boy",
+          "avatar": {
+            "clothing": "Baju Melayu",
+            "headwear": "Songkok",
+            "accessory": "Cap",
+            "color": "#2563eb"
+          },
+          "pet": {
+            "id": "pet-afiq-1",
+            "type": "cat",
+            "name": "Oyen",
+            "level": 3,
+            "xp": 180,
+            "hunger": 80,
+            "happiness": 85,
+            "sleep": 90,
+            "evolutionStage": 2
+          },
+          "level": 3,
+          "xp": 260,
+          "coins": 280,
+          "diamonds": 12,
+          "energy": 100,
+          "streak": 10,
+          "unlockedWorlds": [
+            "kampung",
+            "masjid",
+            "sekolah"
+          ],
+          "builtStructures": [
+            {
+              "id": "b2",
+              "type": "House",
+              "name": "Rumah Afiq",
+              "x": 1,
+              "y": 2
+            }
+          ],
+          "inventory": [
+            "s2"
+          ],
+          "solatProgress": {
+            "history": [
+              {
+                "id": "solat-afiq-2026-09-12",
+                "date": "2026-09-12",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "Solat 5 waktu lengkap dengan khusyuk",
+                "updatedAt": "2026-09-12T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-11",
+                "date": "2026-09-11",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-11T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-10",
+                "date": "2026-09-10",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-10T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-09",
+                "date": "2026-09-09",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-09T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-08",
+                "date": "2026-09-08",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-08T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-07",
+                "date": "2026-09-07",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-07T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-06",
+                "date": "2026-09-06",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-06T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-05",
+                "date": "2026-09-05",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-05T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-04",
+                "date": "2026-09-04",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": true,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-04T08:40:03.968Z"
+              },
+              {
+                "id": "solat-afiq-2026-09-03",
+                "date": "2026-09-03",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-03T08:40:03.968Z"
+              }
+            ],
+            "totalFardhuCount": 48,
+            "totalSunatCount": 6,
+            "currentStreak": 10,
+            "qadhaPending": {
+              "subuh": 0,
+              "zohor": 0,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 0
+            },
+            "qadhaCompleted": {
+              "subuh": 0,
+              "zohor": 0,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 0
+            },
+            "qadhaHistory": []
+          },
+          "quranIqraProgress": {
+            "currentType": "iqra",
+            "currentIqraLevel": 4,
+            "currentIqraPage": 18,
+            "currentQuranJuzuk": 1,
+            "currentQuranSurahName": "Al-Fatihah",
+            "currentQuranPage": 1,
+            "currentQuranAyat": 1,
+            "lastUpdated": "2026-09-12T09:40:03.968Z",
+            "history": [
+              {
+                "id": "log-afiq-1",
+                "type": "iqra",
+                "title": "Iqra 4 - Muka Surat 16",
+                "iqraLevel": 4,
+                "iqraPage": 16,
+                "completedAt": "2026-09-09T08:40:03.968Z",
+                "parentNote": "Mengenal tanda sukun dan tanwin dengan tepat."
+              },
+              {
+                "id": "log-afiq-2",
+                "type": "iqra",
+                "title": "Iqra 4 - Muka Surat 17",
+                "iqraLevel": 4,
+                "iqraPage": 17,
+                "completedAt": "2026-09-11T07:40:03.968Z",
+                "parentNote": "Bagus Afiq, sebutan huruf makin jelas."
+              },
+              {
+                "id": "log-afiq-3",
+                "type": "iqra",
+                "title": "Iqra 4 - Muka Surat 18",
+                "iqraLevel": 4,
+                "iqraPage": 18,
+                "completedAt": "2026-09-12T09:40:03.968Z",
+                "parentNote": "Alhamdulillah siap tugasan Iqra hari ini."
+              }
+            ]
+          },
+          "jawiProgress": {
+            "unlockedLevel": 3,
+            "completedLevels": [
+              1,
+              2
+            ],
+            "levelActivities": {
+              "1": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              },
+              "2": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              }
+            }
+          },
+          "hafazanProgress": {
+            "completedSurahIds": [
+              "1",
+              "112",
+              "113",
+              "114",
+              "93",
+              "94"
+            ]
+          }
+        },
+        {
+          "id": "child-hasby-ulfah",
+          "parentId": "u-1786368888888",
+          "name": "Ulfah",
+          "age": 7,
+          "gender": "girl",
+          "avatar": {
+            "clothing": "Baju Kurung",
+            "headwear": "Hijab",
+            "accessory": "Ribbon",
+            "color": "#ec4899"
+          },
+          "pet": {
+            "id": "pet-ulfah-1",
+            "type": "rabbit",
+            "name": "Comel Bunny",
+            "level": 2,
+            "xp": 120,
+            "hunger": 75,
+            "happiness": 90,
+            "sleep": 85,
+            "evolutionStage": 1
+          },
+          "level": 2,
+          "xp": 190,
+          "coins": 240,
+          "diamonds": 10,
+          "energy": 100,
+          "streak": 8,
+          "unlockedWorlds": [
+            "kampung",
+            "masjid"
+          ],
+          "builtStructures": [
+            {
+              "id": "b3",
+              "type": "Garden",
+              "name": "Taman Bunga Ulfah",
+              "x": 3,
+              "y": 1
+            }
+          ],
+          "inventory": [
+            "s5"
+          ],
+          "solatProgress": {
+            "history": [
+              {
+                "id": "solat-ulfah-2026-09-12",
+                "date": "2026-09-12",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": false,
+                    "berjemaah": true,
+                    "status": "none"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "Belajar solat dan doa bersama ibu",
+                "updatedAt": "2026-09-12T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-11",
+                "date": "2026-09-11",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-11T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-10",
+                "date": "2026-09-10",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-10T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-09",
+                "date": "2026-09-09",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": false,
+                    "berjemaah": true,
+                    "status": "none"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-09T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-08",
+                "date": "2026-09-08",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-08T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-07",
+                "date": "2026-09-07",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-07T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-06",
+                "date": "2026-09-06",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": false,
+                    "berjemaah": true,
+                    "status": "none"
+                  }
+                },
+                "sunat": {
+                  "dhuha": true,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-06T07:40:03.968Z"
+              },
+              {
+                "id": "solat-ulfah-2026-09-05",
+                "date": "2026-09-05",
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed"
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": true,
+                    "status": "completed"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-05T07:40:03.968Z"
+              }
+            ],
+            "totalFardhuCount": 38,
+            "totalSunatCount": 4,
+            "currentStreak": 8,
+            "qadhaPending": {
+              "subuh": 0,
+              "zohor": 0,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 0
+            },
+            "qadhaCompleted": {
+              "subuh": 0,
+              "zohor": 0,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 0
+            },
+            "qadhaHistory": []
+          },
+          "quranIqraProgress": {
+            "currentType": "iqra",
+            "currentIqraLevel": 2,
+            "currentIqraPage": 10,
+            "currentQuranJuzuk": 1,
+            "currentQuranSurahName": "Al-Fatihah",
+            "currentQuranPage": 1,
+            "currentQuranAyat": 1,
+            "lastUpdated": "2026-09-12T08:40:03.968Z",
+            "history": [
+              {
+                "id": "log-ulfah-1",
+                "type": "iqra",
+                "title": "Iqra 2 - Muka Surat 8",
+                "iqraLevel": 2,
+                "iqraPage": 8,
+                "completedAt": "2026-09-09T06:40:03.968Z",
+                "parentNote": "Mengenal huruf bersambung dengan betul."
+              },
+              {
+                "id": "log-ulfah-2",
+                "type": "iqra",
+                "title": "Iqra 2 - Muka Surat 9",
+                "iqraLevel": 2,
+                "iqraPage": 9,
+                "completedAt": "2026-09-10T07:40:03.968Z",
+                "parentNote": "Rajin mengulang baris kasrah bersama ibu."
+              },
+              {
+                "id": "log-ulfah-3",
+                "type": "iqra",
+                "title": "Iqra 2 - Muka Surat 10",
+                "iqraLevel": 2,
+                "iqraPage": 10,
+                "completedAt": "2026-09-12T08:40:03.968Z",
+                "parentNote": "Pandai Ulfah! Teruskan belajar ya sayang."
+              }
+            ]
+          },
+          "jawiProgress": {
+            "unlockedLevel": 2,
+            "completedLevels": [
+              1
+            ],
+            "levelActivities": {
+              "1": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              }
+            }
+          },
+          "hafazanProgress": {
+            "completedSurahIds": [
+              "1",
+              "112",
+              "113",
+              "114"
+            ]
+          }
+        }
+      ],
+      "activeChildId": "child-hasby-irfan",
+      "missions": [
+        {
+          "id": "m-irfan-1",
+          "childId": "child-hasby-irfan",
+          "title": "Solat Subuh Berjemaah di Masjid bersama Ayah",
+          "description": "Tunaikan solat Subuh berjemaah di masjid untuk membina sahsiah diri",
+          "category": "Islamic",
+          "xpReward": 50,
+          "coinReward": 20,
+          "status": "approved",
+          "difficulty": "Sederhana",
+          "parentComment": "Alhamdulillah sangat berdisiplin Irfan!",
+          "completedAt": "2026-09-11T07:40:03.968Z",
+          "approvedAt": "2026-09-11T09:40:03.968Z"
+        },
+        {
+          "id": "m-irfan-2",
+          "childId": "child-hasby-irfan",
+          "title": "Bantu Kemas Ruang Tamu & Susun Buku",
+          "description": "Susun buku-buku sekolah dan bantu kemaskan ruang keluarga",
+          "category": "Chores",
+          "xpReward": 30,
+          "coinReward": 10,
+          "status": "approved",
+          "difficulty": "Mudah",
+          "parentComment": "Rumah nampak kemas dan teratur. Syabas abang Irfan!",
+          "completedAt": "2026-09-12T05:40:03.968Z",
+          "approvedAt": "2026-09-12T07:40:03.968Z"
+        },
+        {
+          "id": "m-irfan-3",
+          "childId": "child-hasby-irfan",
+          "title": "Ulang Kaji Hafazan Surah An-Naba'",
+          "description": "Hafaz dan ulang 10 ayat Surah An-Naba' bersama bacaan tajwid",
+          "category": "Islamic",
+          "xpReward": 40,
+          "coinReward": 15,
+          "status": "todo",
+          "difficulty": "Cabar"
+        },
+        {
+          "id": "m-afiq-1",
+          "childId": "child-hasby-afiq",
+          "title": "Solat Asar Tepat Pada Waktu",
+          "description": "Ambil wuduk dan solat sebaik sahaja azan Asar berkumandang",
+          "category": "Islamic",
+          "xpReward": 40,
+          "coinReward": 15,
+          "status": "approved",
+          "difficulty": "Mudah",
+          "parentComment": "Bagus Afiq, solat tepat pada waktunya!",
+          "completedAt": "2026-09-11T08:40:03.968Z",
+          "approvedAt": "2026-09-11T10:40:03.968Z"
+        },
+        {
+          "id": "m-afiq-2",
+          "childId": "child-hasby-afiq",
+          "title": "Baca Iqra 4 Sebanyak 2 Muka Surat",
+          "description": "Membaca Iqra 4 dengan bimbingan dan semakan ibu bapa",
+          "category": "Islamic",
+          "xpReward": 35,
+          "coinReward": 12,
+          "status": "approved",
+          "difficulty": "Sederhana",
+          "parentComment": "Hebat Afiq! Teruskan usaha hingga khatam.",
+          "completedAt": "2026-09-12T06:40:03.968Z",
+          "approvedAt": "2026-09-12T08:40:03.968Z"
+        },
+        {
+          "id": "m-afiq-3",
+          "childId": "child-hasby-afiq",
+          "title": "Kemas Tempat Tidur & Bilik Sendiri",
+          "description": "Lipat selimut dan susun bantal setiap pagi selepas bangun",
+          "category": "Chores",
+          "xpReward": 25,
+          "coinReward": 10,
+          "status": "todo",
+          "difficulty": "Mudah"
+        },
+        {
+          "id": "m-ulfah-1",
+          "childId": "child-hasby-ulfah",
+          "title": "Belajar Praktikal Wuduk Sempurna bersama Ibu",
+          "description": "Lakukan rukun wuduk mengikut tertib yang betul dari niat hingga doa",
+          "category": "Islamic",
+          "xpReward": 40,
+          "coinReward": 15,
+          "status": "approved",
+          "difficulty": "Mudah",
+          "parentComment": "Alhamdulillah Ulfah pandai ambil wuduk sendiri!",
+          "completedAt": "2026-09-11T09:40:03.968Z",
+          "approvedAt": "2026-09-11T10:40:03.968Z"
+        },
+        {
+          "id": "m-ulfah-2",
+          "childId": "child-hasby-ulfah",
+          "title": "Hafaz Surah Al-Ikhlas dengan Tajwid Jelas",
+          "description": "Perdengarkan bacaan Surah Al-Ikhlas di hadapan ibu atau ayah",
+          "category": "Islamic",
+          "xpReward": 35,
+          "coinReward": 12,
+          "status": "approved",
+          "difficulty": "Mudah",
+          "parentComment": "Sedap bacaan Ulfah! Comel sangat.",
+          "completedAt": "2026-09-12T07:40:03.968Z",
+          "approvedAt": "2026-09-12T09:40:03.968Z"
+        },
+        {
+          "id": "m-ulfah-3",
+          "childId": "child-hasby-ulfah",
+          "title": "Bantu Lipat Pakaian & Susun Kasut",
+          "description": "Bantu ibu lipat pakaian sendiri dan susun kasut di rak",
+          "category": "Chores",
+          "xpReward": 25,
+          "coinReward": 10,
+          "status": "todo",
+          "difficulty": "Mudah"
+        }
+      ],
+      "language": "bm",
+      "lastSyncedAt": "2026-09-12T11:40:03.968Z"
     }
   }
 }

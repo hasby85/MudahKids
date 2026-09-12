@@ -132,100 +132,100 @@ const DEFAULT_USER: UserAccount = {
 
 const INITIAL_CHILDREN: ChildProfile[] = [
   {
-    id: "child-1",
-    parentId: "u-101",
-    name: "Umar Al-Farooq",
-    age: 7,
+    id: "child-hasby-irfan",
+    parentId: "u-1786365979575",
+    name: "Irfan",
+    age: 13,
     gender: "boy",
     avatar: {
       clothing: "Baju Melayu",
       headwear: "Songkok",
-      accessory: "Glasses",
+      accessory: "None",
       color: "#059669"
     },
     pet: {
-      id: "pet-1",
+      id: "pet-irfan-1",
       type: "cat",
-      name: "Comel the Cat",
-      level: 2,
-      xp: 140,
-      hunger: 80,
+      name: "Bella",
+      level: 8,
+      xp: 350,
+      hunger: 85,
       happiness: 90,
       sleep: 95,
-      evolutionStage: 1
+      evolutionStage: 3
     },
-    level: 3,
-    xp: 280,
-    coins: 480,
+    level: 4,
+    xp: 420,
+    coins: 350,
     diamonds: 15,
     energy: 100,
-    streak: 12,
+    streak: 14,
     unlockedWorlds: ["kampung", "masjid", "sekolah", "perpustakaan"],
     builtStructures: [
-      { id: "b1", type: "House", name: "Rumah Panggung Umar", x: 2, y: 2 },
-      { id: "b2", type: "Mosque", name: "Masjid Kampung", x: 4, y: 3 }
+      { id: "b1", type: "Mosque", name: "Masjid Al-Irfan", x: 2, y: 2 }
     ],
     inventory: ["s1", "s4"],
     quranIqraProgress: {
-      currentType: "iqra",
-      currentIqraLevel: 5,
-      currentIqraPage: 3,
-      currentQuranJuzuk: 1,
-      currentQuranSurahName: "Al-Fatihah",
-      currentQuranPage: 1,
-      currentQuranAyat: 1,
+      currentType: "quran",
+      currentIqraLevel: 6,
+      currentIqraPage: 30,
+      currentQuranJuzuk: 2,
+      currentQuranSurahName: "Al-Baqarah",
+      currentQuranPage: 25,
+      currentQuranAyat: 160,
       lastUpdated: new Date().toISOString(),
       history: [
         {
-          id: "log-1",
-          type: "iqra",
-          title: "Iqra 5 - Muka Surat 3",
-          iqraLevel: 5,
-          iqraPage: 3,
+          id: "log-irfan-1",
+          type: "quran",
+          title: "Al-Quran - Surah Al-Baqarah (Ayat 142 - 152)",
+          quranSurahName: "Al-Baqarah",
+          quranAyat: 152,
+          quranJuzuk: 2,
           completedAt: new Date().toISOString(),
-          parentNote: "Lancar dan tajwid betul! Syabas abang Umar."
+          parentNote: "Lancar membaca hukum mad dan tajwid makhraj sangat baik!"
         }
       ]
     }
   },
   {
-    id: "child-2",
-    parentId: "u-101",
-    name: "Aisyah Humaira",
-    age: 5,
-    gender: "girl",
+    id: "child-hasby-afiq",
+    parentId: "u-1786365979575",
+    name: "Afiq",
+    age: 10,
+    gender: "boy",
     avatar: {
-      clothing: "Baju Kurung",
-      headwear: "Hijab",
-      accessory: "Bag",
-      color: "#0284c7"
+      clothing: "Baju Melayu",
+      headwear: "Songkok",
+      accessory: "Cap",
+      color: "#2563eb"
     },
     pet: {
-      id: "pet-2",
-      type: "rabbit",
-      name: "Comel Bunny",
-      level: 1,
-      xp: 60,
-      hunger: 70,
+      id: "pet-afiq-1",
+      type: "cat",
+      name: "Oyen",
+      level: 3,
+      xp: 180,
+      hunger: 80,
       happiness: 85,
-      sleep: 80,
-      evolutionStage: 1
+      sleep: 90,
+      evolutionStage: 2
     },
-    level: 2,
-    xp: 150,
-    coins: 390,
-    diamonds: 10,
+    level: 3,
+    xp: 260,
+    coins: 280,
+    diamonds: 12,
     energy: 100,
-    streak: 9,
-    unlockedWorlds: ["kampung", "masjid"],
+    streak: 10,
+    unlockedWorlds: ["kampung", "masjid", "sekolah"],
     builtStructures: [
-      { id: "b3", type: "House", name: "Pondok Aisyah", x: 1, y: 1 }
+      { id: "b2", type: "House", name: "Rumah Afiq", x: 1, y: 2 }
     ],
-    inventory: ["s5"],
+    inventory: ["s2"],
     quranIqraProgress: {
       currentType: "iqra",
-      currentIqraLevel: 2,
-      currentIqraPage: 12,
+      currentIqraLevel: 4,
+      currentIqraPage: 18,
       currentQuranJuzuk: 1,
       currentQuranSurahName: "Al-Fatihah",
       currentQuranPage: 1,
@@ -233,13 +233,69 @@ const INITIAL_CHILDREN: ChildProfile[] = [
       lastUpdated: new Date().toISOString(),
       history: [
         {
-          id: "log-2",
+          id: "log-afiq-1",
           type: "iqra",
-          title: "Iqra 2 - Muka Surat 12",
-          iqraLevel: 2,
-          iqraPage: 12,
+          title: "Iqra 4 - Muka Surat 18",
+          iqraLevel: 4,
+          iqraPage: 18,
           completedAt: new Date().toISOString(),
-          parentNote: "Bagus Aisyah, sambung usaha lagi!"
+          parentNote: "Bagus Afiq, sebutan huruf makin jelas dan lancar."
+        }
+      ]
+    }
+  },
+  {
+    id: "child-hasby-ulfah",
+    parentId: "u-1786365979575",
+    name: "Ulfah",
+    age: 7,
+    gender: "girl",
+    avatar: {
+      clothing: "Baju Kurung",
+      headwear: "Hijab",
+      accessory: "Ribbon",
+      color: "#ec4899"
+    },
+    pet: {
+      id: "pet-ulfah-1",
+      type: "rabbit",
+      name: "Comel Bunny",
+      level: 2,
+      xp: 120,
+      hunger: 75,
+      happiness: 90,
+      sleep: 85,
+      evolutionStage: 1
+    },
+    level: 2,
+    xp: 190,
+    coins: 240,
+    diamonds: 10,
+    energy: 100,
+    streak: 8,
+    unlockedWorlds: ["kampung", "masjid"],
+    builtStructures: [
+      { id: "b3", type: "Garden", name: "Taman Bunga Ulfah", x: 3, y: 1 }
+    ],
+    inventory: ["s5"],
+    quranIqraProgress: {
+      currentType: "iqra",
+      currentIqraLevel: 2,
+      currentIqraPage: 10,
+      currentQuranJuzuk: 1,
+      currentQuranSurahName: "Al-Fatihah",
+      currentQuranPage: 1,
+      currentQuranAyat: 1,
+      lastUpdated: new Date().toISOString(),
+      history: [
+        {
+          id: "log-ulfah-1",
+          type: "iqra",
+          title: "Iqra 2 - Muka Surat 10",
+          iqraLevel: 2,
+          iqraPage: 10,
+          completedAt: new Date().toISOString(),
+          parentNote: "Pandai Ulfah! Teruskan belajar ya sayang."
         }
       ]
     }
@@ -684,14 +740,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const loadDemoData = () => {
     setUser(DEFAULT_USER);
     setChildrenProfiles(INITIAL_CHILDREN);
-    setActiveChildId("child-1");
+    setActiveChildId(INITIAL_CHILDREN[0].id);
 
     const list: Mission[] = [];
     let count = 1;
     DEFAULT_ISLAMIC_MISSIONS.slice(0, 4).forEach((m) => {
       list.push({
         id: `m-${count++}`,
-        childId: "child-1",
+        childId: INITIAL_CHILDREN[0].id,
         title: m.title,
         description: m.description,
         category: "Islamic",
@@ -705,7 +761,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     DEFAULT_CHORES.slice(0, 4).forEach((c) => {
       list.push({
         id: `m-${count++}`,
-        childId: "child-1",
+        childId: INITIAL_CHILDREN[0].id,
         title: c.title,
         description: c.description,
         category: "Chores",

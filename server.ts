@@ -128,12 +128,16 @@ function normalizeDbStore(store: any): DbStore {
 
       let mergedProfiles = existing.childrenProfiles || [];
       if (Array.isArray(incoming.childrenProfiles) && incoming.childrenProfiles.length > 0) {
-        if (!Array.isArray(existing.childrenProfiles) || existing.childrenProfiles.length === 0) {
-          mergedProfiles = incoming.childrenProfiles;
-        } else {
+        // Filter out legacy Umar and Aisyah profiles
+        const cleanIncoming = incoming.childrenProfiles.filter((p: any) => {
+          const n = (p?.name || "").trim().toLowerCase();
+          return !n.includes("umar") && !n.includes("aisyah");
+        });
+
+        if (cleanIncoming.length > 0) {
           const map = new Map<string, any>();
           existing.childrenProfiles.forEach((p: any) => { if (p?.id) map.set(p.id, p); });
-          incoming.childrenProfiles.forEach((p: any) => {
+          cleanIncoming.forEach((p: any) => {
             if (p?.id) {
               const base = map.get(p.id);
               if (!base) {
@@ -164,7 +168,7 @@ function normalizeDbStore(store: any): DbStore {
         ...incoming,
         user: incoming.user || existing.user,
         childrenProfiles: mergedProfiles,
-        missions: Array.isArray(incoming.missions) && incoming.missions.length > 0
+        missions: Array.isArray(incoming.missions) && incoming.missions.length > 0 && !incoming.missions.some((m: any) => (m?.id || "").includes("umar"))
           ? incoming.missions
           : existing.missions
       };
