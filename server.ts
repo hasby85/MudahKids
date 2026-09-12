@@ -127,50 +127,31 @@ function normalizeDbStore(store: any): DbStore {
       const incoming = rawSynced[key];
 
       let mergedProfiles = existing.childrenProfiles || [];
-      if (Array.isArray(incoming.childrenProfiles) && incoming.childrenProfiles.length > 0) {
-        // Filter out legacy Umar and Aisyah profiles
+      if (Array.isArray(incoming.childrenProfiles)) {
         const cleanIncoming = incoming.childrenProfiles.filter((p: any) => {
           const n = (p?.name || "").trim().toLowerCase();
           return !n.includes("umar") && !n.includes("aisyah");
         });
 
-        if (cleanIncoming.length > 0) {
-          const map = new Map<string, any>();
-          existing.childrenProfiles.forEach((p: any) => { if (p?.id) map.set(p.id, p); });
-          cleanIncoming.forEach((p: any) => {
-            if (p?.id) {
-              const base = map.get(p.id);
-              if (!base) {
-                map.set(p.id, p);
-              } else {
-                map.set(p.id, {
-                  ...base,
-                  ...p,
-                  level: Math.max(base.level || 1, p.level || 1),
-                  xp: Math.max(base.xp || 0, p.xp || 0),
-                  coins: Math.max(base.coins || 0, p.coins || 0),
-                  diamonds: Math.max(base.diamonds || 0, p.diamonds || 0),
-                  solatProgress: (p.solatProgress?.history?.length) ? p.solatProgress : (base.solatProgress || p.solatProgress),
-                  quranIqraProgress: (p.quranIqraProgress?.history?.length) ? p.quranIqraProgress : (base.quranIqraProgress || p.quranIqraProgress),
-                  jawiProgress: p.jawiProgress || base.jawiProgress,
-                  hafazanProgress: p.hafazanProgress || base.hafazanProgress,
-                  pet: p.pet || base.pet
-                });
-              }
-            }
-          });
-          mergedProfiles = Array.from(map.values());
+        if (incoming.childrenProfiles.length === 0) {
+          // Explicit reset/clean slate by user
+          mergedProfiles = [];
+        } else if (cleanIncoming.length > 0) {
+          mergedProfiles = cleanIncoming;
         }
       }
+
+      const hasExplicitMissions = Array.isArray(incoming.missions);
+      const missionsToUse = hasExplicitMissions
+        ? incoming.missions.filter((m: any) => !((m?.id || "").includes("umar")))
+        : existing.missions;
 
       syncedData[normKey] = {
         ...existing,
         ...incoming,
         user: incoming.user || existing.user,
         childrenProfiles: mergedProfiles,
-        missions: Array.isArray(incoming.missions) && incoming.missions.length > 0 && !incoming.missions.some((m: any) => (m?.id || "").includes("umar"))
-          ? incoming.missions
-          : existing.missions
+        missions: missionsToUse
       };
     }
   });

@@ -396,53 +396,37 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             return true;
           });
 
+          // Cloud is the single source of truth for the list of children
           setChildrenProfiles((currentLocal) => {
-            const profileMap = new Map<string, ChildProfile>();
+            const localMap = new Map<string, ChildProfile>();
+            currentLocal.forEach((p) => { if (p?.id) localMap.set(p.id, p); });
 
-            // 1. Keep current local profiles belonging strictly to this active user as baseline
-            currentLocal.forEach((p) => {
-              if (p && p.id && !deletedChildIdsRef.current.has(p.id)) {
-                if (!p.parentId || p.parentId === currentUserId || p.parentId === user.email || p.parentId === currentUserEmail) {
-                  profileMap.set(p.id, { ...p, parentId: currentUserId });
-                }
-              }
+            return validCloudProfiles.map((cp: ChildProfile) => {
+              const local = localMap.get(cp.id);
+              if (!local) return { ...cp, parentId: currentUserId };
+              const merged = mergeChildProfileObjects(local, cp);
+              return { ...merged, parentId: currentUserId };
             });
-
-            // 2. Non-destructively deep merge valid cloud profiles for this active user
-            validCloudProfiles.forEach((cp: ChildProfile) => {
-              if (!profileMap.has(cp.id)) {
-                profileMap.set(cp.id, { ...cp, parentId: currentUserId });
-              } else {
-                const local = profileMap.get(cp.id)!;
-                const merged = mergeChildProfileObjects(local, cp);
-                profileMap.set(cp.id, {
-                  ...merged,
-                  parentId: currentUserId
-                });
-              }
-            });
-
-            return Array.from(profileMap.values());
           });
-        }
 
-        if (cloudData.activeChildId) {
-          setActiveChildId((curr) => curr || cloudData.activeChildId);
-        }
+          const nextActiveId = cloudData.activeChildId || validCloudProfiles[0]?.id || "";
+          setActiveChildId(nextActiveId);
 
-        if (Array.isArray(cloudData.missions) && cloudData.missions.length > 0) {
-          setMissions((currentMissions) => {
-            const missionMap = new Map<string, Mission>();
-            currentMissions.forEach((m) => { if (m && m.id) missionMap.set(m.id, m); });
-            cloudData.missions.forEach((cm: Mission) => {
-              if (cm && cm.id && !missionMap.has(cm.id)) missionMap.set(cm.id, cm);
-            });
-            return Array.from(missionMap.values());
+          const missionsToSet = Array.isArray(cloudData.missions) ? cloudData.missions : [];
+          setMissions(missionsToSet);
+
+          if (cloudData.language) {
+            setLanguage(cloudData.language);
+          }
+
+          isUpdatingFromCloudRef.current = true;
+          lastSyncedCloudHashRef.current = JSON.stringify({
+            childrenProfiles: validCloudProfiles,
+            activeChildId: nextActiveId,
+            missions: missionsToSet,
+            language: cloudData.language || language,
+            user
           });
-        }
-
-        if (cloudData.language) {
-          setLanguage(cloudData.language);
         }
       }
     } catch (e) {
@@ -688,7 +672,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     const remainingProfiles = childrenProfiles.filter((c) => c.id !== id);
     setChildrenProfiles(remainingProfiles);
-    setMissions((prev) => prev.filter((m) => m.childId !== id));
+    const remainingMissions = missions.filter((m) => m.childId !== id);
+    setMissions(remainingMissions);
 
     const nextActiveId = activeChildId === id ? (remainingProfiles[0]?.id || "") : activeChildId;
     setActiveChildId(nextActiveId);
@@ -698,8 +683,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         user,
         childrenProfiles: remainingProfiles,
         activeChildId: nextActiveId,
-        missions: missions.filter((m) => m.childId !== id),
-        language
+        missions: remainingMissions,
+        language,
+        lastSyncedAt: new Date().toISOString()
       }).catch(() => {});
     }
 
@@ -707,28 +693,53 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const resetToCleanData = async () => {
-    if (user) {
+    markLocalMutation();
+    const currentUser = user;
+    if (currentUser) {
       try {
-        await saveSyncedDataCloud(user.email, {
-          user,
+        await saveSyncedDataCloud(currentUser.email, {
+          user: currentUser,
           childrenProfiles: [],
           activeChildId: "",
           missions: [],
-          language
+          language,
+          lastSyncedAt: new Date().toISOString()
         });
       } catch (e) {
         console.warn("Failed to sync reset state to cloud:", e);
       }
     }
 
-    setUser(null);
     setChildrenProfiles([]);
     setActiveChildId("");
     setMissions([]);
-    setRole("parent");
+    deletedChildIdsRef.current = new Set();
+    lastSyncedCloudHashRef.current = JSON.stringify({
+      childrenProfiles: [],
+      activeChildId: "",
+      missions: [],
+      language,
+      user: currentUser
+    });
+
     try {
-      localStorage.removeItem(LOCAL_STORAGE_KEY);
+      if (currentUser) {
+        const dataToSave = {
+          user: currentUser,
+          registeredAccounts,
+          childrenProfiles: [],
+          activeChildId: "",
+          missions: [],
+          language,
+          role: "parent"
+        };
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dataToSave));
+      } else {
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+      }
+      localStorage.removeItem("mudahkids_deleted_child_ids");
     } catch (e) {}
+
     showToast(
       language === "en"
         ? "App data reset to clean slate!"
@@ -835,8 +846,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       }
     }
 
-    // Auto-fallback to default children profiles if account has no children yet (prevents blank screen / reset feeling)
-    if (validProfiles.length === 0) {
+    // Only fallback to default starter children if this user account has NO saved synced record at all in the database
+    if (!userSyncedData && validProfiles.length === 0) {
       validProfiles = INITIAL_CHILDREN.map((p, idx) => ({
         ...p,
         id: `child-${loggedInUser.id}-${idx + 1}`,

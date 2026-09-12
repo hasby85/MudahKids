@@ -114,14 +114,20 @@ export function normalizeDbStore(data: any): MasterDbStore {
           return !n.includes("umar") && !n.includes("aisyah");
         });
 
+        const hasExplicitChildren = Array.isArray(incoming?.childrenProfiles);
+        const childrenToUse = hasExplicitChildren ? incomingProfiles : existing.childrenProfiles;
+
+        const hasExplicitMissions = Array.isArray(incoming?.missions);
+        const missionsToUse = hasExplicitMissions
+          ? incoming.missions.filter((m: any) => !((m?.id || "").includes("umar")))
+          : existing.missions;
+
         syncedData[normEmail] = {
           ...existing,
           ...incoming,
           user: incoming?.user || existing.user,
-          childrenProfiles: incomingProfiles.length > 0 ? incomingProfiles : existing.childrenProfiles,
-          missions: Array.isArray(incoming?.missions) && incoming.missions.length > 0 && !incoming.missions.some((m: any) => (m?.id || "").includes("umar"))
-            ? incoming.missions
-            : existing.missions
+          childrenProfiles: childrenToUse,
+          missions: missionsToUse
         };
       }
 
@@ -684,21 +690,18 @@ export async function saveSyncedDataCloud(email: string, data: any): Promise<voi
     localStorage.setItem(vaultKey, JSON.stringify(data));
   } catch (e) {}
 
-  // Safety Guard: Prevent overwriting existing cloud data with an empty childrenProfiles array if user has existing profiles
-  if (data && Array.isArray(data.childrenProfiles) && data.childrenProfiles.length === 0) {
-    try {
-      const existing = await fetchSyncedDataCloud(normalizedEmail);
-      if (existing && Array.isArray(existing.childrenProfiles) && existing.childrenProfiles.length > 0) {
-        const belongsToUser = existing.childrenProfiles.some((p: any) => p.parentId === data.user?.id || p.parentId === normalizedEmail);
-        if (belongsToUser) {
-          console.warn("🛡️ Safety Guard: Prevented overwriting existing non-empty children profiles with empty payload!");
-          return;
-        }
-      }
-    } catch (e) {}
+  // 1. Send to Local Express endpoint (Primary Server Store)
+  try {
+    await fetch("/api/sync/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: normalizedEmail, data })
+    });
+  } catch (err) {
+    console.warn("Express /api/sync/save error:", err);
   }
 
-  // 1. Send to Supabase directly if configured
+  // 2. Send to Supabase directly if configured
   if (isSupabaseConfigured()) {
     try {
       await saveSyncedDataToSupabase(normalizedEmail, data);
@@ -706,13 +709,6 @@ export async function saveSyncedDataCloud(email: string, data: any): Promise<voi
       console.warn("Direct Supabase sync save error:", e);
     }
   }
-
-  // 2. Send to Local Express endpoint
-  fetch("/api/sync/save", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: normalizedEmail, data })
-  }).catch(() => {});
 
   // 3. Send to Master Cloud Store
   try {
