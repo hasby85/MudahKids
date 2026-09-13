@@ -852,15 +852,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       }
     }
 
-    // Only fallback to default starter children if this user account has NO saved synced record at all in the database
-    if (!userSyncedData && validProfiles.length === 0) {
-      validProfiles = INITIAL_CHILDREN.map((p, idx) => ({
-        ...p,
-        id: `child-${loggedInUser.id}-${idx + 1}`,
-        parentId: loggedInUser.id
-      }));
-      activeChildIdToSet = validProfiles[0]?.id || "";
-    }
+    // If no userSyncedData or no children profiles, keep validProfiles as [] (clean slate)
+    // Users can add their own child profiles or click "Data Demo" anytime
 
     // Set state TOGETHER
     setChildrenProfiles(validProfiles);

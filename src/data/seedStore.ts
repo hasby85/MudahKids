@@ -596,27 +596,35 @@ export function buildSeedSyncedData(): Record<string, any> {
   ];
 
   return {
+    "hafiz.family@example.com": {
+      user: SEED_ACCOUNTS[0],
+      childrenProfiles: createFamilyChildren("u-101"),
+      activeChildId: "child-irfan",
+      missions: familyMissions,
+      language: "bm",
+      lastSyncedAt: getRecentIsoStr(0, 0)
+    },
     "hasby85@gmail.com": {
       user: SEED_ACCOUNTS[1],
-      childrenProfiles: createFamilyChildren("u-1786365979575"),
-      activeChildId: "child-hasby-irfan",
-      missions: familyMissions,
+      childrenProfiles: [],
+      activeChildId: "",
+      missions: [],
       language: "bm",
       lastSyncedAt: getRecentIsoStr(0, 0)
     },
     "shahirah_mahfuzah@yahoo.com": {
       user: SEED_ACCOUNTS[2],
-      childrenProfiles: createFamilyChildren("u-1786367110215"),
-      activeChildId: "child-hasby-irfan",
-      missions: familyMissions,
+      childrenProfiles: [],
+      activeChildId: "",
+      missions: [],
       language: "bm",
       lastSyncedAt: getRecentIsoStr(0, 0)
     },
     "asbie85@gmail.com": {
       user: SEED_ACCOUNTS[3],
-      childrenProfiles: createFamilyChildren("u-1786368888888"),
-      activeChildId: "child-hasby-irfan",
-      missions: familyMissions,
+      childrenProfiles: [],
+      activeChildId: "",
+      missions: [],
       language: "bm",
       lastSyncedAt: getRecentIsoStr(0, 0)
     }

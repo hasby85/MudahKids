@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useApp } from "../context/AppContext";
-import { MissionCategory, MissionDifficulty } from "../types";
+import { MissionCategory, MissionDifficulty, ChildProfile } from "../types";
 import {
   CheckCircle2,
   XCircle,
@@ -56,6 +56,7 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onOpenLoginMod
   const [showAddChildModal, setShowAddChildModal] = useState(false);
   const [showAiModal, setShowAiModal] = useState(false);
   const [showResetConfirmModal, setShowResetConfirmModal] = useState(false);
+  const [childToDelete, setChildToDelete] = useState<ChildProfile | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiSuggestions, setAiSuggestions] = useState<any[]>([]);
 
@@ -336,11 +337,8 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onOpenLoginMod
                   <span className="text-[10px] opacity-80">({c.age} thn)</span>
                 </button>
                 <button
-                  onClick={() => {
-                    if (window.confirm(`Padam profil ${c.name}?`)) {
-                      deleteChildProfile(c.id);
-                    }
-                  }}
+                  type="button"
+                  onClick={() => setChildToDelete(c)}
                   className="text-stone-400 hover:text-rose-600 p-1 rounded-lg hover:bg-stone-200 transition-all cursor-pointer"
                   title="Padam profil anak ini"
                 >
@@ -1408,6 +1406,54 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onOpenLoginMod
                 className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow-md shadow-rose-600/20 transition-all cursor-pointer"
               >
                 {language === "en" ? "Yes, Reset Everything" : "Ya, Kosongkan Data Sekarang"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Single Child Delete Confirmation Modal */}
+      {childToDelete && (
+        <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-5 border border-stone-100">
+            <div className="flex items-center gap-3 text-rose-600">
+              <div className="w-10 h-10 rounded-2xl bg-rose-100 flex items-center justify-center shrink-0">
+                <Trash2 className="w-5 h-5 text-rose-600" />
+              </div>
+              <div>
+                <h3 className="text-base font-extrabold text-stone-900">
+                  {language === "en" ? `Delete Profile ${childToDelete.name}?` : `Padam Profil ${childToDelete.name}?`}
+                </h3>
+                <p className="text-xs text-stone-500">
+                  {language === "en" ? "This will permanently remove this child profile" : "Tindakan ini akan memadamkan profil anak ini"}
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs text-stone-600 leading-relaxed bg-rose-50/60 p-3.5 rounded-2xl border border-rose-100">
+              {language === "en"
+                ? `Are you sure you want to delete ${childToDelete.name}'s profile and all progress?`
+                : `Adakah anda pasti mahu memadamkan profil ${childToDelete.name} berserta semua rekod aktivitinya?`}
+            </p>
+
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setChildToDelete(null)}
+                className="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-extrabold text-xs transition-colors cursor-pointer"
+              >
+                {language === "en" ? "Cancel" : "Batal"}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const idToDelete = childToDelete.id;
+                  setChildToDelete(null);
+                  deleteChildProfile(idToDelete);
+                }}
+                className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow-md shadow-rose-600/20 transition-all cursor-pointer"
+              >
+                {language === "en" ? "Yes, Delete Profile" : "Ya, Padam Profil"}
               </button>
             </div>
           </div>
