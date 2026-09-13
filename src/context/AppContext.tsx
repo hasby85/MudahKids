@@ -365,9 +365,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const emailToSync = targetEmail || user?.email;
     if (!emailToSync || !user || user.email.trim().toLowerCase() !== emailToSync.trim().toLowerCase()) return;
 
-    // Guard 1: Skip cloud polling if a local mutation happened very recently (< 3 seconds ago) unless forceSync is requested
+    // Guard 1: Skip cloud polling if a local mutation happened recently (< 15 seconds ago) unless forceSync is requested
     if (!forceSync) {
-      if (isLocalMutationPendingRef.current || (Date.now() - lastLocalMutationTimeRef.current < 3000)) {
+      if (isLocalMutationPendingRef.current || (Date.now() - lastLocalMutationTimeRef.current < 15000)) {
         return;
       }
     }
@@ -377,12 +377,19 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
       // Guard 2 (Post-Fetch Guard): Verify active user and mutation timing after async fetch completes
       if (!user || user.email.trim().toLowerCase() !== emailToSync.trim().toLowerCase()) return;
-      if (!forceSync && (isLocalMutationPendingRef.current || (Date.now() - lastLocalMutationTimeRef.current < 3000))) {
+      if (!forceSync && (isLocalMutationPendingRef.current || (Date.now() - lastLocalMutationTimeRef.current < 15000))) {
         console.log("🛡️ Post-fetch Guard: Local mutation occurred during cloud fetch. Preserving local state.");
         return;
       }
 
       if (cloudData) {
+        // Timestamp check: Do not overwrite if local mutations are newer than cloud data
+        const cloudTime = cloudData.lastSyncedAt ? new Date(cloudData.lastSyncedAt).getTime() : 0;
+        if (!forceSync && cloudTime > 0 && lastLocalMutationTimeRef.current > cloudTime) {
+          console.log("🛡️ Local mutations are newer than cloud data. Preserving local state.");
+          return;
+        }
+
         const currentUserId = user.id;
         const currentUserEmail = user.email.trim().toLowerCase();
 
@@ -396,24 +403,53 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             return true;
           });
 
-          // Cloud is the single source of truth for the list of children
+          // Merge cloud profiles while safely PRESERVING all local profiles created by the user
           setChildrenProfiles((currentLocal) => {
-            const localMap = new Map<string, ChildProfile>();
-            currentLocal.forEach((p) => { if (p?.id) localMap.set(p.id, p); });
+            const cloudMap = new Map<string, ChildProfile>();
+            validCloudProfiles.forEach((cp) => { if (cp?.id) cloudMap.set(cp.id, cp); });
 
-            return validCloudProfiles.map((cp: ChildProfile) => {
-              const local = localMap.get(cp.id);
+            const mergedList: ChildProfile[] = validCloudProfiles.map((cp: ChildProfile) => {
+              const local = currentLocal.find((p) => p.id === cp.id);
               if (!local) return { ...cp, parentId: currentUserId };
               const merged = mergeChildProfileObjects(local, cp);
               return { ...merged, parentId: currentUserId };
             });
+
+            // Keep any locally created profile that is not deleted
+            currentLocal.forEach((localChild) => {
+              if (
+                localChild &&
+                localChild.id &&
+                !cloudMap.has(localChild.id) &&
+                !deletedChildIdsRef.current.has(localChild.id)
+              ) {
+                mergedList.push(localChild);
+              }
+            });
+
+            return mergedList;
           });
 
           const nextActiveId = cloudData.activeChildId || validCloudProfiles[0]?.id || "";
-          setActiveChildId(nextActiveId);
+          if (nextActiveId) {
+            setActiveChildId((prevActive) => prevActive || nextActiveId);
+          }
 
-          const missionsToSet = Array.isArray(cloudData.missions) ? cloudData.missions : [];
-          setMissions(missionsToSet);
+          if (Array.isArray(cloudData.missions) && cloudData.missions.length > 0) {
+            setMissions((currentMissions) => {
+              const missionMap = new Map<string, Mission>();
+              currentMissions.forEach((m) => missionMap.set(m.id, m));
+              cloudData.missions.forEach((cm: Mission) => {
+                const existing = missionMap.get(cm.id);
+                if (!existing) {
+                  missionMap.set(cm.id, cm);
+                } else if (existing.status !== cm.status && cm.status === "approved") {
+                  missionMap.set(cm.id, cm);
+                }
+              });
+              return Array.from(missionMap.values());
+            });
+          }
 
           if (cloudData.language) {
             setLanguage(cloudData.language);
@@ -423,7 +459,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           lastSyncedCloudHashRef.current = JSON.stringify({
             childrenProfiles: validCloudProfiles,
             activeChildId: nextActiveId,
-            missions: missionsToSet,
+            missions: cloudData.missions || missions,
             language: cloudData.language || language,
             user
           });
@@ -504,7 +540,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     const interval = setInterval(() => {
       syncLatestCloudData(user.email);
-    }, 5000);
+    }, 25000);
 
     const handleMobileResume = () => {
       if (document.visibilityState === "visible") {

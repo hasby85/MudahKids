@@ -656,26 +656,32 @@ export async function saveSyncedDataCloud(email: string, data: any): Promise<voi
   const normalizedEmail = email.trim().toLowerCase();
   if (!normalizedEmail) return;
 
+  const nowIso = new Date().toISOString();
+  const stampedData = {
+    ...data,
+    lastSyncedAt: data.lastSyncedAt || nowIso
+  };
+
   // Stamp parentId on all children profiles
-  if (data && Array.isArray(data.childrenProfiles)) {
-    data.childrenProfiles = data.childrenProfiles.map((cp: any) => ({
+  if (stampedData && Array.isArray(stampedData.childrenProfiles)) {
+    stampedData.childrenProfiles = stampedData.childrenProfiles.map((cp: any) => ({
       ...cp,
-      parentId: cp.parentId || data.user?.id || normalizedEmail
+      parentId: cp.parentId || stampedData.user?.id || normalizedEmail
     }));
   }
 
   // Always save immediately to local browser vault per-user
   try {
     const vaultKey = `mudahkids_user_sync_${normalizedEmail}`;
-    localStorage.setItem(vaultKey, JSON.stringify(data));
+    localStorage.setItem(vaultKey, JSON.stringify(stampedData));
   } catch (e) {}
 
-  // 1. Send to Local Express endpoint (Primary Server Store)
+  // 1. Send to Local Express / Worker endpoint (Primary Server Store)
   try {
     await fetch("/api/sync/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: normalizedEmail, data })
+      body: JSON.stringify({ email: normalizedEmail, data: stampedData })
     });
   } catch (err) {
     console.warn("Express /api/sync/save error:", err);
@@ -684,7 +690,7 @@ export async function saveSyncedDataCloud(email: string, data: any): Promise<voi
   // 2. Send to Supabase directly if configured
   if (isSupabaseConfigured()) {
     try {
-      await saveSyncedDataToSupabase(normalizedEmail, data);
+      await saveSyncedDataToSupabase(normalizedEmail, stampedData);
     } catch (e) {
       console.warn("Direct Supabase sync save error:", e);
     }
@@ -694,15 +700,15 @@ export async function saveSyncedDataCloud(email: string, data: any): Promise<voi
   try {
     const store = await fetchMasterCloudStore();
     store.syncedData[normalizedEmail] = {
-      ...data,
-      lastSyncedAt: new Date().toISOString()
+      ...stampedData,
+      lastSyncedAt: nowIso
     };
-    if (data.user) {
+    if (stampedData.user) {
       const existingIdx = store.accounts.findIndex(a => a.email && a.email.trim().toLowerCase() === normalizedEmail);
       if (existingIdx === -1) {
-        store.accounts.push(data.user);
+        store.accounts.push(stampedData.user);
       } else {
-        store.accounts[existingIdx] = { ...store.accounts[existingIdx], ...data.user };
+        store.accounts[existingIdx] = { ...store.accounts[existingIdx], ...stampedData.user };
       }
     }
     await saveMasterCloudStore(store);
@@ -766,15 +772,34 @@ export async function fetchSyncedDataCloud(email: string): Promise<any> {
     } catch (e) {}
   }
 
-  let finalPayload = fetchedData || localVaultData || null;
+  let finalPayload: any = null;
 
-  if (fetchedData) {
-    // Fresh server data is the single authoritative source of truth
+  if (fetchedData && localVaultData) {
+    const fetchedTime = fetchedData.lastSyncedAt ? new Date(fetchedData.lastSyncedAt).getTime() : 0;
+    const localTime = localVaultData.lastSyncedAt ? new Date(localVaultData.lastSyncedAt).getTime() : 0;
+
+    // If local mutation is newer than fetched data, NEVER overwrite local state!
+    if (localTime > fetchedTime) {
+      finalPayload = localVaultData;
+      // Resend local vault to server so server catches up
+      fetch("/api/sync/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: normalizedEmail, data: localVaultData })
+      }).catch(() => {});
+    } else {
+      finalPayload = fetchedData;
+      try {
+        const vaultKey = `mudahkids_user_sync_${normalizedEmail}`;
+        localStorage.setItem(vaultKey, JSON.stringify(fetchedData));
+      } catch (e) {}
+    }
+  } else if (fetchedData) {
+    finalPayload = fetchedData;
     try {
       const vaultKey = `mudahkids_user_sync_${normalizedEmail}`;
       localStorage.setItem(vaultKey, JSON.stringify(fetchedData));
     } catch (e) {}
-    finalPayload = fetchedData;
   } else if (localVaultData) {
     finalPayload = localVaultData;
   }

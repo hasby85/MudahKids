@@ -603,30 +603,6 @@ export function buildSeedSyncedData(): Record<string, any> {
       missions: familyMissions,
       language: "bm",
       lastSyncedAt: getRecentIsoStr(0, 0)
-    },
-    "hasby85@gmail.com": {
-      user: SEED_ACCOUNTS[1],
-      childrenProfiles: [],
-      activeChildId: "",
-      missions: [],
-      language: "bm",
-      lastSyncedAt: getRecentIsoStr(0, 0)
-    },
-    "shahirah_mahfuzah@yahoo.com": {
-      user: SEED_ACCOUNTS[2],
-      childrenProfiles: [],
-      activeChildId: "",
-      missions: [],
-      language: "bm",
-      lastSyncedAt: getRecentIsoStr(0, 0)
-    },
-    "asbie85@gmail.com": {
-      user: SEED_ACCOUNTS[3],
-      childrenProfiles: [],
-      activeChildId: "",
-      missions: [],
-      language: "bm",
-      lastSyncedAt: getRecentIsoStr(0, 0)
     }
   };
 }

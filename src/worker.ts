@@ -72,7 +72,7 @@ export default {
       }
 
       if (url.pathname === "/api/auth/accounts") {
-        const store = await fetchMasterStore();
+        const store = await fetchMasterStore(env);
         return new Response(JSON.stringify({ success: true, accounts: store.accounts }), { headers });
       }
 
@@ -89,7 +89,7 @@ export default {
             );
           }
 
-          const store = await fetchMasterStore();
+          const store = await fetchMasterStore(env);
           if (store.accounts.some((a: any) => a.email.trim().toLowerCase() === normalizedEmail)) {
             return new Response(
               JSON.stringify({ success: false, message: "Emel ini telah pun didaftarkan." }),
@@ -110,7 +110,7 @@ export default {
           };
 
           store.accounts.push(newUser);
-          await saveMasterStore(store);
+          await saveMasterStore(store, env);
 
           return new Response(JSON.stringify({ success: true, user: newUser }), { headers });
         } catch (e: any) {
@@ -124,7 +124,7 @@ export default {
           const { email, password } = body;
           const normalizedEmail = (email || "").trim().toLowerCase();
 
-          const store = await fetchMasterStore();
+          const store = await fetchMasterStore(env);
           const user = store.accounts.find((a: any) => a.email.trim().toLowerCase() === normalizedEmail);
 
           if (!user) {
@@ -154,7 +154,7 @@ export default {
           const { email, newPassword } = body;
           const normalizedEmail = (email || "").trim().toLowerCase();
 
-          const store = await fetchMasterStore();
+          const store = await fetchMasterStore(env);
           const idx = store.accounts.findIndex((a: any) => a.email.trim().toLowerCase() === normalizedEmail);
 
           if (idx === -1) {
@@ -165,7 +165,7 @@ export default {
           }
 
           store.accounts[idx].password = newPassword;
-          await saveMasterStore(store);
+          await saveMasterStore(store, env);
 
           return new Response(JSON.stringify({ success: true }), { headers });
         } catch (e: any) {
@@ -179,9 +179,9 @@ export default {
           const { email, data } = body;
           if (email) {
             const normalizedEmail = email.trim().toLowerCase();
-            const store = await fetchMasterStore();
+            const store = await fetchMasterStore(env);
             store.syncedData[normalizedEmail] = { ...data, lastSyncedAt: new Date().toISOString() };
-            await saveMasterStore(store);
+            await saveMasterStore(store, env);
           }
           return new Response(JSON.stringify({ success: true }), { headers });
         } catch (e: any) {
@@ -198,7 +198,7 @@ export default {
           }
           if (email) {
             const normalizedEmail = email.trim().toLowerCase();
-            const store = await fetchMasterStore();
+            const store = await fetchMasterStore(env);
             const data = store.syncedData[normalizedEmail] || null;
             return new Response(JSON.stringify({ success: true, data }), { headers });
           }
