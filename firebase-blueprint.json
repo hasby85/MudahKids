@@ -1,0 +1,58 @@
+{
+  "entities": {
+    "TestConnection": {
+      "title": "TestConnection",
+      "description": "Heartbeat and connection validation document",
+      "type": "object",
+      "properties": {
+        "status": { "type": "string", "maxLength": 32 },
+        "timestamp": { "type": "number" }
+      }
+    },
+    "FamilySync": {
+      "title": "FamilySync",
+      "description": "Synchronized family data including profiles, missions, solat, and hafazan",
+      "type": "object",
+      "properties": {
+        "familyId": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 256 },
+        "syncedData": { "type": "string", "maxLength": 1048576 },
+        "lastSyncTimestamp": { "type": "number" },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["familyId", "email", "syncedData", "lastSyncTimestamp"]
+    },
+    "UserAccount": {
+      "title": "UserAccount",
+      "description": "User account registration details",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 256 },
+        "phone": { "type": "string", "maxLength": 32 },
+        "role": { "type": "string", "maxLength": 32 },
+        "plan": { "type": "string", "maxLength": 32 },
+        "accessCode": { "type": "string", "maxLength": 32 },
+        "password": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "name", "email", "role"]
+    }
+  },
+  "firestore": {
+    "/test/{testId}": {
+      "schema": "TestConnection",
+      "description": "Connection test collection"
+    },
+    "/families/{familyId}": {
+      "schema": "FamilySync",
+      "description": "Family shared synchronization state"
+    },
+    "/accounts/{accountId}": {
+      "schema": "UserAccount",
+      "description": "Registered user account records"
+    }
+  }
+}

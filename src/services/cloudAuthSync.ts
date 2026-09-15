@@ -6,6 +6,13 @@ import {
   saveSyncedDataToSupabase,
   fetchSyncedDataFromSupabase
 } from "../lib/supabaseSync";
+import {
+  saveFamilyDataToFirestore,
+  fetchFamilyDataFromFirestore,
+  saveAccountToFirestore,
+  fetchAccountsFromFirestore,
+  fetchAccountByEmailFromFirestore
+} from "../lib/firebaseSync";
 import { SEED_ACCOUNTS, buildSeedSyncedData } from "../data/seedStore";
 
 const MASTER_CLOUD_STORE_URL = "https://jsonblob.com/api/jsonBlob/019ff11c-dfc0-7f84-80c6-4b38b28bc3a7";
@@ -337,6 +344,18 @@ function isJsonResponse(res: Response): boolean {
 
 // 1. Get Accounts List
 export async function fetchAccountsList(): Promise<UserAccount[]> {
+  // 1. Primary: Firebase Firestore (real-time cloud database)
+  try {
+    const firestoreAccounts = await fetchAccountsFromFirestore();
+    if (firestoreAccounts && firestoreAccounts.length > 0) {
+      firestoreAccounts.forEach((acc) => saveLocalAccountsVault(acc));
+      return firestoreAccounts;
+    }
+  } catch (e) {
+    console.warn("Firestore fetchAccountsList error:", e);
+  }
+
+  // 2. Server API fallback
   try {
     const res = await fetch("/api/auth/accounts");
     if (res.ok && isJsonResponse(res)) {
@@ -367,35 +386,7 @@ export async function registerAccountCloud(data: {
   const cleanPass = data.password ? data.password.trim() : "";
   const cleanPhone = data.phone ? data.phone.trim() : "";
 
-  // Try Local/Server API first
-  try {
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: data.name.trim(),
-        email: normalizedEmail,
-        phone: cleanPhone,
-        password: cleanPass,
-        plan: data.plan || "PREMIUM",
-        accessCode: data.accessCode ? data.accessCode.trim() : "MudahKids2026"
-      })
-    });
-
-    if (res.ok && isJsonResponse(res)) {
-      const result = await res.json();
-      if (result.success && result.user) {
-        saveLocalAccountsVault(result.user);
-        return { success: true, message: "OK", user: result.user };
-      } else {
-        return { success: false, message: result.message || "Pendaftaran gagal" };
-      }
-    }
-  } catch (e) {
-    // Fallthrough to master cloud store
-  }
-
-  // Master Cloud Store Registration Fallback
+  // Check access code
   if (!data.accessCode || data.accessCode.trim() !== "MudahKids2026") {
     return {
       success: false,
@@ -405,23 +396,18 @@ export async function registerAccountCloud(data: {
     };
   }
 
-  const store = await fetchMasterCloudStore();
-  const inputDigits = cleanPhone.replace(/\D/g, "");
-  const existing = store.accounts.find(a => {
-    if (!a) return false;
-    const aEmail = (a.email || "").trim().toLowerCase();
-    const aPhone = (a.phone || "").trim().replace(/\D/g, "");
-    return (aEmail === normalizedEmail) || (inputDigits.length >= 6 && aPhone.endsWith(inputDigits));
-  });
-
-  if (existing) {
-    return {
-      success: false,
-      message: data.language === "en"
-        ? "This email or phone number is already registered. Please log in instead."
-        : "Emel atau nombor telefon ini telah pun didaftarkan. Sila guna fungsi Log Masuk."
-    };
-  }
+  // Check existing in Firestore
+  try {
+    const existingFirestore = await fetchAccountByEmailFromFirestore(normalizedEmail);
+    if (existingFirestore) {
+      return {
+        success: false,
+        message: data.language === "en"
+          ? "This email is already registered. Please log in instead."
+          : "Emel ini telah pun didaftarkan. Sila guna fungsi Log Masuk."
+      };
+    }
+  } catch (e) {}
 
   const newUser: UserAccount = {
     id: `u-${Date.now()}`,
@@ -435,11 +421,37 @@ export async function registerAccountCloud(data: {
     createdAt: new Date().toISOString()
   };
 
-  store.accounts.push(newUser);
-  store.syncedData[normalizedEmail] = { user: newUser, lastSyncedAt: new Date().toISOString() };
-  await saveMasterCloudStore(store);
+  // 1. PRIMARY: Save directly to Firebase Firestore
+  try {
+    await saveAccountToFirestore(newUser);
+    await saveFamilyDataToFirestore(normalizedEmail, {
+      user: newUser,
+      childrenProfiles: [],
+      missions: [],
+      lastSyncTimestamp: Date.now(),
+      version: 2
+    });
+  } catch (err) {
+    console.warn("Firebase registration save error:", err);
+  }
 
   saveLocalAccountsVault(newUser);
+
+  // 2. Background notify server if running
+  try {
+    fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: data.name.trim(),
+        email: normalizedEmail,
+        phone: cleanPhone,
+        password: cleanPass,
+        plan: data.plan || "PREMIUM",
+        accessCode: "MudahKids2026"
+      })
+    }).catch(() => {});
+  } catch (e) {}
 
   return { success: true, message: "OK", user: newUser };
 }
@@ -455,33 +467,6 @@ export async function loginAccountCloud(
   const inputDigits = normalizedInput.replace(/\D/g, "");
 
   const localVault = getLocalAccountsVault();
-
-  // Try Local/Server API first (passing localVault in body for auto-rehydration)
-  try {
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: normalizedInput, password: cleanPass, clientAccounts: localVault })
-    });
-
-    if (res.ok && isJsonResponse(res)) {
-      const result = await res.json();
-      if (result.success && result.user) {
-        saveLocalAccountsVault(result.user);
-        return {
-          success: true,
-          message: "OK",
-          user: result.user,
-          syncedData: result.syncedData
-        };
-      }
-      if (result.message && (result.message.includes("Kata laluan tidak tepat") || result.message.includes("Incorrect password"))) {
-        return { success: false, message: result.message };
-      }
-    }
-  } catch (e) {
-    // API failed, fallthrough
-  }
 
   // Helper function to match an account flexibly with substring & fuzzy matching for mobile
   const matchAccount = (accList: UserAccount[]): UserAccount | undefined => {
@@ -515,10 +500,71 @@ export async function loginAccountCloud(
     });
   };
 
-  // Search in Local Accounts Vault first
+  // 1. PRIMARY: Check Firebase Firestore directly
+  try {
+    let firestoreUser = await fetchAccountByEmailFromFirestore(normalizedInput);
+    if (!firestoreUser) {
+      const allFirestoreAccounts = await fetchAccountsFromFirestore();
+      firestoreUser = matchAccount(allFirestoreAccounts) || null;
+    }
+
+    if (firestoreUser) {
+      const storedPass = (firestoreUser.password || "").trim();
+      if (storedPass && storedPass !== cleanPass) {
+        return {
+          success: false,
+          message: language === "en"
+            ? "Incorrect password! Access denied."
+            : "Kata laluan tidak tepat! Akses ditolak."
+        };
+      }
+
+      saveLocalAccountsVault(firestoreUser);
+      const firestoreSynced = await fetchFamilyDataFromFirestore(firestoreUser.email);
+      return {
+        success: true,
+        message: "OK",
+        user: firestoreUser,
+        syncedData: firestoreSynced
+      };
+    }
+  } catch (e) {
+    console.warn("Firestore direct login attempt:", e);
+  }
+
+  // 2. Check local vault
   let user = matchAccount(localVault);
 
-  // Search in Master Cloud Store if not in local vault
+  // 3. Check Server API
+  if (!user) {
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: normalizedInput, password: cleanPass, clientAccounts: localVault })
+      });
+
+      if (res.ok && isJsonResponse(res)) {
+        const result = await res.json();
+        if (result.success && result.user) {
+          saveLocalAccountsVault(result.user);
+          // Also persist into Firestore for other devices
+          saveAccountToFirestore(result.user).catch(() => {});
+          return {
+            success: true,
+            message: "OK",
+            user: result.user,
+            syncedData: result.syncedData
+          };
+        }
+        if (result.message && (result.message.includes("Kata laluan tidak tepat") || result.message.includes("Incorrect password"))) {
+          return { success: false, message: result.message };
+        }
+      }
+    } catch (e) {}
+  }
+
+  // 4. Check Master Cloud Store
   if (!user) {
     const store = await fetchMasterCloudStore();
     user = matchAccount(store.accounts);
@@ -533,12 +579,7 @@ export async function loginAccountCloud(
     }
 
     if (user) {
-      // Re-hydrate Master Cloud Store to ensure consistency
-      const userEmailKey = (user.email || "").trim().toLowerCase();
-      if (!store.accounts.some(a => (a.email || "").trim().toLowerCase() === userEmailKey)) {
-        store.accounts.push(user);
-        await saveMasterCloudStore(store);
-      }
+      saveAccountToFirestore(user).catch(() => {});
     }
   }
 
@@ -562,10 +603,9 @@ export async function loginAccountCloud(
   }
 
   saveLocalAccountsVault(user);
+  saveAccountToFirestore(user).catch(() => {});
 
-  const store = await fetchMasterCloudStore();
-  const userEmailKey = (user.email || "").trim().toLowerCase();
-  const syncedData = store.syncedData[userEmailKey] || null;
+  const syncedData = await fetchFamilyDataFromFirestore(user.email);
 
   return {
     success: true,
@@ -585,6 +625,20 @@ export async function resetPasswordCloud(
   const cleanPass = newPasswordInput.trim();
   const inputDigits = normalizedInput.replace(/\D/g, "");
 
+  // 1. Update in Firestore directly
+  try {
+    const firestoreAcc = await fetchAccountByEmailFromFirestore(normalizedInput);
+    if (firestoreAcc) {
+      firestoreAcc.password = cleanPass;
+      await saveAccountToFirestore(firestoreAcc);
+      saveLocalAccountsVault(firestoreAcc);
+      return { success: true, message: "OK" };
+    }
+  } catch (e) {
+    console.warn("Firestore resetPasswordCloud error:", e);
+  }
+
+  // 2. Server API fallback
   try {
     const res = await fetch("/api/auth/reset-password", {
       method: "POST",
@@ -602,53 +656,30 @@ export async function resetPasswordCloud(
           if (aEmail === normalizedInput || (inputDigits.length >= 6 && aPhone.endsWith(inputDigits))) {
             a.password = cleanPass;
             saveLocalAccountsVault(a);
+            saveAccountToFirestore(a).catch(() => {});
           }
         });
-
-        const store = await fetchMasterCloudStore();
-        const idx = store.accounts.findIndex(a => {
-          const aEmail = (a.email || "").trim().toLowerCase();
-          const aPhone = (a.phone || "").trim().replace(/\D/g, "");
-          return aEmail === normalizedInput || (inputDigits.length >= 6 && aPhone.endsWith(inputDigits));
-        });
-        if (idx !== -1) {
-          store.accounts[idx].password = cleanPass;
-          const eKey = (store.accounts[idx].email || "").trim().toLowerCase();
-          if (store.syncedData[eKey]?.user) {
-            store.syncedData[eKey].user.password = cleanPass;
-          }
-          await saveMasterCloudStore(store);
-        }
         return { success: true, message: "OK" };
       }
     }
   } catch (e) {}
 
-  // Master Cloud Store Reset Password Fallback
-  const store = await fetchMasterCloudStore();
-  const idx = store.accounts.findIndex(a => {
-    const aEmail = (a.email || "").trim().toLowerCase();
-    const aPhone = (a.phone || "").trim().replace(/\D/g, "");
-    return aEmail === normalizedInput || (inputDigits.length >= 6 && aPhone.endsWith(inputDigits));
-  });
-
-  if (idx === -1) {
-    return {
-      success: false,
-      message: language === "en"
-        ? "Registered email address or phone number not found in system."
-        : "Emel atau nombor telefon ini tidak dijumpai dalam rekod pendaftaran sistem."
-    };
+  // 3. Local vault fallback
+  const vault = getLocalAccountsVault();
+  const found = vault.find(a => (a.email || "").trim().toLowerCase() === normalizedInput);
+  if (found) {
+    found.password = cleanPass;
+    saveLocalAccountsVault(found);
+    saveAccountToFirestore(found).catch(() => {});
+    return { success: true, message: "OK" };
   }
 
-  store.accounts[idx].password = cleanPass;
-  const eKey = (store.accounts[idx].email || "").trim().toLowerCase();
-  if (store.syncedData[eKey]?.user) {
-    store.syncedData[eKey].user.password = cleanPass;
-  }
-  await saveMasterCloudStore(store);
-
-  return { success: true, message: "OK" };
+  return {
+    success: false,
+    message: language === "en"
+      ? "Registered email address or phone number not found in system."
+      : "Emel atau nombor telefon ini tidak dijumpai dalam rekod pendaftaran sistem."
+  };
 }
 
 // 5. Save Synced User Data
@@ -657,9 +688,11 @@ export async function saveSyncedDataCloud(email: string, data: any): Promise<voi
   if (!normalizedEmail) return;
 
   const nowIso = new Date().toISOString();
+  const nowTs = Date.now();
   const stampedData = {
     ...data,
-    lastSyncedAt: data.lastSyncedAt || nowIso
+    lastSyncedAt: data.lastSyncedAt || nowIso,
+    lastSyncTimestamp: data.lastSyncTimestamp || nowTs
   };
 
   // Stamp parentId on all children profiles
@@ -676,45 +709,30 @@ export async function saveSyncedDataCloud(email: string, data: any): Promise<voi
     localStorage.setItem(vaultKey, JSON.stringify(stampedData));
   } catch (e) {}
 
-  // 1. Send to Local Express / Worker endpoint (Primary Server Store)
+  // 1. PRIMARY: Save directly to Google Cloud Firestore (Instant real-time multi-device cloud sync)
   try {
-    await fetch("/api/sync/save", {
+    await saveFamilyDataToFirestore(normalizedEmail, {
+      user: stampedData.user,
+      childrenProfiles: stampedData.childrenProfiles || [],
+      missions: stampedData.missions || [],
+      lastSyncTimestamp: nowTs,
+      version: 2
+    });
+    if (stampedData.user) {
+      await saveAccountToFirestore(stampedData.user);
+    }
+  } catch (err) {
+    console.warn("[FirebaseSync] Error in saveSyncedDataCloud:", err);
+  }
+
+  // 2. Background notify local server endpoint if running
+  try {
+    fetch("/api/sync/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: normalizedEmail, data: stampedData })
-    });
-  } catch (err) {
-    console.warn("Express /api/sync/save error:", err);
-  }
-
-  // 2. Send to Supabase directly if configured
-  if (isSupabaseConfigured()) {
-    try {
-      await saveSyncedDataToSupabase(normalizedEmail, stampedData);
-    } catch (e) {
-      console.warn("Direct Supabase sync save error:", e);
-    }
-  }
-
-  // 3. Send to Master Cloud Store
-  try {
-    const store = await fetchMasterCloudStore();
-    store.syncedData[normalizedEmail] = {
-      ...stampedData,
-      lastSyncedAt: nowIso
-    };
-    if (stampedData.user) {
-      const existingIdx = store.accounts.findIndex(a => a.email && a.email.trim().toLowerCase() === normalizedEmail);
-      if (existingIdx === -1) {
-        store.accounts.push(stampedData.user);
-      } else {
-        store.accounts[existingIdx] = { ...store.accounts[existingIdx], ...stampedData.user };
-      }
-    }
-    await saveMasterCloudStore(store);
-  } catch (e) {
-    console.warn("Failed saving user sync data to master cloud store:", e);
-  }
+    }).catch(() => {});
+  } catch (err) {}
 }
 
 // 6. Get Synced User Data Across Devices
@@ -731,17 +749,24 @@ export async function fetchSyncedDataCloud(email: string): Promise<any> {
 
   let fetchedData: any = null;
 
-  // 1. Try direct Supabase lookup if configured
-  if (isSupabaseConfigured()) {
-    try {
-      const supaData = await fetchSyncedDataFromSupabase(normalizedEmail);
-      if (supaData) fetchedData = supaData;
-    } catch (e) {
-      console.warn("Direct Supabase fetch synced data error:", e);
+  // 1. PRIMARY: Fetch directly from Google Cloud Firestore
+  try {
+    const firestoreData = await fetchFamilyDataFromFirestore(normalizedEmail);
+    if (firestoreData) {
+      fetchedData = {
+        user: firestoreData.user,
+        childrenProfiles: firestoreData.childrenProfiles || [],
+        missions: firestoreData.missions || [],
+        lastSyncedAt: new Date(firestoreData.lastSyncTimestamp || Date.now()).toISOString(),
+        lastSyncTimestamp: firestoreData.lastSyncTimestamp || Date.now(),
+        version: firestoreData.version || 2
+      };
     }
+  } catch (e) {
+    console.warn("[FirebaseSync] fetchSyncedDataCloud Firestore error:", e);
   }
 
-  // 2. Try Local/Server API with Cache-Busting
+  // 2. Secondary: Try Local/Server API with Cache-Busting
   if (!fetchedData) {
     try {
       const res = await fetch(`/api/sync/get?email=${encodeURIComponent(normalizedEmail)}&_t=${Date.now()}`, {
@@ -759,33 +784,24 @@ export async function fetchSyncedDataCloud(email: string): Promise<any> {
           fetchedData = result.data;
         }
       }
-    } catch (e) {
-      // Fallthrough to master cloud store
-    }
-  }
-
-  // 3. Master Cloud Store Direct Lookup Fallback
-  if (!fetchedData) {
-    try {
-      const store = await fetchMasterCloudStore();
-      fetchedData = store.syncedData[normalizedEmail] || null;
     } catch (e) {}
   }
 
   let finalPayload: any = null;
 
   if (fetchedData && localVaultData) {
-    const fetchedTime = fetchedData.lastSyncedAt ? new Date(fetchedData.lastSyncedAt).getTime() : 0;
-    const localTime = localVaultData.lastSyncedAt ? new Date(localVaultData.lastSyncedAt).getTime() : 0;
+    const fetchedTime = fetchedData.lastSyncTimestamp || (fetchedData.lastSyncedAt ? new Date(fetchedData.lastSyncedAt).getTime() : 0);
+    const localTime = localVaultData.lastSyncTimestamp || (localVaultData.lastSyncedAt ? new Date(localVaultData.lastSyncedAt).getTime() : 0);
 
-    // If local mutation is newer than fetched data, NEVER overwrite local state!
-    if (localTime > fetchedTime) {
+    // If local mutation is newer than fetched data, preserve local mutations and push to Firestore
+    if (localTime > fetchedTime && (localTime - fetchedTime) < 60000) {
       finalPayload = localVaultData;
-      // Resend local vault to server so server catches up
-      fetch("/api/sync/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: normalizedEmail, data: localVaultData })
+      saveFamilyDataToFirestore(normalizedEmail, {
+        user: localVaultData.user,
+        childrenProfiles: localVaultData.childrenProfiles || [],
+        missions: localVaultData.missions || [],
+        lastSyncTimestamp: localTime,
+        version: 2
       }).catch(() => {});
     } else {
       finalPayload = fetchedData;

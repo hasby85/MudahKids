@@ -28,6 +28,7 @@ import {
   fetchSyncedDataCloud,
   mergeChildProfileObjects
 } from "../services/cloudAuthSync";
+import { subscribeToFamilyData } from "../lib/firebaseSync";
 
 interface AppContextType {
   language: Language;
@@ -531,12 +532,79 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }).catch(() => {});
   }, []);
 
-  // Periodic polling & mobile event listeners (focus, visibilitychange, pageshow, online) for continuous real-time sync
+  // Real-time Firestore sync & periodic polling & mobile event listeners (focus, visibilitychange, pageshow, online)
   useEffect(() => {
     if (!isInitialized || !user?.email) return;
 
     // Initial force sync on mount
     syncLatestCloudData(user.email, true);
+
+    // 1. Live real-time Firestore multi-device listener
+    const unsubscribeFirestore = subscribeToFamilyData(user.email, (incomingPayload) => {
+      if (!incomingPayload || !user) return;
+      // Do not overwrite if local user is actively making changes
+      if (isLocalMutationPendingRef.current || (Date.now() - lastLocalMutationTimeRef.current < 5000)) {
+        return;
+      }
+
+      const currentUserId = user.id;
+      const currentUserEmail = user.email.trim().toLowerCase();
+
+      if (Array.isArray(incomingPayload.childrenProfiles)) {
+        const validProfiles = incomingPayload.childrenProfiles.filter((cp: ChildProfile) => {
+          if (!cp || !cp.id || deletedChildIdsRef.current.has(cp.id)) return false;
+          if (cp.parentId && cp.parentId !== currentUserId && cp.parentId !== user.email && cp.parentId !== currentUserEmail) {
+            return false;
+          }
+          return true;
+        });
+
+        setChildrenProfiles((currentLocal) => {
+          const cloudMap = new Map<string, ChildProfile>();
+          validProfiles.forEach((cp) => { if (cp?.id) cloudMap.set(cp.id, cp); });
+
+          const mergedList: ChildProfile[] = validProfiles.map((cp: ChildProfile) => {
+            const local = currentLocal.find((p) => p.id === cp.id);
+            if (!local) return { ...cp, parentId: currentUserId };
+            const merged = mergeChildProfileObjects(local, cp);
+            return { ...merged, parentId: currentUserId };
+          });
+
+          currentLocal.forEach((localChild) => {
+            if (
+              localChild &&
+              localChild.id &&
+              !cloudMap.has(localChild.id) &&
+              !deletedChildIdsRef.current.has(localChild.id)
+            ) {
+              mergedList.push(localChild);
+            }
+          });
+
+          return mergedList;
+        });
+
+        if (validProfiles[0]?.id) {
+          setActiveChildId((prev) => prev || validProfiles[0].id);
+        }
+      }
+
+      if (Array.isArray(incomingPayload.missions) && incomingPayload.missions.length > 0) {
+        setMissions((currentMissions) => {
+          const missionMap = new Map<string, Mission>();
+          currentMissions.forEach((m) => missionMap.set(m.id, m));
+          incomingPayload.missions.forEach((cm: Mission) => {
+            const existing = missionMap.get(cm.id);
+            if (!existing) {
+              missionMap.set(cm.id, cm);
+            } else if (existing.status !== cm.status && cm.status === "approved") {
+              missionMap.set(cm.id, cm);
+            }
+          });
+          return Array.from(missionMap.values());
+        });
+      }
+    });
 
     const interval = setInterval(() => {
       syncLatestCloudData(user.email);
@@ -554,6 +622,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     document.addEventListener("visibilitychange", handleMobileResume);
 
     return () => {
+      unsubscribeFirestore();
       clearInterval(interval);
       window.removeEventListener("focus", handleMobileResume);
       window.removeEventListener("pageshow", handleMobileResume);
