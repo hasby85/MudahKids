@@ -48,8 +48,6 @@ interface GameMetadata {
   coinPrice: number;
 }
 
-export const FULL_MODULE_PASS_PRICE = 750; // Discounted combo pass (vs 1,680 total if bought individually)
-
 const GAME_CATALOGUE: GameMetadata[] = [
   {
     id: "find-match",
@@ -171,10 +169,9 @@ export const GamesModule: React.FC = () => {
   const [activeGameId, setActiveGameId] = useState<GameId | null>(null);
   const [selectedFilter, setSelectedFilter] = useState<"semua" | "logik" | "bahasa" | "visual">("semua");
 
-  // Purchase Modal State
+  // Purchase Modal State (Single Game Purchase)
   const [purchaseModal, setPurchaseModal] = useState<{
-    type: "single" | "all";
-    game?: GameMetadata;
+    game: GameMetadata;
     price: number;
   } | null>(null);
 
@@ -228,33 +225,6 @@ export const GamesModule: React.FC = () => {
 
     gameAudio.playReward();
     showToast(`🎉 Tahniah! Permainan "${game.title}" berjaya dibuka dengan ${game.coinPrice} Syiling!`, "success");
-    setPurchaseModal(null);
-  };
-
-  // Handle full module pass purchase with coins
-  const handleConfirmBuyFullPass = () => {
-    if (!activeChild) return;
-    const currentCoins = activeChild.coins || 0;
-    if (currentCoins < FULL_MODULE_PASS_PRICE) {
-      gameAudio.playWrong();
-      showToast(`Syiling tidak mencukupi! Anda perlukan ${FULL_MODULE_PASS_PRICE - currentCoins} syiling lagi untuk Pas Penuh.`, "error");
-      return;
-    }
-
-    const newCoins = currentCoins - FULL_MODULE_PASS_PRICE;
-    const allGameIds = GAME_CATALOGUE.map((g) => g.id);
-
-    updateChildProfile({
-      coins: newCoins,
-      gamesProgress: {
-        ...gamesProgress,
-        isModuleUnlocked: true,
-        unlockedGameIds: allGameIds
-      }
-    });
-
-    gameAudio.playReward();
-    showToast(`🎉 Luar Biasa! Pas Lengkap Semua 8 Permainan Minda Berjaya Dibuka! Selamat bermain!`, "success");
     setPurchaseModal(null);
   };
 
@@ -446,7 +416,7 @@ export const GamesModule: React.FC = () => {
               {isModuleFullyUnlocked ? (
                 <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-600 text-white text-xs font-black shadow-xs">
                   <Unlock className="w-3.5 h-3.5" />
-                  Akses Penuh Terbuka
+                  Semua 8 Permainan Dimiliki
                 </div>
               ) : (
                 <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-stone-900 text-amber-300 text-xs font-black shadow-xs">
@@ -461,7 +431,7 @@ export const GamesModule: React.FC = () => {
             </h1>
 
             <p className="text-xs sm:text-sm font-bold text-stone-900/90 leading-relaxed">
-              Buka permainan kegemaran anda menggunakan syiling emas yang diperoleh daripada amalan solat dan tugasan harian. Latih daya ingatan, logik, dan bahasa sambil kumpul bintang!
+              Buka permainan kegemaran anda satu per satu menggunakan syiling emas yang diperoleh daripada amalan solat dan tugasan harian. Latih daya ingatan, logik, dan bahasa sambil kumpul bintang!
             </p>
 
             {/* Parent Gift Full Access Shortcut */}
@@ -514,67 +484,23 @@ export const GamesModule: React.FC = () => {
         </div>
       </div>
 
-      {/* VIP Full Module Pass Promo Banner (if not fully unlocked) */}
-      {!isModuleFullyUnlocked && (
-        <div className="bg-gradient-to-r from-stone-900 via-stone-800 to-amber-950 text-white p-5 sm:p-6 rounded-3xl border-2 border-amber-400/40 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-amber-400 text-stone-950 flex items-center justify-center font-black text-3xl shadow-md shrink-0">
-              🎟️
-            </div>
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="bg-amber-400 text-stone-950 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase">
-                  Pakej Jimat VIP
-                </span>
-                <span className="text-amber-300 text-xs font-extrabold">
-                  Jimat 930 Syiling! (750 🪙 vs 1,680 🪙 individu)
-                </span>
-              </div>
-              <h3 className="text-lg sm:text-xl font-black text-white">
-                Buka Akses Penuh Semua 8 Permainan Sekaligus
-              </h3>
-              <p className="text-xs text-stone-300">
-                Ganjaran istimewa untuk anak soleh & berdisiplin: Kumpul syiling daripada Solat 5 Waktu & amalan harian untuk Pas VIP Semua Permainan!
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={() => {
-              gameAudio.playClick();
-              setPurchaseModal({
-                type: "all",
-                price: FULL_MODULE_PASS_PRICE
-              });
-            }}
-            className="px-5 py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs sm:text-sm shadow-md transition-all flex items-center gap-2 cursor-pointer shrink-0 hover:scale-103"
-          >
-            <Coins className="w-4 h-4 fill-stone-950" />
-            <span>Beli Pas Penuh ({FULL_MODULE_PASS_PRICE} 🪙)</span>
-          </button>
-        </div>
-      )}
-
       {/* Motivation & Discipline Objective Card */}
       <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-sky-50 p-3.5 sm:p-4 rounded-2xl border-2 border-emerald-200/80 flex flex-wrap items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2.5">
           <span className="text-xl">🕌</span>
           <div>
             <div className="font-black text-emerald-950">
-              Misi Disiplin & Anak Soleh: Usaha Kumpul Syiling
+              Misi Disiplin & Anak Soleh: Terokai Satu Per Satu Permainan
             </div>
             <div className="text-[11px] font-bold text-stone-600">
-              Nilai syiling dirancang khas agar anak-anak berusaha gigih mendirikan Solat 5 Waktu, mengaji Al-Quran/Iqra & berbakti kepada ibu bapa!
+              Beli dan terokai permainan satu demi satu menggunakan syiling hasil usaha Solat 5 Waktu, mengaji Al-Quran/Iqra & berbakti kepada ibu bapa!
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-2 text-[11px] font-black text-emerald-800">
-          <span className="bg-white px-2.5 py-1 rounded-xl border border-emerald-200 shadow-2xs">
-            150 - 300 🪙 / Game
-          </span>
-          <span className="bg-white px-2.5 py-1 rounded-xl border border-emerald-200 shadow-2xs">
-            Pas Penuh: 750 🪙
+          <span className="bg-white px-3 py-1.5 rounded-xl border border-emerald-200 shadow-2xs">
+            🪙 150 - 300 Syiling / Permainan
           </span>
         </div>
       </div>
@@ -774,7 +700,6 @@ export const GamesModule: React.FC = () => {
                       onClick={() => {
                         gameAudio.playClick();
                         setPurchaseModal({
-                          type: "single",
                           game,
                           price: game.coinPrice
                         });
@@ -813,19 +738,15 @@ export const GamesModule: React.FC = () => {
             {/* Product Details Box */}
             <div className="p-4 rounded-2xl bg-amber-50 border-2 border-amber-200 text-center space-y-2">
               <div className="w-16 h-16 rounded-2xl bg-white mx-auto flex items-center justify-center text-3xl shadow-sm border border-amber-200">
-                {purchaseModal.type === "all" ? "🎟️" : purchaseModal.game?.icon || "🎮"}
+                {purchaseModal.game.icon}
               </div>
 
               <h3 className="text-lg font-black text-stone-900">
-                {purchaseModal.type === "all"
-                  ? "Pas VIP Penuh (Akses Semua 8 Permainan)"
-                  : purchaseModal.game?.title}
+                {purchaseModal.game.title}
               </h3>
 
               <p className="text-xs font-bold text-stone-600">
-                {purchaseModal.type === "all"
-                  ? "Buka kunci kesemua 8 permainan minda serentak dengan harga jimat!"
-                  : purchaseModal.game?.description}
+                {purchaseModal.game.description}
               </p>
             </div>
 
@@ -858,11 +779,7 @@ export const GamesModule: React.FC = () => {
               <div className="space-y-3">
                 <button
                   onClick={() => {
-                    if (purchaseModal.type === "all") {
-                      handleConfirmBuyFullPass();
-                    } else if (purchaseModal.game) {
-                      handleConfirmBuySingle(purchaseModal.game);
-                    }
+                    handleConfirmBuySingle(purchaseModal.game);
                   }}
                   className="w-full py-3.5 rounded-2xl bg-amber-400 hover:bg-amber-500 text-stone-950 font-black text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer hover:scale-102"
                 >

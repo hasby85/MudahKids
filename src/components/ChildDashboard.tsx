@@ -376,8 +376,8 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
                 </div>
                 <div>
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-stone-900 text-amber-300 text-[10px] font-black uppercase tracking-wider">
-                    {isModuleFullyUnlocked ? (
-                      <span>Akses VIP Terbuka • 8 Permainan Minda</span>
+                    {isModuleFullyUnlocked || unlockedCount >= 8 ? (
+                      <span>Semua 8 Permainan Dibuka • Tahniah!</span>
                     ) : unlockedCount > 0 ? (
                       <span>{unlockedCount}/8 Permainan Dibuka • Latih Minda</span>
                     ) : (

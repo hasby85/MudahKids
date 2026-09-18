@@ -79,19 +79,19 @@
             "id": "pet-1789488773551",
             "type": "cat",
             "name": "Bella",
-            "level": 5,
-            "xp": 220,
-            "hunger": 15,
-            "happiness": 17,
-            "sleep": 15,
+            "level": 8,
+            "xp": 350,
+            "hunger": 76,
+            "happiness": 82,
+            "sleep": 82,
             "evolutionStage": 3
           },
           "level": 1,
           "xp": 1855,
-          "coins": 1163,
-          "diamonds": 9,
+          "coins": 1257,
+          "diamonds": 13,
           "energy": 100,
-          "streak": 3,
+          "streak": 5,
           "unlockedWorlds": [
             "kampung"
           ],
@@ -730,8 +730,8 @@
       "activeChildId": "child-1789488773551",
       "missions": [],
       "language": "bm",
-      "lastSyncedAt": "2026-09-18T03:02:28.365Z",
-      "lastSyncTimestamp": 1789700548104
+      "lastSyncedAt": "2026-09-18T03:58:43.451Z",
+      "lastSyncTimestamp": 1789703923122
     },
     "shahirah_mahfuzah@yahoo.com": {
       "user": {
