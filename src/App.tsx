@@ -15,12 +15,13 @@ import { JakimReferenceModule } from "./components/JakimReferenceModule";
 import { HafazanLearningModule } from "./components/HafazanLearningModule";
 import { QuranIqraDiary } from "./components/QuranIqraDiary";
 import { SolatTrackerModule } from "./components/SolatTrackerModule";
+import { GamesModule } from "./components/GamesModule";
 import { DocumentationModal } from "./components/DocumentationModal";
 import { MembershipPlan } from "./types";
 
 const MainContent: React.FC = () => {
-  const { role, user, toast } = useApp();
-  const [view, setView] = useState<"landing" | "sales" | "app" | "solat" | "jawi" | "hafazan" | "world" | "shop" | "jakim" | "diari">("sales");
+  const { role, user, toast, activeChild } = useApp();
+  const [view, setView] = useState<"landing" | "sales" | "app" | "solat" | "jawi" | "hafazan" | "world" | "shop" | "jakim" | "diari" | "permainan">("sales");
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
@@ -194,6 +195,29 @@ const MainContent: React.FC = () => {
                       <span className="text-lg">📘</span>
                       <span className="truncate">Panduan & Rujukan</span>
                     </button>
+
+                    <button
+                      onClick={() => setView("permainan")}
+                      className={`px-3.5 py-3 rounded-2xl text-xs md:text-sm font-extrabold flex items-center justify-between gap-2 transition-all cursor-pointer border text-left ${
+                        view === "permainan"
+                          ? "bg-amber-400 text-stone-950 border-amber-500 shadow-sm scale-102"
+                          : "bg-amber-50 text-amber-900 border-amber-200 hover:bg-amber-100"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 truncate">
+                        <span className="text-lg">🎮</span>
+                        <span className="truncate">Modul Permainan (8)</span>
+                      </div>
+                      {!(activeChild?.gamesProgress?.isModuleUnlocked || (activeChild?.gamesProgress?.unlockedGameIds && activeChild.gamesProgress.unlockedGameIds.length > 0)) ? (
+                        <span className="text-[10px] bg-stone-900 text-amber-300 font-black px-1.5 py-0.5 rounded-md shrink-0">
+                          🔒 🪙 Beli
+                        </span>
+                      ) : (
+                        <span className="text-[10px] bg-emerald-600 text-white font-black px-1.5 py-0.5 rounded-md shrink-0">
+                          🔓 Terbuka
+                        </span>
+                      )}
+                    </button>
                   </div>
                 </div>
               </aside>
@@ -210,6 +234,7 @@ const MainContent: React.FC = () => {
                         onNavigateToLeaderboard={() => setView("shop")}
                         onNavigateToJawi={() => setView("jawi")}
                         onNavigateToHafazan={() => setView("hafazan")}
+                        onNavigateToGames={() => setView("permainan")}
                       />
                     )}
                   </>
@@ -222,6 +247,7 @@ const MainContent: React.FC = () => {
                 {view === "world" && <NusantaraWorldMap />}
                 {view === "shop" && <ShopAndLeaderboard />}
                 {view === "jakim" && <JakimReferenceModule />}
+                {view === "permainan" && <GamesModule />}
               </div>
             </div>
           </div>

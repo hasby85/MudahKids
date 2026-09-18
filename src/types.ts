@@ -84,12 +84,41 @@ export interface ChildProfile {
   };
   quranIqraProgress?: QuranIqraProgress;
   solatProgress?: SolatProgress;
+  gamesProgress?: ChildGamesProgress;
   activeTitle?: string;
   customReward?: {
     title: string;
     targetXp: number;
     unlocked?: boolean;
   };
+}
+
+export type GameId =
+  | "find-match"
+  | "memory-card"
+  | "picture-quiz"
+  | "word-search"
+  | "spot-difference"
+  | "coding-puzzle"
+  | "kids-sudoku"
+  | "crossword";
+
+export interface GameRecord {
+  stars: number; // 1 to 3
+  highScore: number;
+  timesCompleted: number;
+  lastPlayed: string;
+}
+
+export interface ChildGamesProgress {
+  totalStars: number;
+  unlockedLevel: number;
+  gamesPlayedCount: number;
+  gameStats: Partial<Record<GameId, GameRecord>>;
+  dailyStreak: number;
+  lastPlayedDate?: string;
+  isModuleUnlocked?: boolean; // if true, whole games arcade is unlocked
+  unlockedGameIds?: GameId[]; // individual games bought with coins
 }
 
 export interface Mission {

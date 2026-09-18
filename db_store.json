@@ -62,11 +62,676 @@
         "password": "hasby123",
         "createdAt": "2026-08-10T12:46:19.575Z"
       },
-      "childrenProfiles": [],
-      "activeChildId": "",
+      "childrenProfiles": [
+        {
+          "id": "child-1789488773551",
+          "parentId": "u-1786365979575",
+          "name": "Irfan",
+          "age": 13,
+          "gender": "boy",
+          "avatar": {
+            "clothing": "Baju Melayu",
+            "headwear": "Songkok",
+            "accessory": "None",
+            "color": "#059669"
+          },
+          "pet": {
+            "id": "pet-1789488773551",
+            "type": "cat",
+            "name": "Bella",
+            "level": 5,
+            "xp": 220,
+            "hunger": 15,
+            "happiness": 17,
+            "sleep": 15,
+            "evolutionStage": 3
+          },
+          "level": 1,
+          "xp": 1855,
+          "coins": 1163,
+          "diamonds": 9,
+          "energy": 100,
+          "streak": 3,
+          "unlockedWorlds": [
+            "kampung"
+          ],
+          "builtStructures": [],
+          "inventory": [],
+          "solatProgress": {
+            "history": [
+              {
+                "id": "solat-2026-09-17",
+                "date": "2026-09-17",
+                "isDayExcused": false,
+                "fardhu": {
+                  "subuh": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "missed",
+                    "qadhaDone": false
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "isyak": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "none",
+                    "qadhaDone": false
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-17T15:03:11.738Z"
+              },
+              {
+                "id": "solat-2026-09-16",
+                "date": "2026-09-16",
+                "isDayExcused": false,
+                "fardhu": {
+                  "subuh": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "missed",
+                    "qadhaDone": true,
+                    "qadhaDate": "2026-09-16"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "isyak": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-17T15:02:31.706Z"
+              }
+            ],
+            "totalFardhuCount": 7,
+            "totalSunatCount": 0,
+            "currentStreak": 0,
+            "qadhaPending": {
+              "subuh": 1,
+              "zohor": 0,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 0
+            },
+            "qadhaCompleted": {
+              "subuh": 1,
+              "zohor": 0,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 0
+            },
+            "qadhaHistory": [
+              {
+                "id": "qadha-1789556688983-ebh4",
+                "prayerKey": "subuh",
+                "prayerName": "Subuh",
+                "originalMissedDate": "2026-09-16",
+                "dateReplaced": "2026-09-16",
+                "timestamp": "19:04",
+                "note": "Solat Subuh (Tertinggal pada: Rabu, 16 September 2026) telah selesai diqadha pada Rabu, 16 September 2026",
+                "rewardEarned": {
+                  "xp": 35,
+                  "coins": 15
+                }
+              }
+            ]
+          },
+          "jawiProgress": {
+            "unlockedLevel": 3,
+            "completedLevels": [
+              1,
+              2
+            ],
+            "levelActivities": {
+              "1": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              },
+              "2": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              }
+            }
+          },
+          "gamesProgress": {
+            "totalStars": 20,
+            "unlockedLevel": 1,
+            "gamesPlayedCount": 11,
+            "gameStats": {
+              "find-match": {
+                "stars": 3,
+                "highScore": 461,
+                "timesCompleted": 3,
+                "lastPlayed": "2026-09-18T02:34:09.862Z"
+              },
+              "memory-card": {
+                "stars": 2,
+                "highScore": 346,
+                "timesCompleted": 1,
+                "lastPlayed": "2026-09-18T02:15:50.101Z"
+              },
+              "picture-quiz": {
+                "stars": 3,
+                "highScore": 700,
+                "timesCompleted": 1,
+                "lastPlayed": "2026-09-18T02:16:34.513Z"
+              },
+              "word-search": {
+                "stars": 3,
+                "highScore": 384,
+                "timesCompleted": 1,
+                "lastPlayed": "2026-09-18T02:17:50.423Z"
+              },
+              "spot-difference": {
+                "stars": 3,
+                "highScore": 529,
+                "timesCompleted": 2,
+                "lastPlayed": "2026-09-18T02:32:57.207Z"
+              },
+              "coding-puzzle": {
+                "stars": 3,
+                "highScore": 620,
+                "timesCompleted": 2,
+                "lastPlayed": "2026-09-18T02:33:10.217Z"
+              },
+              "kids-sudoku": {
+                "stars": 3,
+                "highScore": 444,
+                "timesCompleted": 1,
+                "lastPlayed": "2026-09-18T02:21:46.997Z"
+              }
+            },
+            "dailyStreak": 1
+          }
+        },
+        {
+          "id": "child-1789488789615",
+          "parentId": "u-1786365979575",
+          "name": "Ulfah",
+          "age": 11,
+          "gender": "girl",
+          "avatar": {
+            "clothing": "Baju Kurung",
+            "headwear": "Hijab",
+            "accessory": "None",
+            "color": "#059669"
+          },
+          "pet": {
+            "id": "pet-1789488789615",
+            "type": "rabbit",
+            "name": "Kitty",
+            "level": 5,
+            "xp": 230,
+            "hunger": 15,
+            "happiness": 15,
+            "sleep": 15,
+            "evolutionStage": 3
+          },
+          "level": 1,
+          "xp": 435,
+          "coins": 364,
+          "diamonds": 11,
+          "energy": 100,
+          "streak": 4,
+          "unlockedWorlds": [
+            "kampung"
+          ],
+          "builtStructures": [],
+          "inventory": [],
+          "solatProgress": {
+            "history": [
+              {
+                "id": "solat-2026-09-17",
+                "date": "2026-09-17",
+                "isDayExcused": false,
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "isyak": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "none",
+                    "qadhaDone": false
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-17T15:05:34.691Z"
+              },
+              {
+                "id": "solat-2026-09-16",
+                "date": "2026-09-16",
+                "isDayExcused": false,
+                "fardhu": {
+                  "subuh": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "missed",
+                    "qadhaDone": true,
+                    "qadhaDate": "2026-09-16"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "isyak": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "missed",
+                    "qadhaDone": false
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-17T15:04:47.963Z"
+              }
+            ],
+            "totalFardhuCount": 7,
+            "totalSunatCount": 0,
+            "currentStreak": 0,
+            "qadhaPending": {
+              "subuh": 0,
+              "zohor": 0,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 1
+            },
+            "qadhaCompleted": {
+              "subuh": 1,
+              "zohor": 0,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 0
+            },
+            "qadhaHistory": [
+              {
+                "id": "qadha-1789556629571-jn3b",
+                "prayerKey": "subuh",
+                "prayerName": "Subuh",
+                "originalMissedDate": "2026-09-16",
+                "dateReplaced": "2026-09-16",
+                "timestamp": "19:03",
+                "note": "Solat Subuh (Tertinggal pada: Rabu, 16 September 2026) telah selesai diqadha pada Rabu, 16 September 2026",
+                "rewardEarned": {
+                  "xp": 35,
+                  "coins": 15
+                }
+              }
+            ]
+          },
+          "quranIqraProgress": {
+            "currentType": "quran",
+            "currentIqraLevel": 1,
+            "currentIqraPage": 1,
+            "currentQuranJuzuk": 9,
+            "currentQuranSurahName": "Al-A'raf",
+            "currentQuranPage": 174,
+            "currentQuranAyat": 187,
+            "lastUpdated": "2026-09-16T12:02:49.875Z",
+            "history": [
+              {
+                "id": "log-1789560169875",
+                "type": "quran",
+                "title": "Al-Quran: Surah Al-A'raf (Juzuk 9), Muka Surat 174, Ayat 187",
+                "quranJuzuk": 9,
+                "quranSurahName": "Al-A'raf",
+                "quranPage": 174,
+                "quranAyat": 187,
+                "completedAt": "2026-09-16T12:02:49.875Z"
+              },
+              {
+                "id": "log-reset-1789560015611",
+                "type": "iqra",
+                "title": "🎉 KHATAM & RESET SEMUA: Kitaran Iqra & Al-Quran Baru Dimulakan",
+                "iqraLevel": 1,
+                "iqraPage": 1,
+                "quranJuzuk": 1,
+                "quranSurahName": "Al-Fatihah",
+                "quranPage": 1,
+                "quranAyat": 1,
+                "completedAt": "2026-09-16T12:00:15.611Z",
+                "parentNote": "Alhamdulillah, telah tamat bacaan. Bermula kitaran baru!"
+              },
+              {
+                "id": "log-init",
+                "type": "iqra",
+                "title": "Iqra 5 - Muka Surat 3",
+                "iqraLevel": 5,
+                "iqraPage": 3,
+                "completedAt": "2026-09-16T12:00:15.088Z",
+                "parentNote": "Awal perintis bacaan tajwid lancar."
+              }
+            ]
+          }
+        },
+        {
+          "id": "child-1789488804883",
+          "parentId": "u-1786365979575",
+          "name": "Afiq",
+          "age": 9,
+          "gender": "boy",
+          "avatar": {
+            "clothing": "Baju Melayu",
+            "headwear": "Songkok",
+            "accessory": "None",
+            "color": "#059669"
+          },
+          "pet": {
+            "id": "pet-1789488804883",
+            "type": "bird",
+            "name": "Yamal",
+            "level": 5,
+            "xp": 215,
+            "hunger": 15,
+            "happiness": 15,
+            "sleep": 15,
+            "evolutionStage": 3
+          },
+          "level": 1,
+          "xp": 215,
+          "coins": 89,
+          "diamonds": 11,
+          "energy": 100,
+          "streak": 4,
+          "unlockedWorlds": [
+            "kampung"
+          ],
+          "builtStructures": [
+            {
+              "type": "Fountain",
+              "name": "Air Pancut",
+              "x": 2,
+              "y": 3,
+              "id": "b-1789559870585"
+            },
+            {
+              "type": "School",
+              "name": "Sekolah Pondok",
+              "x": 0,
+              "y": 2,
+              "id": "b-1789559880828"
+            },
+            {
+              "type": "Mosque",
+              "name": "Masjid Minangkabau",
+              "x": 0,
+              "y": 3,
+              "id": "b-1789559893039"
+            },
+            {
+              "type": "House",
+              "name": "Rumah Panggung",
+              "x": 1,
+              "y": 3,
+              "id": "b-1789559901231"
+            },
+            {
+              "type": "Bridge",
+              "name": "Jambatan Kayu",
+              "x": 2,
+              "y": 0,
+              "id": "b-1789559908493"
+            }
+          ],
+          "inventory": [],
+          "solatProgress": {
+            "history": [
+              {
+                "id": "solat-2026-09-17",
+                "date": "2026-09-17",
+                "isDayExcused": false,
+                "fardhu": {
+                  "subuh": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "missed",
+                    "qadhaDone": false
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "maghrib": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "missed",
+                    "qadhaDone": false
+                  },
+                  "isyak": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "none",
+                    "qadhaDone": false
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-17T15:04:12.643Z"
+              },
+              {
+                "id": "solat-2026-09-16",
+                "date": "2026-09-16",
+                "isDayExcused": false,
+                "fardhu": {
+                  "subuh": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "missed",
+                    "qadhaDone": false
+                  },
+                  "zohor": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "missed",
+                    "qadhaDone": false
+                  },
+                  "asar": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "missed",
+                    "qadhaDone": false
+                  },
+                  "maghrib": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "missed",
+                    "qadhaDone": false
+                  },
+                  "isyak": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "missed",
+                    "qadhaDone": false
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-17T15:03:45.208Z"
+              }
+            ],
+            "totalFardhuCount": 2,
+            "totalSunatCount": 0,
+            "currentStreak": 0,
+            "qadhaPending": {
+              "subuh": 2,
+              "zohor": 1,
+              "asar": 1,
+              "maghrib": 2,
+              "isyak": 1
+            },
+            "qadhaCompleted": {
+              "subuh": 0,
+              "zohor": 0,
+              "asar": 0,
+              "maghrib": 0,
+              "isyak": 0
+            },
+            "qadhaHistory": []
+          },
+          "jawiProgress": {
+            "unlockedLevel": 1,
+            "completedLevels": [],
+            "levelActivities": {
+              "1": {
+                "tracing": true
+              }
+            }
+          },
+          "hafazanProgress": {
+            "completedSurahIds": [
+              "surah-1"
+            ],
+            "verseProgress": {
+              "surah-1": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ]
+            }
+          }
+        }
+      ],
+      "activeChildId": "child-1789488773551",
       "missions": [],
       "language": "bm",
-      "lastSyncedAt": "2026-09-12T12:23:42.239Z"
+      "lastSyncedAt": "2026-09-18T03:02:28.365Z",
+      "lastSyncTimestamp": 1789700548104
     },
     "shahirah_mahfuzah@yahoo.com": {
       "user": {

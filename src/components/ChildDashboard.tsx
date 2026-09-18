@@ -28,6 +28,7 @@ interface ChildDashboardProps {
   onNavigateToLeaderboard: () => void;
   onNavigateToJawi: () => void;
   onNavigateToHafazan?: () => void;
+  onNavigateToGames?: () => void;
 }
 
 export const ChildDashboard: React.FC<ChildDashboardProps> = ({
@@ -35,7 +36,8 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
   onNavigateToShop,
   onNavigateToLeaderboard,
   onNavigateToJawi,
-  onNavigateToHafazan
+  onNavigateToHafazan,
+  onNavigateToGames
 }) => {
   const {
     language,
@@ -323,29 +325,91 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
             </button>
 
             {/* Hub Quick Links */}
-            <div className="grid grid-cols-3 gap-2 pt-1 text-[10px] font-bold">
+            <div className="grid grid-cols-4 gap-1.5 pt-1 text-[10px] font-bold">
               <button
                 onClick={onNavigateToWorld}
-                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-center transition-colors cursor-pointer"
+                className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-center transition-colors cursor-pointer"
               >
                 {language === "en" ? "🗺️ World" : "🗺️ Dunia"}
               </button>
               <button
                 onClick={onNavigateToShop}
-                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-center transition-colors cursor-pointer"
+                className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-center transition-colors cursor-pointer"
               >
                 {language === "en" ? "🛍️ Shop" : "🛍️ Kedai"}
               </button>
               <button
                 onClick={onNavigateToLeaderboard}
-                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-center transition-colors cursor-pointer"
+                className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-center transition-colors cursor-pointer"
               >
                 {language === "en" ? "🏆 Ranks" : "🏆 Carta"}
               </button>
+              {onNavigateToGames && (
+                <button
+                  onClick={onNavigateToGames}
+                  className="p-1.5 rounded-xl bg-amber-400 text-stone-950 font-black text-center shadow-xs hover:bg-amber-300 transition-all cursor-pointer"
+                >
+                  🎮 Game
+                </button>
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Interactive Games Module Promo Card */}
+      {onNavigateToGames && (() => {
+        const isModuleFullyUnlocked = Boolean(activeChild.gamesProgress?.isModuleUnlocked);
+        const unlockedCount = isModuleFullyUnlocked
+          ? 8
+          : (activeChild.gamesProgress?.unlockedGameIds?.length || 0);
+
+        return (
+          <div
+            onClick={onNavigateToGames}
+            className="bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 rounded-3xl p-5 sm:p-6 text-stone-950 shadow-md border-2 border-amber-300 relative overflow-hidden cursor-pointer hover:shadow-lg transition-all group"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-4 relative z-10">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-white/95 text-stone-900 flex items-center justify-center font-black text-3xl shadow-md shrink-0 group-hover:scale-110 transition-transform">
+                  🎮
+                </div>
+                <div>
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-stone-900 text-amber-300 text-[10px] font-black uppercase tracking-wider">
+                    {isModuleFullyUnlocked ? (
+                      <span>Akses VIP Terbuka • 8 Permainan Minda</span>
+                    ) : unlockedCount > 0 ? (
+                      <span>{unlockedCount}/8 Permainan Dibuka • Latih Minda</span>
+                    ) : (
+                      <span>Buka dengan Syiling 🪙 • 8 Permainan Minda</span>
+                    )}
+                  </div>
+                  <h3 className="text-xl font-black text-stone-950 mt-1">
+                    Pusat Permainan Santai & Cabaran Minda
+                  </h3>
+                  <p className="text-xs font-bold text-stone-900/80">
+                    Beli dan buka permainan menggunakan syiling ganjaran: Cari & Padan, Kad Memori, Kuiz Bergambar, Cari Perkataan, Sudoku & Silang Kata!
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="bg-white/90 backdrop-blur-md px-3 py-2 rounded-2xl text-center">
+                  <div className="text-[10px] font-black uppercase text-stone-500">Bintang</div>
+                  <div className="text-sm font-black text-amber-600">
+                    ⭐ {activeChild.gamesProgress?.totalStars || 0}
+                  </div>
+                </div>
+
+                <div className="px-5 py-3 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white font-black text-xs shadow-md transition-all flex items-center gap-2 group-hover:translate-x-1">
+                  <span>{unlockedCount > 0 ? "Main Sekarang" : "Buka dengan Syiling"}</span>
+                  <span>{unlockedCount > 0 ? "▶️" : "🪙"}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Custom Family Target Reward Banner (e.g. Legoland Trip) */}
       {activeChild.customReward && (
