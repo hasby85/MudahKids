@@ -312,7 +312,7 @@ const LOCAL_STORAGE_KEY = "mudahkids_clean_app_v2";
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<Language>("bm");
-  const [role, setRole] = useState<Role>("parent");
+  const [role, setRole] = useState<Role>("child");
   const [parentPin, setParentPin] = useState<string>("1234");
   
   // Default clean initial state: no dummy user, no dummy children, no dummy missions
@@ -847,7 +847,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           activeChildId: "",
           missions: [],
           language,
-          role: "parent"
+          role: "child"
         };
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dataToSave));
       } else {
@@ -970,7 +970,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setActiveChildId(activeChildIdToSet);
     setMissions(validMissions);
     setLanguage(languageToSet);
-    setRole("parent");
+    // Default to mode anak (child) on login
+    setRole("child");
     setUser(loggedInUser);
 
     const initialHash = JSON.stringify({

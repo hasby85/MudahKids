@@ -128,30 +128,34 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
     <div className="space-y-8 pb-12">
       {/* Hero Interactive Card: Big Avatar & Pet Care */}
       <div className="relative overflow-hidden bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-800 text-white rounded-3xl p-6 md:p-8 shadow-xl border-2 border-emerald-500">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch relative z-10">
           
           {/* Column 1: Big Avatar & Outfit */}
-          <div className="flex flex-col items-center text-center space-y-3 bg-white/10 backdrop-blur-md p-4 rounded-3xl border border-white/20">
-            <div className="relative w-28 h-28 rounded-full bg-amber-100 border-4 border-amber-300 flex items-center justify-center text-5xl shadow-lg">
-              {activeChild.gender === "boy" ? "👦🏻" : "👧🏽"}
-              <span className="absolute -bottom-2 bg-amber-400 text-stone-900 text-[10px] font-black uppercase px-2 py-0.5 rounded-full shadow-xs">
-                {activeChild.avatar.clothing}
-              </span>
-            </div>
+          <div className="flex flex-col items-center justify-between text-center bg-white/10 backdrop-blur-md p-5 rounded-3xl border border-white/20 h-full space-y-4">
+            <div className="flex flex-col items-center space-y-3 w-full my-auto">
+              <div className="relative w-28 h-28 rounded-full bg-amber-100 border-4 border-amber-300 flex items-center justify-center text-5xl shadow-lg">
+                {activeChild.gender === "boy" ? "👦🏻" : "👧🏽"}
+                <span className="absolute -bottom-2 bg-amber-400 text-stone-900 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full shadow-xs">
+                  {activeChild.avatar.clothing}
+                </span>
+              </div>
 
-            <div>
-              <h2 className="text-xl font-black">{activeChild.name}</h2>
-              <p className="text-xs text-emerald-200">
-                {language === "en" ? "Young Hero" : "Pahlawan Muda"} • Level {activeChild.level}
-              </p>
+              <div>
+                <h2 className="text-xl font-black text-white">{activeChild.name}</h2>
+                <p className="text-xs text-emerald-200">
+                  {language === "en" ? "Young Hero" : "Pahlawan Muda"} • Level {activeChild.level}
+                </p>
+              </div>
             </div>
 
             {/* Streak Badge */}
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/90 text-stone-900 text-xs font-black shadow-2xs">
-              <Flame className="w-4 h-4 text-orange-600 fill-orange-600" />
-              <span>
-                🔥 {activeChild.streak} {language === "en" ? "Day Streak!" : "Hari Berturut-turut!"}
-              </span>
+            <div className="w-full pt-1">
+              <div className="inline-flex items-center justify-center gap-1.5 w-full py-2 px-3 rounded-2xl bg-amber-400 text-stone-900 text-xs font-black shadow-2xs">
+                <Flame className="w-4 h-4 text-orange-600 fill-orange-600" />
+                <span>
+                  🔥 {activeChild.streak} {language === "en" ? "Day Streak!" : "Hari Berturut-turut!"}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -186,7 +190,7 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
             else if ((pet.sleep || 100) < 40) moodBadge = "😴 Ngantuk";
 
             return (
-              <div className="bg-white/10 backdrop-blur-md p-4 rounded-3xl border border-white/20 space-y-3">
+              <div className="bg-white/10 backdrop-blur-md p-5 rounded-3xl border border-white/20 flex flex-col justify-between h-full space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
                     <span className="text-xs font-black uppercase tracking-wider text-amber-300">
@@ -201,7 +205,7 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
                   </span>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 my-auto">
                   <div className="w-16 h-16 rounded-2xl bg-amber-50 text-stone-900 flex items-center justify-center text-3xl shadow-md shrink-0 border-2 border-amber-300/50 relative">
                     <span>{petEmoji}</span>
                     <span className="absolute -bottom-1 -right-1 text-[9px] bg-stone-900 text-amber-300 font-black px-1.5 py-0.2 rounded-md">
@@ -252,19 +256,19 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
                 <div className="grid grid-cols-3 gap-1.5 pt-1">
                   <button
                     onClick={feedPet}
-                    className="py-1.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-stone-900 font-extrabold text-[11px] shadow-2xs cursor-pointer flex items-center justify-center gap-1 border border-amber-300 active:scale-95 transition-all"
+                    className="py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-stone-900 font-extrabold text-[11px] shadow-2xs cursor-pointer flex items-center justify-center gap-1 border border-amber-300 active:scale-95 transition-all"
                   >
                     <span>{language === "en" ? "🥩 Feed" : "🥩 Makan (-2🪙)"}</span>
                   </button>
                   <button
                     onClick={playWithPet}
-                    className="py-1.5 rounded-xl bg-sky-400 hover:bg-sky-500 text-stone-900 font-extrabold text-[11px] shadow-2xs cursor-pointer flex items-center justify-center gap-1 border border-sky-300 active:scale-95 transition-all"
+                    className="py-2 rounded-xl bg-sky-400 hover:bg-sky-500 text-stone-900 font-extrabold text-[11px] shadow-2xs cursor-pointer flex items-center justify-center gap-1 border border-sky-300 active:scale-95 transition-all"
                   >
                     <span>{language === "en" ? "🎾 Play" : "🎾 Main (+XP)"}</span>
                   </button>
                   <button
                     onClick={sleepPet}
-                    className="py-1.5 rounded-xl bg-purple-400 hover:bg-purple-500 text-stone-900 font-extrabold text-[11px] shadow-2xs cursor-pointer flex items-center justify-center gap-1 border border-purple-300 active:scale-95 transition-all"
+                    className="py-2 rounded-xl bg-purple-400 hover:bg-purple-500 text-stone-900 font-extrabold text-[11px] shadow-2xs cursor-pointer flex items-center justify-center gap-1 border border-purple-300 active:scale-95 transition-all"
                   >
                     <span>{language === "en" ? "💤 Sleep" : "💤 Tidur"}</span>
                   </button>
@@ -274,64 +278,62 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
           })()}
 
           {/* Column 3: Daily Reward & Quick Nav Buttons */}
-          <div className="bg-white/10 backdrop-blur-md p-4 rounded-3xl border border-white/20 space-y-3 flex flex-col justify-between">
-            <div className="space-y-1">
-              <h3 className="font-extrabold text-sm text-amber-300 flex items-center gap-1">
-                <Gift className="w-4 h-4" />
+          <div className="bg-white/10 backdrop-blur-md p-5 rounded-3xl border border-white/20 flex flex-col justify-between h-full space-y-4">
+            <div className="space-y-1.5">
+              <h3 className="font-extrabold text-sm text-amber-300 flex items-center gap-1.5">
+                <Gift className="w-4 h-4 shrink-0 text-amber-300" />
                 <span>{language === "en" ? "Daily Reward" : "Ganjaran Harian"} ({activeChild.name})</span>
               </h3>
-              <p className="text-[11px] text-emerald-100">
+              <p className="text-xs text-emerald-100 leading-snug">
                 {language === "en"
-                  ? "Claim +50 Coins & +2 Diamonds (once per child every day)!"
-                  : "Tuntut +50 Syiling & +2 Berlian (1x sehari untuk setiap anak)!"}
+                  ? "Claim +50 Coins & +2 Diamonds (1x per day)!"
+                  : "Tuntut +50 Syiling & +2 Berlian percuma setiap hari!"}
               </p>
             </div>
 
-            <button
-              onClick={handleClaimDailyReward}
-              disabled={isDailyClaimed}
-              className={`w-full py-2.5 rounded-2xl font-black text-xs shadow-md transition-all flex items-center justify-center gap-1.5 ${
-                isDailyClaimed
-                  ? "bg-white/20 text-emerald-100 cursor-not-allowed border border-white/20"
-                  : "bg-amber-400 hover:bg-amber-500 text-stone-900 cursor-pointer hover:scale-102"
-              }`}
-            >
-              <Gift className="w-4 h-4" />
-              <span>
-                {isDailyClaimed
-                  ? language === "en"
-                    ? "✓ Claimed Today (Ready Tomorrow)"
-                    : "✓ Selesai Dituntut (Kembali Esok)"
-                  : language === "en"
-                  ? "Tuntut Ganjaran Hari Ini (+50 🪙 +2 💎)"
-                  : "Tuntut Ganjaran Hari Ini (+50 🪙 +2 💎)"}
-              </span>
-            </button>
+            <div className="my-auto py-1">
+              <button
+                onClick={handleClaimDailyReward}
+                disabled={isDailyClaimed}
+                className={`w-full py-3 px-4 rounded-2xl font-black text-xs shadow-md transition-all flex items-center justify-center gap-2 text-center whitespace-nowrap ${
+                  isDailyClaimed
+                    ? "bg-white/20 text-emerald-100 cursor-not-allowed border border-white/20"
+                    : "bg-amber-400 hover:bg-amber-500 text-stone-900 cursor-pointer hover:scale-102 active:scale-98"
+                }`}
+              >
+                <Gift className="w-4 h-4 shrink-0" />
+                <span className="truncate">
+                  {isDailyClaimed
+                    ? (language === "en" ? "✓ Selesai Dituntut" : "✓ Selesai Dituntut")
+                    : (language === "en" ? "Tuntut Ganjaran Hari Ini" : "Tuntut Ganjaran Hari Ini")}
+                </span>
+              </button>
+            </div>
 
             {/* Hub Quick Links */}
-            <div className="grid grid-cols-4 gap-1.5 pt-1 text-[10px] font-bold">
+            <div className="grid grid-cols-4 gap-1.5 pt-1 text-[11px] font-bold">
               <button
                 onClick={onNavigateToWorld}
-                className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-center transition-colors cursor-pointer"
+                className="py-2 px-1 rounded-xl bg-white/10 hover:bg-white/20 text-center transition-colors cursor-pointer truncate"
               >
                 {language === "en" ? "🗺️ World" : "🗺️ Dunia"}
               </button>
               <button
                 onClick={onNavigateToShop}
-                className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-center transition-colors cursor-pointer"
+                className="py-2 px-1 rounded-xl bg-white/10 hover:bg-white/20 text-center transition-colors cursor-pointer truncate"
               >
                 {language === "en" ? "🛍️ Shop" : "🛍️ Kedai"}
               </button>
               <button
                 onClick={onNavigateToLeaderboard}
-                className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-center transition-colors cursor-pointer"
+                className="py-2 px-1 rounded-xl bg-white/10 hover:bg-white/20 text-center transition-colors cursor-pointer truncate"
               >
                 {language === "en" ? "🏆 Ranks" : "🏆 Carta"}
               </button>
               {onNavigateToGames && (
                 <button
                   onClick={onNavigateToGames}
-                  className="p-1.5 rounded-xl bg-amber-400 text-stone-950 font-black text-center shadow-xs hover:bg-amber-300 transition-all cursor-pointer"
+                  className="py-2 px-1 rounded-xl bg-amber-400 text-stone-950 font-black text-center shadow-xs hover:bg-amber-300 transition-all cursor-pointer truncate"
                 >
                   🎮 Game
                 </button>
