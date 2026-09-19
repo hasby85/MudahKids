@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useApp } from "../context/AppContext";
 import confetti from "canvas-confetti";
 import {
@@ -19,46 +19,10 @@ import {
   X
 } from "lucide-react";
 import { ReadingLogEntry } from "../types";
+import { COMPLETE_SURAH_LIST, QuranSurah } from "../data/quranData";
 
-// List of popular Surahs for quick search & selection
-export const SURAH_LIST = [
-  { number: 1, nameMalay: "Al-Fatihah", nameArabic: "الفاتحة", totalAyat: 7, defaultJuz: 1 },
-  { number: 2, nameMalay: "Al-Baqarah", nameArabic: "البقرة", totalAyat: 286, defaultJuz: 1 },
-  { number: 3, nameMalay: "Ali 'Imran", nameArabic: "آل عمران", totalAyat: 200, defaultJuz: 3 },
-  { number: 4, nameMalay: "An-Nisa'", nameArabic: "النساء", totalAyat: 176, defaultJuz: 4 },
-  { number: 5, nameMalay: "Al-Ma'idah", nameArabic: "المائدة", totalAyat: 120, defaultJuz: 6 },
-  { number: 6, nameMalay: "Al-An'am", nameArabic: "الأنعام", totalAyat: 165, defaultJuz: 7 },
-  { number: 7, nameMalay: "Al-A'raf", nameArabic: "الأعراف", totalAyat: 206, defaultJuz: 8 },
-  { number: 18, nameMalay: "Al-Kahf", nameArabic: "الكهف", totalAyat: 110, defaultJuz: 15 },
-  { number: 36, nameMalay: "Ya-Sin", nameArabic: "يس", totalAyat: 83, defaultJuz: 22 },
-  { number: 55, nameMalay: "Ar-Rahman", nameArabic: "الرحمن", totalAyat: 78, defaultJuz: 27 },
-  { number: 56, nameMalay: "Al-Waqi'ah", nameArabic: "الواقعة", totalAyat: 96, defaultJuz: 27 },
-  { number: 67, nameMalay: "Al-Mulk", nameArabic: "الملك", totalAyat: 30, defaultJuz: 29 },
-  { number: 78, nameMalay: "An-Naba'", nameArabic: "النبأ", totalAyat: 40, defaultJuz: 30 },
-  { number: 87, nameMalay: "Al-A'la", nameArabic: "الأعلى", totalAyat: 19, defaultJuz: 30 },
-  { number: 93, nameMalay: "Ad-Duha", nameArabic: "الضحى", totalAyat: 11, defaultJuz: 30 },
-  { number: 94, nameMalay: "Asy-Syarh", nameArabic: "الشرح", totalAyat: 8, defaultJuz: 30 },
-  { number: 95, nameMalay: "At-Tin", nameArabic: "التين", totalAyat: 8, defaultJuz: 30 },
-  { number: 96, nameMalay: "Al-'Alaq", nameArabic: "العلق", totalAyat: 19, defaultJuz: 30 },
-  { number: 97, nameMalay: "Al-Qadr", nameArabic: "القدر", totalAyat: 5, defaultJuz: 30 },
-  { number: 98, nameMalay: "Al-Bayyinah", nameArabic: "البينة", totalAyat: 8, defaultJuz: 30 },
-  { number: 99, nameMalay: "Az-Zalzalah", nameArabic: "الزلزلة", totalAyat: 8, defaultJuz: 30 },
-  { number: 100, nameMalay: "Al-'Adiyat", nameArabic: "العاديات", totalAyat: 11, defaultJuz: 30 },
-  { number: 101, nameMalay: "Al-Qari'ah", nameArabic: "القارعة", totalAyat: 11, defaultJuz: 30 },
-  { number: 102, nameMalay: "At-Takasur", nameArabic: "التكاثر", totalAyat: 8, defaultJuz: 30 },
-  { number: 103, nameMalay: "Al-'Asr", nameArabic: "العصر", totalAyat: 3, defaultJuz: 30 },
-  { number: 104, nameMalay: "Al-Humazah", nameArabic: "الهمزة", totalAyat: 9, defaultJuz: 30 },
-  { number: 105, nameMalay: "Al-Fil", nameArabic: "الفيل", totalAyat: 5, defaultJuz: 30 },
-  { number: 106, nameMalay: "Quraisy", nameArabic: "قريش", totalAyat: 4, defaultJuz: 30 },
-  { number: 107, nameMalay: "Al-Ma'un", nameArabic: "الماعون", totalAyat: 7, defaultJuz: 30 },
-  { number: 108, nameMalay: "Al-Kausar", nameArabic: "الكوثر", totalAyat: 3, defaultJuz: 30 },
-  { number: 109, nameMalay: "Al-Kafirun", nameArabic: "الكافرون", totalAyat: 6, defaultJuz: 30 },
-  { number: 110, nameMalay: "An-Nasr", nameArabic: "النصر", totalAyat: 3, defaultJuz: 30 },
-  { number: 111, nameMalay: "Al-Masad", nameArabic: "المسد", totalAyat: 5, defaultJuz: 30 },
-  { number: 112, nameMalay: "Al-Ikhlas", nameArabic: "الإخلاص", totalAyat: 4, defaultJuz: 30 },
-  { number: 113, nameMalay: "Al-Falaq", nameArabic: "الفلق", totalAyat: 5, defaultJuz: 30 },
-  { number: 114, nameMalay: "An-Nas", nameArabic: "الناس", totalAyat: 6, defaultJuz: 30 }
-];
+// Complete 114 Surahs of the Holy Quran
+export const SURAH_LIST: QuranSurah[] = COMPLETE_SURAH_LIST;
 
 export const QuranIqraDiary: React.FC = () => {
   const { language, activeChild, updateChildProfile, role, showToast } = useApp();
@@ -113,6 +77,20 @@ export const QuranIqraDiary: React.FC = () => {
   const [selectedQuranAyat, setSelectedQuranAyat] = useState<number>(
     currentProgress.currentQuranAyat || 1
   );
+
+  const [surahSearchQuery, setSurahSearchQuery] = useState("");
+
+  const filteredSurahs = useMemo(() => {
+    const q = surahSearchQuery.trim().toLowerCase();
+    if (!q) return SURAH_LIST;
+    return SURAH_LIST.filter(
+      (s) =>
+        s.nameMalay.toLowerCase().includes(q) ||
+        s.nameArabic.includes(q) ||
+        String(s.number) === q ||
+        String(s.number).startsWith(q)
+    );
+  }, [surahSearchQuery]);
 
   const [noteInput, setNoteInput] = useState("");
   const [filterHistoryType, setFilterHistoryType] = useState<"all" | "iqra" | "quran">("all");
@@ -587,20 +565,50 @@ export const QuranIqraDiary: React.FC = () => {
               
               {/* Select Surah */}
               <div className="space-y-2">
-                <label className="text-xs font-black text-stone-900 flex items-center gap-1.5">
-                  <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black flex items-center justify-center">
-                    1
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-black text-stone-900 flex items-center gap-1.5">
+                    <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black flex items-center justify-center">
+                      1
+                    </span>
+                    <span>{language === "en" ? "Select Surah (114 Surah):" : "Pilih Surah (114 Surah Lengkap):"}</span>
+                  </label>
+                  <span className="text-[10px] font-bold text-stone-400">
+                    {filteredSurahs.length} / 114
                   </span>
-                  <span>{language === "en" ? "Select Surah:" : "Pilih Surah Al-Quran:"}</span>
-                </label>
+                </div>
+
+                {/* Quick Surah Search Input */}
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder={
+                      language === "en"
+                        ? "🔍 Search surah name or number (e.g. Kahf, 18, Yasin)..."
+                        : "🔍 Cari nama surah atau nombor (cth. Kahf, 18, Yasin)..."
+                    }
+                    value={surahSearchQuery}
+                    onChange={(e) => setSurahSearchQuery(e.target.value)}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 bg-white text-stone-800 placeholder:text-stone-400 focus:ring-2 focus:ring-emerald-500 outline-none"
+                  />
+                  {surahSearchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSurahSearchQuery("")}
+                      className="absolute right-2.5 top-2 text-stone-400 hover:text-stone-700 font-bold text-xs"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+
                 <select
                   value={selectedQuranSurah}
                   onChange={(e) => handleSelectSurah(e.target.value)}
-                  className="w-full px-4 py-3 rounded-2xl border border-stone-300 bg-stone-50 font-bold text-xs text-stone-800 focus:ring-2 focus:ring-emerald-500 outline-none"
+                  className="w-full px-4 py-3 rounded-2xl border border-stone-300 bg-stone-50 font-bold text-xs text-stone-800 focus:ring-2 focus:ring-emerald-500 outline-none cursor-pointer"
                 >
-                  {SURAH_LIST.map((surah) => (
+                  {filteredSurahs.map((surah) => (
                     <option key={surah.number} value={surah.nameMalay}>
-                      {surah.number}. {surah.nameMalay} ({surah.nameArabic}) - Juz {surah.defaultJuz}
+                      {surah.number}. {surah.nameMalay} ({surah.nameArabic}) - Juz {surah.defaultJuz} ({surah.totalAyat} Ayat)
                     </option>
                   ))}
                 </select>

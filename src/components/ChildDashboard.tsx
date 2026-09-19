@@ -53,7 +53,17 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
     showToast
   } = useApp();
 
-  const [dailyClaimed, setDailyClaimed] = useState(false);
+  // Determine today's date key (YYYY-MM-DD)
+  const getTodayDateStr = () => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const todayStr = getTodayDateStr();
+  const isDailyClaimed = Boolean(activeChild?.lastDailyRewardDate === todayStr);
 
   if (!activeChild) {
     return (
@@ -90,11 +100,11 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
   };
 
   const handleClaimDailyReward = () => {
-    if (dailyClaimed) {
+    if (isDailyClaimed) {
       showToast(
         language === "en"
-          ? "Daily reward has already been claimed today!"
-          : "Ganjaran harian telah dituntut hari ini!",
+          ? "Daily reward has already been claimed today! Come back tomorrow."
+          : "Ganjaran harian telah dituntut hari ini! Sila kembali esok untuk ganjaran seterusnya.",
         "info"
       );
       return;
@@ -102,14 +112,14 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
     updateChildProfile({
       coins: activeChild.coins + 50,
       diamonds: activeChild.diamonds + 2,
-      streak: activeChild.streak + 1
+      streak: activeChild.streak + 1,
+      lastDailyRewardDate: todayStr
     });
-    setDailyClaimed(true);
     triggerConfetti();
     showToast(
       language === "en"
-        ? "Congratulations! +50 Coins & +2 Diamonds claimed!"
-        : "Tahniah! +50 Syiling & +2 Berlian dituntut!",
+        ? "Congratulations! +50 Coins & +2 Diamonds claimed for today!"
+        : "Tahniah! +50 Syiling & +2 Berlian dituntut untuk hari ini!",
       "success"
     );
   };
@@ -268,33 +278,33 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
             <div className="space-y-1">
               <h3 className="font-extrabold text-sm text-amber-300 flex items-center gap-1">
                 <Gift className="w-4 h-4" />
-                <span>{language === "en" ? "MudahKids Daily Reward" : "Ganjaran Harian MudahKids"}</span>
+                <span>{language === "en" ? "Daily Reward" : "Ganjaran Harian"} ({activeChild.name})</span>
               </h3>
               <p className="text-[11px] text-emerald-100">
                 {language === "en"
-                  ? "Claim +50 Coins & +2 Diamonds free daily!"
-                  : "Tuntut +50 Syiling & +2 Berlian percuma setiap hari!"}
+                  ? "Claim +50 Coins & +2 Diamonds (once per child every day)!"
+                  : "Tuntut +50 Syiling & +2 Berlian (1x sehari untuk setiap anak)!"}
               </p>
             </div>
 
             <button
               onClick={handleClaimDailyReward}
-              disabled={dailyClaimed}
-              className={`w-full py-2.5 rounded-2xl font-black text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                dailyClaimed
-                  ? "bg-white/20 text-stone-300 cursor-not-allowed"
-                  : "bg-amber-400 hover:bg-amber-500 text-stone-900"
+              disabled={isDailyClaimed}
+              className={`w-full py-2.5 rounded-2xl font-black text-xs shadow-md transition-all flex items-center justify-center gap-1.5 ${
+                isDailyClaimed
+                  ? "bg-white/20 text-emerald-100 cursor-not-allowed border border-white/20"
+                  : "bg-amber-400 hover:bg-amber-500 text-stone-900 cursor-pointer hover:scale-102"
               }`}
             >
               <Gift className="w-4 h-4" />
               <span>
-                {dailyClaimed
+                {isDailyClaimed
                   ? language === "en"
-                    ? "✓ Reward Claimed"
-                    : "✓ Ganjaran Dituntut"
+                    ? "✓ Claimed Today (Ready Tomorrow)"
+                    : "✓ Selesai Dituntut (Kembali Esok)"
                   : language === "en"
-                  ? "Claim Today's Reward"
-                  : "Tuntut Ganjaran Hari Ini"}
+                  ? "Tuntut Ganjaran Hari Ini (+50 🪙 +2 💎)"
+                  : "Tuntut Ganjaran Hari Ini (+50 🪙 +2 💎)"}
               </span>
             </button>
 

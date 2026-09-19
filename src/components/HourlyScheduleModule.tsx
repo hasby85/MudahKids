@@ -47,7 +47,41 @@ interface HourlyScheduleModuleProps {
   onNavigateToWorld?: () => void;
 }
 
-const STORAGE_KEY = "mudahkids_hourly_schedules_v1";
+const getChildStorageKey = (childId: string) => `mudahkids_hourly_schedules_child_${childId}`;
+
+const loadScheduleForChild = (childId: string): ScheduleActivity[] => {
+  try {
+    const key = getChildStorageKey(childId);
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+    // Backward compatibility: check if there was a previous global schedule to migrate for this child
+    const oldGlobal = localStorage.getItem("mudahkids_hourly_schedules_v1");
+    if (oldGlobal) {
+      const parsedOld = JSON.parse(oldGlobal);
+      if (Array.isArray(parsedOld) && parsedOld.length > 0) {
+        return parsedOld.map((act) => ({
+          ...act,
+          id: `${act.id}_${childId}`,
+          childId: childId,
+          completedDates: []
+        }));
+      }
+    }
+  } catch (e) {
+    console.error("Failed to load child schedule from localStorage", e);
+  }
+  return DEFAULT_SCHEDULE_ACTIVITIES.map((act) => ({
+    ...act,
+    id: `${act.id}_${childId}`,
+    childId: childId,
+    completedDates: []
+  }));
+};
 
 export const HourlyScheduleModule: React.FC<HourlyScheduleModuleProps> = ({
   onNavigateToSolat,
@@ -60,6 +94,9 @@ export const HourlyScheduleModule: React.FC<HourlyScheduleModuleProps> = ({
   const {
     language,
     activeChild,
+    childrenProfiles,
+    activeChildId,
+    setActiveChildId,
     updateChildProfile,
     showToast,
     role,
@@ -94,30 +131,34 @@ export const HourlyScheduleModule: React.FC<HourlyScheduleModuleProps> = ({
   const [selectedMissionForProof, setSelectedMissionForProof] = useState<Mission | null>(null);
   const [missionProofText, setMissionProofText] = useState("");
 
-  // Schedule list state
+  // Schedule list state - strictly per child
   const [activities, setActivities] = useState<ScheduleActivity[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
-        }
-      }
-    } catch (e) {
-      console.error("Failed to load schedules from localStorage", e);
+    if (activeChild?.scheduleActivities && activeChild.scheduleActivities.length > 0) {
+      return activeChild.scheduleActivities;
     }
-    return DEFAULT_SCHEDULE_ACTIVITIES;
+    return loadScheduleForChild(activeChild?.id || "default_child");
   });
 
-  // Save to localStorage
+  // Reload activities when active child switches
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(activities));
-    } catch (e) {
-      console.error("Failed to save schedules to localStorage", e);
+    if (!activeChild?.id) return;
+    if (activeChild.scheduleActivities && activeChild.scheduleActivities.length > 0) {
+      setActivities(activeChild.scheduleActivities);
+    } else {
+      const loaded = loadScheduleForChild(activeChild.id);
+      setActivities(loaded);
     }
-  }, [activities]);
+  }, [activeChild?.id]);
+
+  // Save to child-specific localStorage
+  useEffect(() => {
+    if (!activeChild?.id || activities.length === 0) return;
+    try {
+      localStorage.setItem(getChildStorageKey(activeChild.id), JSON.stringify(activities));
+    } catch (e) {
+      console.error("Failed to save child schedules to localStorage", e);
+    }
+  }, [activities, activeChild?.id]);
 
   // Parent Edit Mode toggle
   const [isParentEditMode, setIsParentEditMode] = useState<boolean>(role === "parent");
@@ -274,39 +315,39 @@ export const HourlyScheduleModule: React.FC<HourlyScheduleModuleProps> = ({
 
     if (isAlreadyCompleted) {
       // Uncheck
-      setActivities((prev) =>
-        prev.map((a) => {
-          if (a.id === activity.id) {
-            return {
-              ...a,
-              completedDates: (a.completedDates || []).filter((d) => d !== todayDate)
-            };
-          }
-          return a;
-        })
-      );
+      const updated = activities.map((a) => {
+        if (a.id === activity.id) {
+          return {
+            ...a,
+            completedDates: (a.completedDates || []).filter((d) => d !== todayDate)
+          };
+        }
+        return a;
+      });
+      setActivities(updated);
+      updateChildProfile({ scheduleActivities: updated });
       showToast(
         language === "en" ? "Activity marked as incomplete." : "Aktiviti ditandakan belum selesai.",
         "info"
       );
     } else {
       // Mark Completed
-      setActivities((prev) =>
-        prev.map((a) => {
-          if (a.id === activity.id) {
-            return {
-              ...a,
-              completedDates: [...(a.completedDates || []), todayDate]
-            };
-          }
-          return a;
-        })
-      );
+      const updated = activities.map((a) => {
+        if (a.id === activity.id) {
+          return {
+            ...a,
+            completedDates: [...(a.completedDates || []), todayDate]
+          };
+        }
+        return a;
+      });
+      setActivities(updated);
 
       // Reward child
       updateChildProfile({
         coins: activeChild.coins + (activity.coinsReward || 15),
-        xp: activeChild.xp + (activity.xpReward || 30)
+        xp: activeChild.xp + (activity.xpReward || 30),
+        scheduleActivities: updated
       });
 
       triggerConfetti();
@@ -433,31 +474,32 @@ export const HourlyScheduleModule: React.FC<HourlyScheduleModuleProps> = ({
 
     if (editingActivityId) {
       // Update
-      setActivities((prev) =>
-        prev.map((a) => {
-          if (a.id === editingActivityId) {
-            return {
-              ...a,
-              days: formDays.length > 0 ? formDays : [selectedDay],
-              timeStart: formTimeStart,
-              timeEnd: formTimeEnd,
-              hourSlot: hourSlotNum,
-              title: formTitle.trim(),
-              description: formDescription.trim(),
-              linkedModule: formLinkedModule,
-              coinsReward: Number(formCoins),
-              xpReward: Number(formXp),
-              categoryIcon: formIcon
-            };
-          }
-          return a;
-        })
-      );
+      const updated = activities.map((a) => {
+        if (a.id === editingActivityId) {
+          return {
+            ...a,
+            days: formDays.length > 0 ? formDays : [selectedDay],
+            timeStart: formTimeStart,
+            timeEnd: formTimeEnd,
+            hourSlot: hourSlotNum,
+            title: formTitle.trim(),
+            description: formDescription.trim(),
+            linkedModule: formLinkedModule,
+            coinsReward: Number(formCoins),
+            xpReward: Number(formXp),
+            categoryIcon: formIcon
+          };
+        }
+        return a;
+      });
+      setActivities(updated);
+      updateChildProfile({ scheduleActivities: updated });
       showToast(language === "en" ? "Activity updated!" : "Aktiviti jadual dikemaskini!", "success");
     } else {
       // Add
       const newAct: ScheduleActivity = {
-        id: `sch-${Date.now()}`,
+        id: `sch-${Date.now()}_${activeChild?.id || "child"}`,
+        childId: activeChild?.id,
         days: formDays.length > 0 ? formDays : [selectedDay],
         timeStart: formTimeStart,
         timeEnd: formTimeEnd,
@@ -471,7 +513,9 @@ export const HourlyScheduleModule: React.FC<HourlyScheduleModuleProps> = ({
         completedDates: [],
         createdAt: new Date().toISOString()
       };
-      setActivities((prev) => [...prev, newAct]);
+      const updated = [...activities, newAct];
+      setActivities(updated);
+      updateChildProfile({ scheduleActivities: updated });
       showToast(language === "en" ? "New activity added to schedule!" : "Aktiviti baru ditambah ke jadual!", "success");
     }
 
@@ -480,16 +524,24 @@ export const HourlyScheduleModule: React.FC<HourlyScheduleModuleProps> = ({
 
   // Delete Activity
   const handleDeleteActivity = (id: string) => {
-    setActivities((prev) => prev.filter((a) => a.id !== id));
+    const updated = activities.filter((a) => a.id !== id);
+    setActivities(updated);
+    updateChildProfile({ scheduleActivities: updated });
     showToast(language === "en" ? "Activity deleted." : "Aktiviti dipadamkan.", "info");
   };
 
   // Reset to default presets
   const handleResetToDefault = () => {
-    if (window.confirm(language === "en" ? "Reset schedule to original presets?" : "Tetapkan semula jadual ke templat asal?")) {
-      setActivities(DEFAULT_SCHEDULE_ACTIVITIES);
-      showToast(language === "en" ? "Schedule reset to default." : "Jadual telah ditetapkan semula ke templat asal.", "success");
-    }
+    if (!activeChild) return;
+    const freshCopy = DEFAULT_SCHEDULE_ACTIVITIES.map((act) => ({
+      ...act,
+      id: `${act.id}_${activeChild.id}`,
+      childId: activeChild.id,
+      completedDates: []
+    }));
+    setActivities(freshCopy);
+    updateChildProfile({ scheduleActivities: freshCopy });
+    showToast(language === "en" ? "Schedule reset to default." : "Jadual telah ditetapkan semula ke templat asal untuk anak ini.", "success");
   };
 
   // Quick launch helper for linked module
@@ -635,6 +687,52 @@ export const HourlyScheduleModule: React.FC<HourlyScheduleModuleProps> = ({
               </button>
             )}
           </div>
+        </div>
+
+        {/* Child Profile Indicator & Selector */}
+        <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-gradient-to-r from-emerald-50/80 to-teal-50/80 rounded-2xl border border-emerald-200/80">
+          <div className="flex items-center gap-2.5">
+            <span className="text-xs font-black text-stone-700 flex items-center gap-1">
+              <span>👤</span>
+              <span>{language === "en" ? "Schedule for:" : "Jadual Anak:"}</span>
+            </span>
+            <span className="px-3 py-1 rounded-xl bg-emerald-600 text-white font-black text-xs flex items-center gap-1.5 shadow-2xs">
+              <span>{activeChild?.gender === "girl" ? "👧" : "👦"}</span>
+              <span>{activeChild?.name || "Anak"}</span>
+              <span className="text-[10px] bg-emerald-700/80 px-1.5 py-0.2 rounded-md font-semibold text-emerald-100">
+                {language === "en" ? "Active" : "Aktif"}
+              </span>
+            </span>
+            <span className="hidden sm:inline-block text-[11px] text-emerald-800 font-medium">
+              ({language === "en" ? "Each child has their own distinct schedule & progress" : "Setiap anak mempunyai jadual & rekod berasingan"})
+            </span>
+          </div>
+
+          {childrenProfiles && childrenProfiles.length > 1 && (
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-[11px] text-stone-500 font-bold">
+                {language === "en" ? "Switch child:" : "Pilih anak:"}
+              </span>
+              {childrenProfiles.map((child) => {
+                const isActive = child.id === activeChild?.id;
+                return (
+                  <button
+                    key={child.id}
+                    type="button"
+                    onClick={() => setActiveChildId(child.id)}
+                    className={`px-3 py-1.5 rounded-xl font-black text-xs transition-all cursor-pointer flex items-center gap-1 ${
+                      isActive
+                        ? "bg-emerald-700 text-white shadow-xs ring-2 ring-emerald-400/40"
+                        : "bg-white text-stone-700 border border-stone-300 hover:bg-emerald-50 hover:border-emerald-300"
+                    }`}
+                  >
+                    <span>{child.gender === "girl" ? "👧" : "👦"}</span>
+                    <span>{child.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Days of the Week Navigation Tabs */}

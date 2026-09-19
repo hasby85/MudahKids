@@ -91,6 +91,8 @@ export interface ChildProfile {
     targetXp: number;
     unlocked?: boolean;
   };
+  lastDailyRewardDate?: string; // Date string "YYYY-MM-DD" when daily reward was last claimed
+  scheduleActivities?: ScheduleActivity[]; // Per-child customizable routine schedule activities
 }
 
 export type GameId =
