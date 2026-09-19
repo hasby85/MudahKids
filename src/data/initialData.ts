@@ -380,8 +380,17 @@ export const JAWI_LEVELS_DATA: JawiLevel[] = [
         questionText: "Apakah maksud ayat: 'اييبو مماسق ناسي'?",
         jawiDisplay: "اييبو مماسق ناسي",
         audioPrompt: "Maksud ayat ini.",
-        options: ["Ibu memasak nasi", "Ayah membeli buku", "Adik bermain bola", "Kakak menyiram pokok"],
+        options: ["Adik bermain bola", "Ibu memasak nasi", "Ayah membeli buku", "Kakak menyiram pokok"],
         correctAnswer: "Ibu memasak nasi"
+      },
+      {
+        id: "q7_3",
+        questionText: "Lengkapkan ayat ini: 'اياه ممبلي ______'?",
+        questionTextEn: "Complete the sentence: 'Ayah membeli ______'?",
+        jawiDisplay: "اياه ممبلي بوكو",
+        audioPrompt: "Lengkapkan ayat ini.",
+        options: ["ناسي (Nasi)", "باجو (Baju)", "بوكو (Buku)", "بولا (Bola)"],
+        correctAnswer: "بوكو (Buku)"
       }
     ]
   }

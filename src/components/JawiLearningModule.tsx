@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { useApp } from "../context/AppContext";
 import { JAWI_LEVELS_DATA } from "../data/initialData";
 import { JawiLevel, JawiLesson, JawiQuizQuestion } from "../types";
@@ -12,6 +12,25 @@ import {
   Sparkles,
   HelpCircle
 } from "lucide-react";
+
+// Common distractor letters and words for building exercises
+const COMMON_JAWI_DISTRACTOR_LETTERS = [
+  "ا", "ب", "ت", "ث", "ج", "چ", "ح", "د", "ر", "ز", "س", "ش", "ص", "ع", "ف", "ڤ", "ق", "ك", "ݢ", "ل", "م", "ن", "و", "ه", "ي", "ڽ"
+];
+
+const COMMON_JAWI_DISTRACTOR_WORDS = [
+  "اييبو", "ممبلي", "سوسو", "بوكو", "باجو", "ناسي", "روتي", "بولا", "موريد", "سکوله"
+];
+
+// Utility to randomly shuffle an array (Fisher-Yates)
+function shuffleArray<T>(arr: T[]): T[] {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
 
 // Phonetic dictionary for Jawi characters, letters, and words in Standard Malaysian Malay (ms-MY)
 const JAWI_MALAY_PHONETICS: Record<string, string> = {
@@ -147,10 +166,19 @@ export const JawiLearningModule: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [testScore, setTestScore] = useState(0);
   const [testFinished, setTestFinished] = useState(false);
+  const [shuffledOptions, setShuffledOptions] = useState<string[]>([]);
 
   // Word Builder State
   const [builderTargetIdx, setBuilderTargetIdx] = useState(0);
   const [selectedParts, setSelectedParts] = useState<string[]>([]);
+
+  // Randomize quiz options whenever level, question index, or test tab changes
+  useEffect(() => {
+    const q = currentLevel.quizQuestions[testQuestionIdx];
+    if (q && q.options && q.options.length > 0) {
+      setShuffledOptions(shuffleArray(q.options));
+    }
+  }, [selectedLevelIdx, testQuestionIdx, activeSubTab, currentLevel]);
 
   // Ensure SpeechSynthesis voices are loaded on mount
   useEffect(() => {
@@ -397,7 +425,79 @@ export const JawiLearningModule: React.FC = () => {
     }
   };
 
-  // Setup Tracing Canvas (WITHOUT green horizontal & vertical grid lines)
+  // Setup Tracing Canvas with responsive sizing and multi-line wrapping (2-3 lines for sentences)
+  const drawFaintGuide = (
+    ctx: CanvasRenderingContext2D,
+    width: number,
+    height: number,
+    text: string
+  ) => {
+    // Clean canvas background
+    ctx.fillStyle = "#FAF9F5";
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.fillStyle = "#cbd5e1"; // Slate-300 faint guide
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    const clean = text.trim();
+    const words = clean.split(/\s+/).filter(Boolean);
+
+    if (words.length > 1) {
+      // Sentences (Tahap 7 & multi-word expressions): wrap into 2 or 3 lines
+      let lines: string[] = [];
+      if (words.length <= 4) {
+        // 2 lines: balanced split
+        const mid = Math.ceil(words.length / 2);
+        lines = [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
+      } else {
+        // 5+ words: 3 lines
+        const chunk = Math.ceil(words.length / 3);
+        lines = [
+          words.slice(0, chunk).join(" "),
+          words.slice(chunk, chunk * 2).join(" "),
+          words.slice(chunk * 2).join(" ")
+        ].filter(Boolean);
+      }
+
+      // Automatically scale font size down until all lines fit within 82% of canvas width
+      let fontSize = lines.length >= 3 ? 34 : 42;
+      ctx.font = `bold ${fontSize}px 'Traditional Arabic', 'Scheherazade New', serif, sans-serif`;
+
+      while (fontSize > 18 && lines.some((l) => ctx.measureText(l).width > width * 0.82)) {
+        fontSize -= 2;
+        ctx.font = `bold ${fontSize}px 'Traditional Arabic', 'Scheherazade New', serif, sans-serif`;
+      }
+
+      const lineHeight = fontSize * 1.55;
+      const totalBlockHeight = lines.length * lineHeight;
+      const startY = (height - totalBlockHeight) / 2 + lineHeight / 2;
+
+      lines.forEach((line, idx) => {
+        ctx.fillText(line, width / 2, startY + idx * lineHeight);
+      });
+    } else {
+      // Single word (Tahap 6) or single letter/syllable (Tahap 1-5)
+      const charCount = clean.length;
+      let fontSize = 135;
+      if (charCount > 4) {
+        fontSize = 58; // e.g. "ڤوكوق", "زيرافه"
+      } else if (charCount >= 3) {
+        fontSize = 72; // e.g. "باجو", "بوكو", "ناسي"
+      } else if (charCount === 2) {
+        fontSize = 100; // e.g. "با", "بو", "بي"
+      }
+
+      ctx.font = `bold ${fontSize}px 'Traditional Arabic', 'Scheherazade New', serif, sans-serif`;
+      while (fontSize > 24 && ctx.measureText(clean).width > width * 0.82) {
+        fontSize -= 2;
+        ctx.font = `bold ${fontSize}px 'Traditional Arabic', 'Scheherazade New', serif, sans-serif`;
+      }
+
+      ctx.fillText(clean, width / 2, height / 2 - 4);
+    }
+  };
+
   useEffect(() => {
     if (activeSubTab !== "learn") return;
     const canvas = canvasRef.current;
@@ -405,16 +505,7 @@ export const JawiLearningModule: React.FC = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Clean canvas background
-    ctx.fillStyle = "#FAF9F5";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Render faint guide letter only (NO grid lines)
-    ctx.font = "bold 140px 'Traditional Arabic', 'Scheherazade New', serif, sans-serif";
-    ctx.fillStyle = "#cbd5e1";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(currentLesson.letter, canvas.width / 2, canvas.height / 2 - 5);
+    drawFaintGuide(ctx, canvas.width, canvas.height, currentLesson.letter);
   }, [selectedLevelIdx, selectedLessonIdx, activeSubTab, currentLesson]);
 
   const clearCanvas = () => {
@@ -423,14 +514,7 @@ export const JawiLearningModule: React.FC = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    ctx.fillStyle = "#FAF9F5";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.font = "bold 140px 'Traditional Arabic', 'Scheherazade New', serif, sans-serif";
-    ctx.fillStyle = "#cbd5e1";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(currentLesson.letter, canvas.width / 2, canvas.height / 2 - 5);
+    drawFaintGuide(ctx, canvas.width, canvas.height, currentLesson.letter);
   };
 
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
@@ -469,7 +553,9 @@ export const JawiLearningModule: React.FC = () => {
     const x = clientX - rect.left;
     const y = clientY - rect.top;
 
-    ctx.lineWidth = 14;
+    const isSentence = currentLesson.letter.trim().includes(" ");
+    const isWord = currentLesson.letter.trim().length > 2;
+    ctx.lineWidth = isSentence ? 9 : isWord ? 11 : 14;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.strokeStyle = "#059669"; // Emerald stroke
@@ -513,6 +599,13 @@ export const JawiLearningModule: React.FC = () => {
       return;
     }
     setSelectedLevelIdx(idx);
+    setSelectedLessonIdx(0);
+    setTestQuestionIdx(0);
+    setSelectedOption(null);
+    setTestScore(0);
+    setTestFinished(false);
+    setBuilderTargetIdx(0);
+    setSelectedParts([]);
   };
 
   // Handle Level Quiz Answer
@@ -566,20 +659,31 @@ export const JawiLearningModule: React.FC = () => {
     }, 1200);
   };
 
-  // Current Word Builder Target
+  // Current Word / Sentence Builder Target & Available Tiles
+  const isSentenceBuilder = currentLevel.levelNumber === 7;
   const currentBuilderLesson = currentLevel.lessons[builderTargetIdx] || currentLevel.lessons[0];
   const targetJawiWord = currentBuilderLesson.jawiWord;
-  const targetWordLetters = Array.from(targetJawiWord);
 
-  // Available selectable letters: target letters + a couple of distractors from other lessons in this level
-  const distractorLetters = currentLevel.lessons
-    .map((l) => l.letter)
-    .filter((lettr) => !targetWordLetters.includes(lettr))
-    .slice(0, 3);
+  const targetWordParts = useMemo(() => {
+    if (isSentenceBuilder) {
+      return targetJawiWord.trim().split(/\s+/).filter(Boolean);
+    }
+    return Array.from(targetJawiWord.replace(/\s+/g, ""));
+  }, [isSentenceBuilder, targetJawiWord]);
 
-  const availableLetterTiles = [...targetWordLetters, ...distractorLetters].sort(
-    () => (builderTargetIdx * 7) % 3 - 1
-  );
+  const availableTiles = useMemo(() => {
+    if (isSentenceBuilder) {
+      const distractorWords = COMMON_JAWI_DISTRACTOR_WORDS.filter(
+        (w) => !targetWordParts.includes(w)
+      ).slice(0, 3);
+      return shuffleArray([...targetWordParts, ...distractorWords]);
+    } else {
+      const distractorLetters = COMMON_JAWI_DISTRACTOR_LETTERS.filter(
+        (l) => !targetWordParts.includes(l)
+      ).slice(0, 3);
+      return shuffleArray([...targetWordParts, ...distractorLetters]);
+    }
+  }, [isSentenceBuilder, targetWordParts]);
 
   return (
     <div className="bg-white rounded-3xl p-6 border border-stone-200 shadow-2xs space-y-6">
@@ -766,18 +870,18 @@ export const JawiLearningModule: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center pt-2">
             {/* Left Column: Tracing Canvas (Clean box without horizontal/vertical green grid lines) */}
             <div className="lg:col-span-5 flex flex-col items-center space-y-3">
-              <div className="relative border-4 border-emerald-500/30 rounded-3xl overflow-hidden shadow-md bg-stone-50">
+              <div className="relative border-4 border-emerald-500/30 rounded-3xl overflow-hidden shadow-md bg-stone-50 w-[320px] h-[320px] max-w-full flex items-center justify-center">
                 <canvas
                   ref={canvasRef}
-                  width={300}
-                  height={300}
+                  width={320}
+                  height={320}
                   onMouseDown={startDrawing}
                   onMouseUp={stopDrawing}
                   onMouseMove={draw}
                   onTouchStart={startDrawing}
                   onTouchEnd={stopDrawing}
                   onTouchMove={draw}
-                  className="cursor-crosshair touch-none"
+                  className="cursor-crosshair touch-none w-full h-full"
                 />
               </div>
 
@@ -816,8 +920,19 @@ export const JawiLearningModule: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-baseline gap-3 cursor-pointer group" onClick={() => playArabicSound(currentLesson.letter || currentLesson.jawiName)}>
-                  <h3 className="text-5xl font-black text-stone-900 font-serif group-hover:text-emerald-600 transition-colors">
+                <div
+                  className="flex items-baseline gap-3 cursor-pointer group flex-wrap"
+                  onClick={() => playArabicSound(currentLesson.letter || currentLesson.jawiName)}
+                >
+                  <h3
+                    className={`font-black text-stone-900 font-serif group-hover:text-emerald-600 transition-colors leading-relaxed break-words max-w-full ${
+                      currentLesson.letter.length > 12
+                        ? "text-2xl sm:text-3xl"
+                        : currentLesson.letter.length > 4
+                        ? "text-3xl sm:text-4xl"
+                        : "text-5xl"
+                    }`}
+                  >
                     {currentLesson.letter}
                   </h3>
                   <span className="text-xl font-bold text-emerald-700 flex items-center gap-1">
@@ -826,24 +941,30 @@ export const JawiLearningModule: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="inline-block bg-sky-50 border border-sky-200 text-sky-800 text-xs font-extrabold px-3 py-1 rounded-xl">
+                <div className="inline-block bg-sky-50 border border-sky-200 text-sky-800 text-xs font-extrabold px-3 py-1 rounded-xl max-w-full break-words">
                   {currentLesson.soundHint}
                 </div>
 
-                <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200 flex items-center justify-between">
-                  <div>
+                <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200 flex items-center justify-between gap-3">
+                  <div className="space-y-0.5 max-w-[80%]">
                     <span className="text-[11px] font-bold text-stone-400 block uppercase">
                       {language === "en" ? "Example Word" : "Contoh Perkataan"}
                     </span>
-                    <div className="flex items-baseline gap-2 mt-0.5">
-                      <span className="text-2xl font-black text-stone-900 font-serif">{currentLesson.jawiWord}</span>
+                    <div className="flex items-baseline gap-2 flex-wrap">
+                      <span
+                        className={`font-black text-stone-900 font-serif break-words ${
+                          currentLesson.jawiWord.length > 12 ? "text-lg sm:text-xl" : "text-2xl"
+                        }`}
+                      >
+                        {currentLesson.jawiWord}
+                      </span>
                       <span className="text-sm font-bold text-emerald-600">({currentLesson.latinWord})</span>
                     </div>
-                    <span className="text-xs text-stone-500 font-medium">
+                    <span className="text-xs text-stone-500 font-medium block">
                       {language === "en" ? "Meaning:" : "Maksud:"} {currentLesson.translation}
                     </span>
                   </div>
-                  <span className="text-4xl">{currentLesson.imageEmoji}</span>
+                  <span className="text-4xl shrink-0">{currentLesson.imageEmoji}</span>
                 </div>
               </div>
 
@@ -853,19 +974,23 @@ export const JawiLearningModule: React.FC = () => {
                   {language === "en" ? "Select Lesson Item:" : "Pilih Item Latihan:"}
                 </span>
                 <div className="flex flex-wrap gap-2">
-                  {currentLevel.lessons.map((l, idx) => (
-                    <button
-                      key={l.id}
-                      onClick={() => setSelectedLessonIdx(idx)}
-                      className={`px-3.5 py-2 rounded-xl font-black text-base font-serif flex items-center justify-center transition-all cursor-pointer ${
-                        selectedLessonIdx === idx
-                          ? "bg-emerald-600 text-white shadow-md scale-105"
-                          : "bg-stone-50 text-stone-700 border border-stone-200 hover:bg-stone-100"
-                      }`}
-                    >
-                      {l.letter}
-                    </button>
-                  ))}
+                  {currentLevel.lessons.map((l, idx) => {
+                    const isLong = l.letter.length > 8;
+                    return (
+                      <button
+                        key={l.id}
+                        onClick={() => setSelectedLessonIdx(idx)}
+                        className={`px-3 py-2 rounded-xl font-black font-serif flex items-center justify-center transition-all cursor-pointer ${
+                          selectedLessonIdx === idx
+                            ? "bg-emerald-600 text-white shadow-md scale-105"
+                            : "bg-stone-50 text-stone-700 border border-stone-200 hover:bg-stone-100"
+                        } ${isLong ? "text-xs max-w-[130px] truncate" : l.letter.length > 3 ? "text-sm" : "text-base"}`}
+                        title={l.letter}
+                      >
+                        {isLong ? `${l.jawiName}: ${l.letter.slice(0, 8)}...` : l.letter}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -887,8 +1012,16 @@ export const JawiLearningModule: React.FC = () => {
                 </div>
 
                 <div className="p-6 bg-gradient-to-b from-sky-50 to-white rounded-3xl border border-sky-200 space-y-3 shadow-2xs">
-                  <div className="flex justify-center">
-                    <span className="text-6xl font-black text-stone-900 font-serif block bg-white px-8 py-3 rounded-2xl shadow-2xs border border-sky-100">
+                  <div className="flex justify-center px-2">
+                    <span
+                      className={`font-black text-stone-900 font-serif block bg-white px-6 py-4 rounded-2xl shadow-2xs border border-sky-100 max-w-full break-words leading-relaxed text-center ${
+                        currentLevel.quizQuestions[testQuestionIdx].jawiDisplay.length > 12
+                          ? "text-xl sm:text-2xl"
+                          : currentLevel.quizQuestions[testQuestionIdx].jawiDisplay.length > 5
+                          ? "text-3xl sm:text-4xl"
+                          : "text-5xl sm:text-6xl"
+                      }`}
+                    >
                       {currentLevel.quizQuestions[testQuestionIdx].jawiDisplay}
                     </span>
                   </div>
@@ -909,13 +1042,13 @@ export const JawiLearningModule: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {currentLevel.quizQuestions[testQuestionIdx].options.map((opt, i) => (
+                  {shuffledOptions.map((opt, i) => (
                     <button
-                      key={i}
+                      key={`${testQuestionIdx}-${i}-${opt}`}
                       onClick={() => handleAnswerTest(opt)}
-                      className={`p-4 rounded-2xl font-black text-sm border shadow-2xs transition-all cursor-pointer text-center ${
+                      className={`p-4 rounded-2xl font-black text-sm sm:text-base border shadow-2xs transition-all cursor-pointer text-center leading-snug break-words ${
                         selectedOption === opt
-                          ? "bg-emerald-600 text-white border-emerald-600"
+                          ? "bg-emerald-600 text-white border-emerald-600 shadow-md"
                           : "bg-white text-stone-800 border-stone-200 hover:border-emerald-500 hover:bg-emerald-50/50"
                       }`}
                     >
@@ -967,6 +1100,10 @@ export const JawiLearningModule: React.FC = () => {
                       setTestScore(0);
                       setTestFinished(false);
                       setSelectedOption(null);
+                      const q0 = currentLevel.quizQuestions[0];
+                      if (q0 && q0.options) {
+                        setShuffledOptions(shuffleArray(q0.options));
+                      }
                     }}
                     className="px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md cursor-pointer"
                   >
@@ -978,12 +1115,18 @@ export const JawiLearningModule: React.FC = () => {
           </div>
         )}
 
-        {/* SUB-TAB 3: BINA PERKATAAN (WORD BUILDER) */}
+        {/* SUB-TAB 3: BINA PERKATAAN / AYAT (WORD / SENTENCE BUILDER) */}
         {activeSubTab === "builder" && (
           <div className="p-6 bg-white rounded-3xl border border-stone-200 max-w-xl mx-auto space-y-6 text-center">
             <div className="flex items-center justify-between border-b pb-3 text-xs font-bold text-stone-500">
               <span>
-                {language === "en" ? "Word Builder Practice" : "Latihan Bina Perkataan Jawi"}
+                {isSentenceBuilder
+                  ? language === "en"
+                    ? "Jawi Sentence Builder Practice"
+                    : "Latihan Bina Ayat Jawi"
+                  : language === "en"
+                  ? "Word Builder Practice"
+                  : "Latihan Bina Perkataan Jawi"}
               </span>
               <span className="text-emerald-700">
                 {language === "en" ? "Item" : "Item"} {builderTargetIdx + 1} / {currentLevel.lessons.length}
@@ -991,20 +1134,28 @@ export const JawiLearningModule: React.FC = () => {
             </div>
 
             <div className="space-y-3">
-              <div className="flex items-center justify-center gap-2">
+              <div className="flex items-center justify-center gap-2 flex-wrap">
                 <span className="text-3xl">{currentBuilderLesson.imageEmoji}</span>
-                <span className="text-sm font-extrabold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200">
+                <span className="text-sm font-extrabold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200 break-words">
                   {currentBuilderLesson.latinWord} ({currentBuilderLesson.translation})
                 </span>
               </div>
 
-              <div className="p-6 bg-stone-50 rounded-3xl border border-stone-200 min-h-[110px] flex flex-col items-center justify-center space-y-2">
+              <div className="p-6 bg-stone-50 rounded-3xl border border-stone-200 min-h-[120px] flex flex-col items-center justify-center space-y-2.5">
                 <span className="text-[11px] font-extrabold text-stone-400 uppercase tracking-wider">
-                  {language === "en" ? "Target Jawi Word:" : "Perkataan Jawi Sasaran:"}
+                  {isSentenceBuilder
+                    ? language === "en"
+                      ? "Target Jawi Sentence:"
+                      : "Ayat Jawi Sasaran:"
+                    : language === "en"
+                    ? "Target Jawi Word:"
+                    : "Perkataan Jawi Sasaran:"}
                 </span>
-                <div className="flex items-center gap-2 flex-row-reverse font-serif">
+
+                {/* Selected parts container: responsive flex-wrap preventing overflow */}
+                <div className="flex flex-wrap items-center justify-center gap-2 flex-row-reverse font-serif max-w-full">
                   {selectedParts.length > 0 ? (
-                    selectedParts.map((letter, idx) => (
+                    selectedParts.map((part, idx) => (
                       <button
                         key={idx}
                         onClick={() => {
@@ -1012,39 +1163,62 @@ export const JawiLearningModule: React.FC = () => {
                           updated.splice(idx, 1);
                           setSelectedParts(updated);
                         }}
-                        className="w-12 h-12 rounded-2xl bg-emerald-600 text-white font-black text-2xl flex items-center justify-center shadow-md hover:bg-red-600 transition-all cursor-pointer"
+                        className={`rounded-2xl bg-emerald-600 text-white font-black shadow-md hover:bg-rose-600 transition-all cursor-pointer flex items-center justify-center ${
+                          isSentenceBuilder
+                            ? "px-4 py-2 text-base sm:text-lg font-serif"
+                            : "w-11 h-11 sm:w-12 sm:h-12 text-xl sm:text-2xl"
+                        }`}
                         title={language === "en" ? "Click to remove" : "Tekan untuk buang"}
                       >
-                        {letter}
+                        {part}
                       </button>
                     ))
                   ) : (
-                    <span className="text-3xl font-black text-stone-300 font-serif">
-                      _ _ _ _
-                    </span>
+                    <div className="flex flex-wrap items-center justify-center gap-2 flex-row-reverse text-stone-300 font-serif">
+                      {targetWordParts.map((_, i) => (
+                        <span
+                          key={i}
+                          className={`border-2 border-dashed border-stone-300 flex items-center justify-center text-stone-300 rounded-xl ${
+                            isSentenceBuilder
+                              ? "px-3 py-1.5 text-xs font-sans text-stone-400"
+                              : "w-10 h-10 text-lg"
+                          }`}
+                        >
+                          {isSentenceBuilder ? `[ ${i + 1} ]` : "_"}
+                        </span>
+                      ))}
+                    </div>
                   )}
                 </div>
               </div>
 
               <p className="text-xs text-stone-500 font-semibold">
-                {language === "en"
+                {isSentenceBuilder
+                  ? language === "en"
+                    ? "Tap the Jawi words below in correct sequence to build the sentence:"
+                    : "Tekan perkataan-perkataan Jawi di bawah mengikut urutan untuk membina ayat:"
+                  : language === "en"
                   ? "Tap the Jawi letters below in correct sequence to build the word:"
                   : "Tekan huruf-huruf Jawi di bawah mengikut urutan yang betul untuk membina perkataan:"}
               </p>
             </div>
 
-            {/* All Jawi letters required for this word + distractor tiles */}
-            <div className="flex flex-wrap items-center justify-center gap-3 py-2">
-              {availableLetterTiles.map((tileLetter, idx) => (
+            {/* All selectable tiles: wrapped and adaptively sized for single words and sentences */}
+            <div className="flex flex-wrap items-center justify-center gap-2.5 py-2 max-w-full">
+              {availableTiles.map((tile, idx) => (
                 <button
-                  key={idx}
+                  key={`${builderTargetIdx}-${idx}-${tile}`}
                   onClick={() => {
-                    setSelectedParts([...selectedParts, tileLetter]);
-                    playArabicSound(tileLetter);
+                    setSelectedParts([...selectedParts, tile]);
+                    playArabicSound(tile);
                   }}
-                  className="w-14 h-14 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-400 font-black text-2xl text-stone-900 shadow-sm transition-all cursor-pointer font-serif flex items-center justify-center active:scale-95"
+                  className={`rounded-2xl bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-400 font-bold text-stone-900 shadow-xs transition-all cursor-pointer font-serif flex items-center justify-center active:scale-95 ${
+                    isSentenceBuilder
+                      ? "px-4 py-2.5 text-base sm:text-lg"
+                      : "w-12 h-12 sm:w-14 sm:h-14 text-xl sm:text-2xl font-black"
+                  }`}
                 >
-                  {tileLetter}
+                  {tile}
                 </button>
               ))}
             </div>
@@ -1058,15 +1232,23 @@ export const JawiLearningModule: React.FC = () => {
               </button>
               <button
                 onClick={() => {
-                  const constructedWord = selectedParts.join("");
-                  if (constructedWord === targetJawiWord) {
+                  let isCorrect = false;
+                  if (isSentenceBuilder) {
+                    isCorrect = selectedParts.join(" ").trim() === targetJawiWord.trim();
+                  } else {
+                    isCorrect =
+                      selectedParts.join("").replace(/\s+/g, "") ===
+                      targetJawiWord.replace(/\s+/g, "");
+                  }
+
+                  if (isCorrect) {
                     updateChildProfile({ coins: activeChild.coins + 20, xp: activeChild.xp + 30 });
                     markActivityComplete("builder");
 
                     showToast(
                       language === "en"
-                        ? `Perfect! You built the Jawi word '${targetJawiWord}' (${currentBuilderLesson.latinWord})! (+20 🪙)`
-                        : `Tepat sekali! Perkataan Jawi '${targetJawiWord}' (${currentBuilderLesson.latinWord}) berjaya dibina! (+20 🪙)`,
+                        ? `Perfect! You built the Jawi ${isSentenceBuilder ? "sentence" : "word"} '${targetJawiWord}'! (+20 🪙)`
+                        : `Tepat sekali! ${isSentenceBuilder ? "Ayat" : "Perkataan"} Jawi '${targetJawiWord}' berjaya dibina! (+20 🪙)`,
                       "success"
                     );
 
@@ -1077,8 +1259,8 @@ export const JawiLearningModule: React.FC = () => {
                   } else {
                     showToast(
                       language === "en"
-                        ? "Almost correct! Make sure to select all required letters in the right order."
-                        : "Hampir tepat! Sila pastikan semua huruf Jawi dipilih mengikut urutan ejaan yang betul.",
+                        ? `Almost correct! Make sure to select all ${isSentenceBuilder ? "words" : "letters"} in the right order.`
+                        : `Hampir tepat! Sila pastikan semua ${isSentenceBuilder ? "perkataan" : "huruf"} Jawi dipilih mengikut urutan yang betul.`,
                       "info"
                     );
                   }
