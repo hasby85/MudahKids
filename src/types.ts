@@ -121,6 +121,8 @@ export interface ChildGamesProgress {
   unlockedGameIds?: GameId[]; // individual games bought with coins
 }
 
+export type RecurrenceType = "daily" | "date_range" | "custom_days" | "once";
+
 export interface Mission {
   id: string;
   childId: string;
@@ -141,6 +143,16 @@ export interface Mission {
   requestedCoins?: number;
   completedAt?: string;
   approvedAt?: string;
+  timeStart?: string;
+  timeEnd?: string;
+  hourSlot?: number;
+  days?: DayOfWeek[];
+  linkedModule?: ScheduleModuleLink;
+  recurrenceType?: RecurrenceType;
+  startDate?: string; // YYYY-MM-DD
+  endDate?: string;   // YYYY-MM-DD
+  completedDates?: string[]; // Date strings "YYYY-MM-DD" when approved/completed
+  pendingDate?: string;      // Date string "YYYY-MM-DD" when submitted
 }
 
 export interface JakimNote {
@@ -331,6 +343,37 @@ export interface SolatProgress {
   qadhaPending?: QadhaPrayerCount; // Bilangan solat fardhu yang perlu diganti mengikut waktu
   qadhaCompleted?: QadhaPrayerCount; // Bilangan solat yang telah selesai diganti
   qadhaHistory?: QadhaHistoryEntry[]; // Log rekod solat yang telah digantikan
+}
+
+export type DayOfWeek = "isnin" | "selasa" | "rabu" | "khamis" | "jumaat" | "sabtu" | "ahad";
+
+export type ScheduleModuleLink =
+  | "solat"
+  | "jawi"
+  | "hafazan"
+  | "diari"
+  | "permainan"
+  | "world"
+  | "none";
+
+export interface ScheduleActivity {
+  id: string;
+  childId?: string; // optional: if set, specific to this child; if not set, applies to all
+  days: DayOfWeek[]; // Days this activity runs on, e.g. ["isnin", "selasa"] or ["sabtu"]
+  timeStart: string; // e.g. "06:00"
+  timeEnd: string; // e.g. "07:00"
+  hourSlot: number; // 6, 7, 8... 22 (for sorting)
+  title: string;
+  description: string;
+  linkedModule: ScheduleModuleLink;
+  coinsReward: number;
+  xpReward: number;
+  categoryIcon: string;
+  completedDates?: string[]; // Date strings "YYYY-MM-DD" when completed
+  createdAt?: string;
+  recurrenceType?: RecurrenceType;
+  startDate?: string; // YYYY-MM-DD
+  endDate?: string;   // YYYY-MM-DD
 }
 
 

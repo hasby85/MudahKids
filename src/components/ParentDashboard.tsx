@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useApp } from "../context/AppContext";
-import { MissionCategory, MissionDifficulty, ChildProfile } from "../types";
+import { MissionCategory, MissionDifficulty, ChildProfile, DayOfWeek, ScheduleModuleLink, Mission, RecurrenceType } from "../types";
 import {
   CheckCircle2,
   XCircle,
@@ -21,8 +21,20 @@ import {
   RefreshCw,
   UserPlus,
   Lock,
-  LogIn
+  LogIn,
+  Repeat,
+  CalendarRange
 } from "lucide-react";
+
+const DAYS_LIST: { key: DayOfWeek; label: string }[] = [
+  { key: "isnin", label: "Isnin" },
+  { key: "selasa", label: "Selasa" },
+  { key: "rabu", label: "Rabu" },
+  { key: "khamis", label: "Khamis" },
+  { key: "jumaat", label: "Jumaat" },
+  { key: "sabtu", label: "Sabtu" },
+  { key: "ahad", label: "Ahad" }
+];
 
 interface ParentDashboardProps {
   onOpenLoginModal?: () => void;
@@ -42,6 +54,7 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onOpenLoginMod
     penalizeChild,
     missions,
     addMission,
+    deleteMission,
     approveMission,
     approveMissionCustomRewards,
     rejectMission,
@@ -85,6 +98,25 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onOpenLoginMod
   const [newXp, setNewXp] = useState(40);
   const [newCoins, setNewCoins] = useState(15);
   const [newDesc, setNewDesc] = useState("");
+  const [newScheduleTiming, setNewScheduleTiming] = useState<"anytime" | "scheduled">("scheduled");
+  const [newTimeStart, setNewTimeStart] = useState("07:00");
+  const [newTimeEnd, setNewTimeEnd] = useState("08:00");
+  const [newDays, setNewDays] = useState<DayOfWeek[]>([
+    "isnin",
+    "selasa",
+    "rabu",
+    "khamis",
+    "jumaat",
+    "sabtu",
+    "ahad"
+  ]);
+  const [newLinkedModule, setNewLinkedModule] = useState<ScheduleModuleLink>("none");
+  const [missionToDelete, setMissionToDelete] = useState<Mission | null>(null);
+  const [newRecurrenceType, setNewRecurrenceType] = useState<RecurrenceType>("daily");
+  const [newStartDate, setNewStartDate] = useState(new Date().toISOString().split("T")[0]);
+  const [newEndDate, setNewEndDate] = useState(
+    new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
+  );
 
   // Custom Reward Form State
   const [rewardTitle, setRewardTitle] = useState(activeChild?.customReward?.title || "Bercuti ke Legoland");
@@ -145,13 +177,83 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onOpenLoginMod
   };
 
   const MISSION_PRESETS = [
-    { title: "Solat Subuh Berjemaah", category: "Islamic" as MissionCategory, difficulty: "Mudah" as MissionDifficulty, xp: 50, coins: 20, desc: "Tunaikan Solat Subuh tepat pada waktunya bersama keluarga." },
-    { title: "Solat Zohor / Asar", category: "Islamic" as MissionCategory, difficulty: "Mudah" as MissionDifficulty, xp: 40, coins: 15, desc: "Tunaikan Solat Fardhu dan semak bacaan." },
-    { title: "Membaca Iqra / Al-Quran (1 Muka)", category: "Islamic" as MissionCategory, difficulty: "Sederhana" as MissionDifficulty, xp: 60, coins: 25, desc: "Baca 1 muka surat Iqra atau Al-Quran dengan tajwid betul." },
-    { title: "Membaca Surah Hafazan Short Surah", category: "Islamic" as MissionCategory, difficulty: "Mudah" as MissionDifficulty, xp: 45, coins: 15, desc: "Hafal atau ulang baca Surah Al-Ikhlas / Al-Falaq / An-Nas." },
-    { title: "Kemas Tempat Tidur & Bilik", category: "Chores" as MissionCategory, difficulty: "Mudah" as MissionDifficulty, xp: 35, coins: 10, desc: "Susun bantal, selimut dan pastikan bilik kemas." },
-    { title: "Bantu Basuh & Susun Pinggan", category: "Chores" as MissionCategory, difficulty: "Mudah" as MissionDifficulty, xp: 40, coins: 15, desc: "Bantu ibu di dapur selepas makan." },
-    { title: "Menulis & Membaca Jawi", category: "Jawi" as MissionCategory, difficulty: "Sederhana" as MissionDifficulty, xp: 50, coins: 20, desc: "Selesaikan latihan menyebut dan mengeja huruf Jawi." }
+    {
+      title: "Solat Subuh Berjemaah",
+      category: "Islamic" as MissionCategory,
+      difficulty: "Mudah" as MissionDifficulty,
+      xp: 50,
+      coins: 20,
+      desc: "Tunaikan Solat Subuh tepat pada waktunya bersama keluarga.",
+      timeStart: "06:00",
+      timeEnd: "07:00",
+      linkedModule: "solat" as ScheduleModuleLink
+    },
+    {
+      title: "Solat Zohor / Asar",
+      category: "Islamic" as MissionCategory,
+      difficulty: "Mudah" as MissionDifficulty,
+      xp: 40,
+      coins: 15,
+      desc: "Tunaikan Solat Fardhu dan semak bacaan.",
+      timeStart: "13:00",
+      timeEnd: "14:00",
+      linkedModule: "solat" as ScheduleModuleLink
+    },
+    {
+      title: "Membaca Iqra / Al-Quran (1 Muka)",
+      category: "Islamic" as MissionCategory,
+      difficulty: "Sederhana" as MissionDifficulty,
+      xp: 60,
+      coins: 25,
+      desc: "Baca 1 muka surat Iqra atau Al-Quran dengan tajwid betul.",
+      timeStart: "19:00",
+      timeEnd: "20:00",
+      linkedModule: "diari" as ScheduleModuleLink
+    },
+    {
+      title: "Membaca Surah Hafazan Short Surah",
+      category: "Islamic" as MissionCategory,
+      difficulty: "Mudah" as MissionDifficulty,
+      xp: 45,
+      coins: 15,
+      desc: "Hafal atau ulang baca Surah Al-Ikhlas / Al-Falaq / An-Nas.",
+      timeStart: "17:00",
+      timeEnd: "18:00",
+      linkedModule: "hafazan" as ScheduleModuleLink
+    },
+    {
+      title: "Kemas Tempat Tidur & Bilik",
+      category: "Chores" as MissionCategory,
+      difficulty: "Mudah" as MissionDifficulty,
+      xp: 35,
+      coins: 10,
+      desc: "Susun bantal, selimut dan pastikan bilik kemas.",
+      timeStart: "07:00",
+      timeEnd: "08:00",
+      linkedModule: "none" as ScheduleModuleLink
+    },
+    {
+      title: "Bantu Basuh & Susun Pinggan",
+      category: "Chores" as MissionCategory,
+      difficulty: "Mudah" as MissionDifficulty,
+      xp: 40,
+      coins: 15,
+      desc: "Bantu ibu di dapur selepas makan.",
+      timeStart: "14:00",
+      timeEnd: "15:00",
+      linkedModule: "none" as ScheduleModuleLink
+    },
+    {
+      title: "Menulis & Membaca Jawi",
+      category: "Jawi" as MissionCategory,
+      difficulty: "Sederhana" as MissionDifficulty,
+      xp: 50,
+      coins: 20,
+      desc: "Selesaikan latihan menyebut dan mengeja huruf Jawi.",
+      timeStart: "15:00",
+      timeEnd: "16:00",
+      linkedModule: "jawi" as ScheduleModuleLink
+    }
   ];
 
   const handleAddChild = (e: React.FormEvent) => {
@@ -183,17 +285,41 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onOpenLoginMod
     e.preventDefault();
     if (!newTitle.trim()) return;
 
+    const hourSlotNum =
+      newScheduleTiming === "scheduled" && newTimeStart
+        ? parseInt(newTimeStart.split(":")[0], 10)
+        : undefined;
+
     addMission({
-      title: newTitle,
-      description: newDesc || "Tugasan khas daripada Ibu Bapa.",
+      title: newTitle.trim(),
+      description: newDesc.trim() || "Tugasan khas daripada Ibu Bapa.",
       category: newCategory,
       difficulty: newDifficulty,
       xpReward: Number(newXp),
-      coinReward: Number(newCoins)
+      coinReward: Number(newCoins),
+      timeStart: newScheduleTiming === "scheduled" ? newTimeStart : undefined,
+      timeEnd: newScheduleTiming === "scheduled" ? newTimeEnd : undefined,
+      hourSlot: hourSlotNum,
+      days:
+        newRecurrenceType === "custom_days"
+          ? (newDays.length > 0 ? newDays : undefined)
+          : newRecurrenceType === "daily"
+          ? ["isnin", "selasa", "rabu", "khamis", "jumaat", "sabtu", "ahad"]
+          : undefined,
+      linkedModule: newLinkedModule !== "none" ? newLinkedModule : undefined,
+      recurrenceType: newRecurrenceType,
+      startDate:
+        newRecurrenceType === "date_range" || newRecurrenceType === "once"
+          ? newStartDate
+          : undefined,
+      endDate: newRecurrenceType === "date_range" ? newEndDate : undefined
     });
 
     setNewTitle("");
     setNewDesc("");
+    setNewRecurrenceType("daily");
+    setNewScheduleTiming("scheduled");
+    setNewLinkedModule("none");
     setShowAddModal(false);
   };
 
@@ -204,6 +330,17 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onOpenLoginMod
     setNewXp(p.xp);
     setNewCoins(p.coins);
     setNewDesc(p.desc);
+    setNewRecurrenceType("daily");
+    if (p.timeStart) {
+      setNewScheduleTiming("scheduled");
+      setNewTimeStart(p.timeStart);
+      setNewTimeEnd(p.timeEnd || "08:00");
+    } else {
+      setNewScheduleTiming("anytime");
+    }
+    if (p.linkedModule) {
+      setNewLinkedModule(p.linkedModule);
+    }
   };
 
   const handleGenerateAiSuggestions = async () => {
@@ -568,7 +705,17 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onOpenLoginMod
                           </div>
                         </div>
                       ) : (
-                        <div className="pt-2 border-t border-amber-200/60 flex items-center justify-end gap-2">
+                        <div className="pt-2 border-t border-amber-200/60 flex flex-wrap items-center justify-end gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setMissionToDelete(m)}
+                            className="px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-rose-100 text-stone-700 hover:text-rose-700 font-extrabold text-xs transition-all cursor-pointer flex items-center gap-1 border border-stone-200"
+                            title="Padam terus tugasan ini daripada senarai"
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                            <span>Padam / Batal</span>
+                          </button>
+
                           <button
                             onClick={() => setRejectingMissionId(m.id)}
                             className="px-3.5 py-2 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-800 font-extrabold text-xs transition-all cursor-pointer flex items-center gap-1"
@@ -807,7 +954,7 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onOpenLoginMod
                 {childMissions.map((m) => (
                   <div
                     key={m.id}
-                    className={`p-4 rounded-2xl border flex flex-col justify-between space-y-2 ${
+                    className={`p-4 rounded-2xl border flex flex-col justify-between space-y-3 ${
                       m.status === "approved"
                         ? "bg-emerald-50/40 border-emerald-200"
                         : m.status === "pending_approval"
@@ -815,13 +962,20 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onOpenLoginMod
                         : "bg-stone-50 border-stone-200"
                     }`}
                   >
-                    <div className="space-y-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-stone-200 text-stone-700">
-                          {m.category}
-                        </span>
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap items-center justify-between gap-1.5">
+                        <div className="flex flex-wrap items-center gap-1">
+                          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-stone-200 text-stone-700">
+                            {m.category}
+                          </span>
+                          {m.createdByChild && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-100 text-purple-800">
+                              ✨ Inisiatif Anak
+                            </span>
+                          )}
+                        </div>
                         <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                          className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
                             m.status === "approved"
                               ? "bg-emerald-100 text-emerald-800"
                               : m.status === "pending_approval"
@@ -837,13 +991,65 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onOpenLoginMod
                         </span>
                       </div>
 
-                      <h4 className="font-extrabold text-stone-900 text-sm">{m.title}</h4>
-                      <p className="text-xs text-stone-500">{m.description}</p>
+                      {/* Recurrence & Timing Tags */}
+                      <div className="flex flex-wrap items-center gap-1.5 text-[10px] font-semibold">
+                        {m.recurrenceType === "daily" || (!m.recurrenceType && !m.startDate) ? (
+                          <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-md flex items-center gap-1">
+                            <Repeat className="w-3 h-3" />
+                            <span>Setiap Hari</span>
+                          </span>
+                        ) : m.recurrenceType === "date_range" ? (
+                          <span className="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-md flex items-center gap-1">
+                            <CalendarRange className="w-3 h-3" />
+                            <span>
+                              {m.startDate} hingga {m.endDate}
+                            </span>
+                          </span>
+                        ) : m.recurrenceType === "custom_days" ? (
+                          <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded-md flex items-center gap-1">
+                            <Calendar className="w-3 h-3" />
+                            <span>{m.days?.join(", ")}</span>
+                          </span>
+                        ) : (
+                          <span className="bg-stone-200 text-stone-700 px-2 py-0.5 rounded-md flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            <span>Sekali Sahaja {m.startDate ? `(${m.startDate})` : ""}</span>
+                          </span>
+                        )}
+
+                        {m.timeStart ? (
+                          <span className="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            <span>{m.timeStart} - {m.timeEnd || ""}</span>
+                          </span>
+                        ) : (
+                          <span className="bg-stone-100 text-stone-600 px-2 py-0.5 rounded-md">
+                            🌐 Sepanjang Hari
+                          </span>
+                        )}
+                      </div>
+
+                      <div>
+                        <h4 className="font-extrabold text-stone-900 text-sm">{m.title}</h4>
+                        <p className="text-xs text-stone-500 mt-0.5">{m.description}</p>
+                      </div>
                     </div>
 
                     <div className="flex items-center justify-between text-xs font-bold text-stone-600 pt-2 border-t border-stone-200/60">
-                      <span>Ganjaran: +{m.xpReward} XP</span>
-                      <span className="text-amber-600">🪙 {m.coinReward} Syiling</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-emerald-700">+{m.xpReward} XP</span>
+                        <span className="text-amber-600">🪙 {m.coinReward}</span>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setMissionToDelete(m)}
+                        className="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 hover:text-rose-700 font-extrabold text-[11px] transition-all cursor-pointer flex items-center gap-1 border border-rose-200"
+                        title="Padam atau batalkan tugasan ini"
+                      >
+                        <Trash2 className="w-3 h-3 text-rose-500" />
+                        <span>Padam / Batal</span>
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -1279,15 +1485,246 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onOpenLoginMod
                   placeholder="Keterangan tugasan untuk anak..."
                   value={newDesc}
                   onChange={(e) => setNewDesc(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs h-16"
+                  className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs h-16 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
+              </div>
+
+              {/* Recurrence & Date Range Section */}
+              <div className="p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-200 space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-black text-indigo-950 flex items-center gap-1.5">
+                    <Repeat className="w-4 h-4 text-indigo-600" />
+                    <span>Corak Ulangan & Tempoh Tarikh</span>
+                  </label>
+                  <span className="text-[10px] text-indigo-700 font-bold">Rentas Tarikh / Harian</span>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setNewRecurrenceType("daily")}
+                    className={`py-2 px-2 rounded-xl text-xs font-bold text-center border transition-all cursor-pointer flex flex-col items-center gap-0.5 ${
+                      newRecurrenceType === "daily"
+                        ? "bg-indigo-600 text-white border-indigo-600 shadow-xs"
+                        : "bg-white text-stone-700 border-stone-200 hover:bg-stone-50"
+                    }`}
+                  >
+                    <span>🔄 Setiap Hari</span>
+                    <span className="text-[9px] opacity-80">Harian berulang</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setNewRecurrenceType("date_range")}
+                    className={`py-2 px-2 rounded-xl text-xs font-bold text-center border transition-all cursor-pointer flex flex-col items-center gap-0.5 ${
+                      newRecurrenceType === "date_range"
+                        ? "bg-indigo-600 text-white border-indigo-600 shadow-xs"
+                        : "bg-white text-stone-700 border-stone-200 hover:bg-stone-50"
+                    }`}
+                  >
+                    <span>📅 Rentas Tarikh</span>
+                    <span className="text-[9px] opacity-80">Dari X ke Y</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setNewRecurrenceType("custom_days")}
+                    className={`py-2 px-2 rounded-xl text-xs font-bold text-center border transition-all cursor-pointer flex flex-col items-center gap-0.5 ${
+                      newRecurrenceType === "custom_days"
+                        ? "bg-indigo-600 text-white border-indigo-600 shadow-xs"
+                        : "bg-white text-stone-700 border-stone-200 hover:bg-stone-50"
+                    }`}
+                  >
+                    <span>📆 Hari Pilihan</span>
+                    <span className="text-[9px] opacity-80">Isnin/Rabu dll</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setNewRecurrenceType("once")}
+                    className={`py-2 px-2 rounded-xl text-xs font-bold text-center border transition-all cursor-pointer flex flex-col items-center gap-0.5 ${
+                      newRecurrenceType === "once"
+                        ? "bg-indigo-600 text-white border-indigo-600 shadow-xs"
+                        : "bg-white text-stone-700 border-stone-200 hover:bg-stone-50"
+                    }`}
+                  >
+                    <span>📌 Sekali Sahaja</span>
+                    <span className="text-[9px] opacity-80">Tarikh tertentu</span>
+                  </button>
+                </div>
+
+                {/* Sub-inputs based on recurrence type */}
+                {newRecurrenceType === "daily" && (
+                  <p className="text-[11px] text-indigo-900 bg-white/80 p-2.5 rounded-xl border border-indigo-200 font-medium leading-relaxed">
+                    ✨ <strong>Setiap Hari:</strong> Ibu bapa hanya perlu buat sekali! Tugasan ini akan aktif setiap hari secara automatik dalam jadual harian anak.
+                  </p>
+                )}
+
+                {newRecurrenceType === "date_range" && (
+                  <div className="space-y-2 bg-white/90 p-3 rounded-xl border border-indigo-200">
+                    <p className="text-[11px] text-indigo-900 font-bold">
+                      Tetapkan tempoh tarikh tugasan perlu dibuat (contoh: Dari tarikh ini ke tarikh sekian):
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-[10px] font-bold text-stone-600 mb-0.5">
+                          Dari Tarikh (Mula)
+                        </label>
+                        <input
+                          type="date"
+                          value={newStartDate}
+                          onChange={(e) => setNewStartDate(e.target.value)}
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-stone-300 text-xs font-bold text-stone-800 bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-stone-600 mb-0.5">
+                          Hingga Tarikh (Tamat)
+                        </label>
+                        <input
+                          type="date"
+                          value={newEndDate}
+                          min={newStartDate}
+                          onChange={(e) => setNewEndDate(e.target.value)}
+                          className="w-full px-2.5 py-1.5 rounded-lg border border-stone-300 text-xs font-bold text-stone-800 bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {newRecurrenceType === "custom_days" && (
+                  <div className="space-y-2 bg-white/90 p-3 rounded-xl border border-indigo-200">
+                    <label className="block text-[10px] font-bold text-stone-600">
+                      Pilih hari-hari dalam seminggu:
+                    </label>
+                    <div className="flex flex-wrap gap-1.5">
+                      {DAYS_LIST.map((day) => {
+                        const isSelected = newDays.includes(day.key);
+                        return (
+                          <button
+                            key={day.key}
+                            type="button"
+                            onClick={() => {
+                              if (isSelected) {
+                                setNewDays((prev) => prev.filter((d) => d !== day.key));
+                              } else {
+                                setNewDays((prev) => [...prev, day.key]);
+                              }
+                            }}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                              isSelected
+                                ? "bg-indigo-600 text-white shadow-2xs"
+                                : "bg-stone-100 text-stone-600 hover:bg-stone-200"
+                            }`}
+                          >
+                            {day.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {newRecurrenceType === "once" && (
+                  <div className="space-y-1 bg-white/90 p-3 rounded-xl border border-indigo-200">
+                    <label className="block text-[10px] font-bold text-stone-600">
+                      Tarikh Pelaksanaan:
+                    </label>
+                    <input
+                      type="date"
+                      value={newStartDate}
+                      onChange={(e) => setNewStartDate(e.target.value)}
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-stone-300 text-xs font-bold text-stone-800 bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                      required
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Schedule & Timing Link */}
+              <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-black text-emerald-950 flex items-center gap-1.5">
+                    <span>📅</span>
+                    <span>Pautan Jadual & Waktu Aktiviti</span>
+                  </label>
+                  <span className="text-[10px] text-emerald-700 font-bold">Automatik masuk ke Jadual Anak</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setNewScheduleTiming("scheduled")}
+                    className={`py-2 px-2.5 rounded-xl text-xs font-bold text-center border transition-all cursor-pointer ${
+                      newScheduleTiming === "scheduled"
+                        ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
+                        : "bg-white text-stone-700 border-stone-200 hover:bg-stone-50"
+                    }`}
+                  >
+                    🕒 Ada Jam Khusus
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNewScheduleTiming("anytime")}
+                    className={`py-2 px-2.5 rounded-xl text-xs font-bold text-center border transition-all cursor-pointer ${
+                      newScheduleTiming === "anytime"
+                        ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
+                        : "bg-white text-stone-700 border-stone-200 hover:bg-stone-50"
+                    }`}
+                  >
+                    🌐 Sepanjang Hari
+                  </button>
+                </div>
+
+                {newScheduleTiming === "scheduled" && (
+                  <div className="grid grid-cols-2 gap-3 pt-1">
+                    <div>
+                      <label className="block text-[11px] font-bold text-stone-700 mb-1">Masa Mula</label>
+                      <input
+                        type="time"
+                        value={newTimeStart}
+                        onChange={(e) => setNewTimeStart(e.target.value)}
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-stone-300 text-xs bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-stone-700 mb-1">Masa Tamat</label>
+                      <input
+                        type="time"
+                        value={newTimeEnd}
+                        onChange={(e) => setNewTimeEnd(e.target.value)}
+                        className="w-full px-2.5 py-1.5 rounded-xl border border-stone-300 text-xs bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-[11px] font-bold text-stone-700 mb-1">Pautan Terus Modul Aplikasi:</label>
+                  <select
+                    value={newLinkedModule}
+                    onChange={(e) => setNewLinkedModule(e.target.value as ScheduleModuleLink)}
+                    className="w-full px-2.5 py-2 rounded-xl border border-stone-300 text-xs bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  >
+                    <option value="none">Tiada (Aktiviti Fizikal / Tugasan Biasa)</option>
+                    <option value="solat">🕌 Solat 5 Waktu & Azan</option>
+                    <option value="jawi">✏️ Modul Menulis & Membaca Jawi</option>
+                    <option value="hafazan">📜 Modul Hafazan Surah Lazim</option>
+                    <option value="diari">📖 Iqra & Al-Quran</option>
+                    <option value="permainan">🎮 Permainan Minda Edukatif</option>
+                    <option value="world">🗺️ Nusantara & Bina Bandar</option>
+                  </select>
+                </div>
               </div>
 
               <button
                 type="submit"
                 className="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md transition-all cursor-pointer"
               >
-                Cipta & Hantar Tugasan
+                Cipta & Pautkan ke Jadual Anak
               </button>
             </form>
           </div>
@@ -1454,6 +1891,56 @@ export const ParentDashboard: React.FC<ParentDashboardProps> = ({ onOpenLoginMod
                 className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow-md shadow-rose-600/20 transition-all cursor-pointer"
               >
                 {language === "en" ? "Yes, Delete Profile" : "Ya, Padam Profil"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete / Cancel Mission Confirmation Modal */}
+      {missionToDelete && (
+        <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-5 border border-stone-100">
+            <div className="flex items-center gap-3 text-rose-600">
+              <div className="w-10 h-10 rounded-2xl bg-rose-100 flex items-center justify-center shrink-0">
+                <Trash2 className="w-5 h-5 text-rose-600" />
+              </div>
+              <div>
+                <h3 className="text-base font-extrabold text-stone-900">
+                  Padam / Batal Tugasan?
+                </h3>
+                <p className="text-xs text-stone-500">
+                  Keluarkan tugasan daripada senarai & jadual anak
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-rose-50/70 p-3.5 rounded-2xl border border-rose-100 space-y-1.5">
+              <p className="text-xs font-black text-rose-900">{missionToDelete.title}</p>
+              <p className="text-[11px] text-stone-600 leading-relaxed">
+                Tugasan ini akan dipadam daripada profil anak dan dikeluarkan daripada jadual aktiviti harian secara serta-merta.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setMissionToDelete(null)}
+                className="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-extrabold text-xs transition-colors cursor-pointer"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const id = missionToDelete.id;
+                  setMissionToDelete(null);
+                  deleteMission(id);
+                }}
+                className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow-md shadow-rose-600/20 transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Ya, Sahkan Padam</span>
               </button>
             </div>
           </div>

@@ -19,16 +19,17 @@ import {
   Hammer,
   BookOpen
 } from "lucide-react";
-import { QuranIqraDiary } from "./QuranIqraDiary";
-import { SolatTrackerModule } from "./SolatTrackerModule";
+import { HourlyScheduleModule } from "./HourlyScheduleModule";
 
 interface ChildDashboardProps {
   onNavigateToWorld: () => void;
   onNavigateToShop: () => void;
   onNavigateToLeaderboard: () => void;
-  onNavigateToJawi: () => void;
+  onNavigateToJawi?: () => void;
   onNavigateToHafazan?: () => void;
   onNavigateToGames?: () => void;
+  onNavigateToSolat?: () => void;
+  onNavigateToDiari?: () => void;
 }
 
 export const ChildDashboard: React.FC<ChildDashboardProps> = ({
@@ -37,15 +38,14 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
   onNavigateToLeaderboard,
   onNavigateToJawi,
   onNavigateToHafazan,
-  onNavigateToGames
+  onNavigateToGames,
+  onNavigateToSolat,
+  onNavigateToDiari
 }) => {
   const {
     language,
     activeChild,
     setRole,
-    missions,
-    completeMission,
-    submitChildCustomMission,
     feedPet,
     playWithPet,
     sleepPet,
@@ -53,18 +53,7 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
     showToast
   } = useApp();
 
-  const [activeCategory, setActiveCategory] = useState<"Jawi" | "Hafazan" | "Solat" | "DiariBacaan" | "Islamic" | "Chores">("Jawi");
-  const [showProofModal, setShowProofModal] = useState<string | null>(null);
-  const [proofNote, setProofNote] = useState("");
   const [dailyClaimed, setDailyClaimed] = useState(false);
-
-  // Custom task proposal state
-  const [showCustomTaskModal, setShowCustomTaskModal] = useState(false);
-  const [customTitle, setCustomTitle] = useState("");
-  const [customDesc, setCustomDesc] = useState("");
-  const [customCategory, setCustomCategory] = useState<"Islamic" | "Jawi" | "Chores">("Chores");
-  const [customReqXp, setCustomReqXp] = useState(40);
-  const [customReqCoins, setCustomReqCoins] = useState(15);
 
   if (!activeChild) {
     return (
@@ -91,10 +80,6 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
       </div>
     );
   }
-
-  // Filter Missions
-  const childMissions = missions.filter((m) => m.childId === activeChild.id);
-  const categoryMissions = childMissions.filter((m) => m.category === activeCategory);
 
   const triggerConfetti = () => {
     confetti({
@@ -127,17 +112,6 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
         : "Tahniah! +50 Syiling & +2 Berlian dituntut!",
       "success"
     );
-  };
-
-  const handleSubmitProof = (missionId: string) => {
-    completeMission(
-      missionId,
-      undefined,
-      proofNote || (language === "en" ? "Mission completed!" : "Selesai disiapkan!")
-    );
-    setShowProofModal(null);
-    setProofNote("");
-    triggerConfetti();
   };
 
   return (
@@ -357,500 +331,15 @@ export const ChildDashboard: React.FC<ChildDashboardProps> = ({
         </div>
       </div>
 
-      {/* Interactive Games Module Promo Card */}
-      {onNavigateToGames && (() => {
-        const isModuleFullyUnlocked = Boolean(activeChild.gamesProgress?.isModuleUnlocked);
-        const unlockedCount = isModuleFullyUnlocked
-          ? 8
-          : (activeChild.gamesProgress?.unlockedGameIds?.length || 0);
-
-        return (
-          <div
-            onClick={onNavigateToGames}
-            className="bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 rounded-3xl p-5 sm:p-6 text-stone-950 shadow-md border-2 border-amber-300 relative overflow-hidden cursor-pointer hover:shadow-lg transition-all group"
-          >
-            <div className="flex flex-wrap items-center justify-between gap-4 relative z-10">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-white/95 text-stone-900 flex items-center justify-center font-black text-3xl shadow-md shrink-0 group-hover:scale-110 transition-transform">
-                  🎮
-                </div>
-                <div>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-stone-900 text-amber-300 text-[10px] font-black uppercase tracking-wider">
-                    {isModuleFullyUnlocked || unlockedCount >= 8 ? (
-                      <span>Semua 8 Permainan Dibuka • Tahniah!</span>
-                    ) : unlockedCount > 0 ? (
-                      <span>{unlockedCount}/8 Permainan Dibuka • Latih Minda</span>
-                    ) : (
-                      <span>Buka dengan Syiling 🪙 • 8 Permainan Minda</span>
-                    )}
-                  </div>
-                  <h3 className="text-xl font-black text-stone-950 mt-1">
-                    Pusat Permainan Santai & Cabaran Minda
-                  </h3>
-                  <p className="text-xs font-bold text-stone-900/80">
-                    Beli dan buka permainan menggunakan syiling ganjaran: Cari & Padan, Kad Memori, Kuiz Bergambar, Cari Perkataan, Sudoku & Silang Kata!
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="bg-white/90 backdrop-blur-md px-3 py-2 rounded-2xl text-center">
-                  <div className="text-[10px] font-black uppercase text-stone-500">Bintang</div>
-                  <div className="text-sm font-black text-amber-600">
-                    ⭐ {activeChild.gamesProgress?.totalStars || 0}
-                  </div>
-                </div>
-
-                <div className="px-5 py-3 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white font-black text-xs shadow-md transition-all flex items-center gap-2 group-hover:translate-x-1">
-                  <span>{unlockedCount > 0 ? "Main Sekarang" : "Buka dengan Syiling"}</span>
-                  <span>{unlockedCount > 0 ? "▶️" : "🪙"}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      })()}
-
-      {/* Custom Family Target Reward Banner (e.g. Legoland Trip) */}
-      {activeChild.customReward && (
-        <div className="bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 rounded-3xl p-6 text-stone-900 shadow-lg border-2 border-amber-300 relative overflow-hidden">
-          <div className="flex flex-wrap items-center justify-between gap-4 relative z-10">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-white text-stone-900 flex items-center justify-center font-black text-2xl shadow-md shrink-0">
-                🎁
-              </div>
-              <div>
-                <span className="text-[10px] font-black uppercase tracking-wider bg-stone-900 text-amber-300 px-2.5 py-0.5 rounded-full">
-                  {language === "en" ? "Parent's Special Reward Target" : "Ganjaran Khas Ibu Bapa"}
-                </span>
-                <h3 className="text-xl font-black text-stone-900 mt-1">
-                  {activeChild.customReward.title}
-                </h3>
-                <p className="text-xs font-semibold text-stone-800">
-                  {language === "en"
-                    ? `Reach ${activeChild.customReward.targetXp} XP to unlock this special family reward!`
-                    : `Kumpul sehingga ${activeChild.customReward.targetXp} XP untuk membuka ganjaran istimewa ini!`}
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-stone-200 shrink-0 text-center space-y-1 min-w-[160px] shadow-sm">
-              <span className="text-[10px] font-extrabold text-stone-500 uppercase">
-                {language === "en" ? "XP Progress" : "Kemajuan XP"}
-              </span>
-              <div className="text-lg font-black text-emerald-700">
-                {activeChild.xp} / {activeChild.customReward.targetXp} XP
-              </div>
-              <div className="w-full bg-stone-200 h-2.5 rounded-full overflow-hidden">
-                <div
-                  className="bg-emerald-600 h-full rounded-full transition-all duration-500"
-                  style={{
-                    width: `${Math.min(
-                      100,
-                      Math.round((activeChild.xp / activeChild.customReward.targetXp) * 100)
-                    )}%`
-                  }}
-                />
-              </div>
-              {activeChild.xp >= activeChild.customReward.targetXp && (
-                <span className="block text-[10px] font-black text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
-                  🎉 {language === "en" ? "Target Unlocked!" : "Sasaran Tercapai!"}
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Missions Section Tabs */}
-      <div className="bg-white rounded-3xl p-6 border border-stone-200 shadow-2xs space-y-6">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h3 className="text-xl font-black text-stone-900">
-              {language === "en" ? "Today's Missions 🎯" : "Misi Hari Ini 🎯"}
-            </h3>
-            <p className="text-stone-500 text-xs">
-              {language === "en"
-                ? "Complete missions to earn coins and build your Nusantara world!"
-                : "Selesaikan misi untuk mengumpul syiling dan membina dunia Nusantara anda!"}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            {/* Child Custom Activity Proposal CTA Button */}
-            <button
-              onClick={() => setShowCustomTaskModal(true)}
-              className="px-4 py-2 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-stone-900 font-extrabold text-xs shadow-2xs transition-all cursor-pointer flex items-center gap-1.5 border border-amber-300"
-            >
-              <span>🌟 {language === "en" ? "+ Propose Custom Activity" : "+ Cadang Aktiviti Luar Aplikasi"}</span>
-            </button>
-
-            {/* Category Filter - Kid Friendly Colorful Pills */}
-            <div className="flex flex-wrap items-center gap-1.5 bg-stone-100 p-1.5 rounded-2xl text-xs font-bold">
-              <button
-                onClick={() => setActiveCategory("Jawi")}
-                className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer font-extrabold flex items-center gap-1 ${
-                  activeCategory === "Jawi"
-                    ? "bg-sky-500 text-white shadow-xs scale-105"
-                    : "text-stone-600 hover:text-stone-900 hover:bg-stone-200"
-                }`}
-              >
-                <span>✏️</span>
-                <span>{language === "en" ? "Learn Jawi" : "Modul Jawi"}</span>
-              </button>
-              <button
-                onClick={() => setActiveCategory("Hafazan")}
-                className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer font-extrabold flex items-center gap-1 ${
-                  activeCategory === "Hafazan"
-                    ? "bg-teal-600 text-white shadow-xs scale-105"
-                    : "text-stone-600 hover:text-stone-900 hover:bg-stone-200"
-                }`}
-              >
-                <span>📜</span>
-                <span>{language === "en" ? "Hafazan Module" : "Modul Hafazan"}</span>
-              </button>
-              <button
-                onClick={() => setActiveCategory("Solat")}
-                className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer font-extrabold flex items-center gap-1 ${
-                  activeCategory === "Solat"
-                    ? "bg-amber-500 text-stone-900 shadow-xs scale-105"
-                    : "text-stone-600 hover:text-stone-900 hover:bg-stone-200"
-                }`}
-              >
-                <span>🕌</span>
-                <span>{language === "en" ? "Prayer Log" : "Rekod Solat 5 Waktu"}</span>
-              </button>
-              <button
-                onClick={() => setActiveCategory("DiariBacaan")}
-                className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer font-extrabold flex items-center gap-1 ${
-                  activeCategory === "DiariBacaan"
-                    ? "bg-rose-500 text-white shadow-xs scale-105"
-                    : "text-stone-600 hover:text-stone-900 hover:bg-stone-200"
-                }`}
-              >
-                <span>📖</span>
-                <span>{language === "en" ? "Reading Log" : "Rekod Bacaan Iqra & Al Quran"}</span>
-              </button>
-              <button
-                onClick={() => setActiveCategory("Islamic")}
-                className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer font-extrabold flex items-center gap-1 ${
-                  activeCategory === "Islamic"
-                    ? "bg-purple-600 text-white shadow-xs scale-105"
-                    : "text-stone-600 hover:text-stone-900 hover:bg-stone-200"
-                }`}
-              >
-                <span>⭐</span>
-                <span>{language === "en" ? "Daily Missions" : "Misi Harian"}</span>
-              </button>
-              <button
-                onClick={() => setActiveCategory("Chores")}
-                className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer font-extrabold flex items-center gap-1 ${
-                  activeCategory === "Chores"
-                    ? "bg-orange-500 text-white shadow-xs scale-105"
-                    : "text-stone-600 hover:text-stone-900 hover:bg-stone-200"
-                }`}
-              >
-                <span>🧹</span>
-                <span>{language === "en" ? "House Chores" : "Tugasan Rumah"}</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Render Active Category Content */}
-        {activeCategory === "Solat" ? (
-          <SolatTrackerModule />
-        ) : activeCategory === "DiariBacaan" ? (
-          <QuranIqraDiary />
-        ) : (
-          <div className="space-y-4">
-            {/* Kid Quick Launch Cards for Jawi & Hafazan */}
-            {activeCategory === "Jawi" && (
-              <div className="bg-gradient-to-r from-sky-400 to-blue-600 text-white rounded-3xl p-6 shadow-md flex flex-wrap items-center justify-between gap-4">
-                <div className="space-y-1 max-w-xl">
-                  <div className="inline-flex items-center gap-1 bg-white/20 backdrop-blur-md text-white text-xs font-black px-3 py-1 rounded-full">
-                    <span>✏️ Latihan Menulis & Melukis Huruf Jawi</span>
-                  </div>
-                  <h3 className="text-xl md:text-2xl font-black">Modul Pembelajaran Jawi Interaktif</h3>
-                  <p className="text-xs md:text-sm text-sky-100 font-medium">
-                    Belajar sebutan alif, ba, ta, padanan rumi, serta kanvas interaktif melukis huruf Jawi secara menyeronokkan!
-                  </p>
-                </div>
-                <button
-                  onClick={onNavigateToJawi}
-                  className="px-6 py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-stone-900 font-extrabold text-sm shadow-md transition-all cursor-pointer transform hover:scale-105"
-                >
-                  🚀 Buka Modul Jawi Sekarang
-                </button>
-              </div>
-            )}
-
-            {activeCategory === "Hafazan" && (
-              <div className="bg-gradient-to-r from-teal-500 to-emerald-700 text-white rounded-3xl p-6 shadow-md flex flex-wrap items-center justify-between gap-4">
-                <div className="space-y-1 max-w-xl">
-                  <div className="inline-flex items-center gap-1 bg-white/20 backdrop-blur-md text-white text-xs font-black px-3 py-1 rounded-full">
-                    <span>📜 10 Surah Lazim & Kuiz Ayat</span>
-                  </div>
-                  <h3 className="text-xl md:text-2xl font-black">Modul Hafazan Surah Cilik</h3>
-                  <p className="text-xs md:text-sm text-teal-100 font-medium">
-                    Dengar bacaan surah, hafal ayat demi ayat, dan uji ingatan melalui kuiz susun ayat interaktif!
-                  </p>
-                </div>
-                <button
-                  onClick={onNavigateToHafazan}
-                  className="px-6 py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-stone-900 font-extrabold text-sm shadow-md transition-all cursor-pointer transform hover:scale-105"
-                >
-                  🚀 Buka Modul Hafazan Sekarang
-                </button>
-              </div>
-            )}
-
-            {/* Mission Cards List */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {categoryMissions.map((m) => (
-            <div
-              key={m.id}
-              className={`p-5 rounded-3xl border transition-all flex flex-col justify-between space-y-3 ${
-                m.status === "approved"
-                  ? "bg-emerald-50/60 border-emerald-200 opacity-90"
-                  : m.status === "pending_approval"
-                  ? "bg-amber-50/60 border-amber-200"
-                  : "bg-white border-stone-200 hover:border-emerald-300"
-              }`}
-            >
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-700">
-                    {m.difficulty === "Mudah"
-                      ? language === "en"
-                        ? "Easy"
-                        : "Mudah"
-                      : m.difficulty === "Sederhana"
-                      ? language === "en"
-                        ? "Medium"
-                        : "Sederhana"
-                      : language === "en"
-                      ? "Challenging"
-                      : "Cabar"}
-                  </span>
-                  <div className="flex items-center gap-2 text-xs font-extrabold text-stone-800">
-                    <span>+{m.xpReward} XP</span>
-                    <span>•</span>
-                    <span className="text-amber-600">+{m.coinReward} 🪙</span>
-                  </div>
-                </div>
-
-                <h4 className="font-extrabold text-stone-900 text-base">{m.title}</h4>
-                <p className="text-xs text-stone-500 leading-relaxed">{m.description}</p>
-
-                {m.parentComment && (
-                  <div className="p-2.5 rounded-xl bg-emerald-100/70 text-emerald-900 text-xs font-semibold italic">
-                    💬 {language === "en" ? "Parent" : "Ibu Bapa"}: "{m.parentComment}"
-                  </div>
-                )}
-
-                {m.status === "rejected" && m.rejectionReason && (
-                  <div className="p-2.5 rounded-xl bg-rose-100 border border-rose-200 text-rose-900 text-xs font-bold space-y-0.5">
-                    <div>❌ {language === "en" ? "Task Declined by Parent" : "Tugasan Ditolak Ibu Bapa"}:</div>
-                    <div className="italic text-[11px] font-medium text-rose-800">
-                      "{m.rejectionReason}"
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="pt-2">
-                {m.status === "approved" ? (
-                  <div className="w-full py-2.5 rounded-2xl bg-emerald-100 text-emerald-800 font-extrabold text-xs text-center flex items-center justify-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    <span>
-                      {language === "en" ? "✓ Completed & Approved" : "✓ Selesai & Disahkan Ibu Bapa"}
-                    </span>
-                  </div>
-                ) : m.status === "pending_approval" ? (
-                  <div className="w-full py-2.5 rounded-2xl bg-amber-100 text-amber-900 font-extrabold text-xs text-center flex items-center justify-center gap-1.5">
-                    <span>
-                      {language === "en" ? "⏳ Pending Parent Approval" : "⏳ Menunggu Kelulusan Ibu Bapa"}
-                    </span>
-                  </div>
-                ) : m.status === "rejected" ? (
-                  <button
-                    onClick={() => setShowProofModal(m.id)}
-                    className="w-full py-2.5 rounded-2xl bg-stone-800 hover:bg-stone-900 text-white font-extrabold text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
-                  >
-                    <span>{language === "en" ? "Hantar Semula Tugasan" : "Hantar Semula Tugasan"}</span>
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => setShowProofModal(m.id)}
-                    className="w-full py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
-                  >
-                    <span>{language === "en" ? "Submit Completed Task" : "Hantar Tugasan Selesai"}</span>
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Proof Submission Modal */}
-      {showProofModal && (
-        <div className="fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-stone-200 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-extrabold text-stone-900 text-lg">
-                {language === "en" ? "Submit Task Proof" : "Hantar Bukti Tugasan"}
-              </h3>
-              <button
-                onClick={() => setShowProofModal(null)}
-                className="text-stone-400 hover:text-stone-600 font-bold"
-              >
-                ✕
-              </button>
-            </div>
-
-            <p className="text-xs text-stone-500">
-              {language === "en"
-                ? "Add a note or small message for your parents."
-                : "Tambah ucapan atau catatan kecil untuk disampaikan kepada ibu bapa anda."}
-            </p>
-
-            <div>
-              <label className="block text-xs font-extrabold text-stone-700 mb-1">
-                {language === "en" ? "Child Mission Note" : "Catatan Misi Anak"}
-              </label>
-              <textarea
-                placeholder={
-                  language === "en"
-                    ? "E.g., I completed my morning chores on time!"
-                    : "Contoh: Saya dah solat Subuh bersama ayah tepat waktu!"
-                }
-                value={proofNote}
-                onChange={(e) => setProofNote(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs h-24 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-              />
-            </div>
-
-            <button
-              onClick={() => handleSubmitProof(showProofModal)}
-              className="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md cursor-pointer"
-            >
-              {language === "en" ? "Submit for Parent Approval" : "Hantar untuk Kelulusan Ibu Bapa"}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Child Custom Task Proposal Modal */}
-      {showCustomTaskModal && (
-        <div className="fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-stone-200 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">🌟</span>
-                <h3 className="font-extrabold text-stone-900 text-base">
-                  Cadang Aktiviti Luar Aplikasi
-                </h3>
-              </div>
-              <button
-                onClick={() => setShowCustomTaskModal(false)}
-                className="text-stone-400 hover:text-stone-600 font-bold"
-              >
-                ✕
-              </button>
-            </div>
-
-            <p className="text-xs text-stone-600">
-              Anakanda boleh masukkan aktiviti atau kebaikan yang dilakukan di luar aplikasi (seperti membantu cikgu di sekolah, membantu jiran, atau membersihkan kelas). Ibu bapa akan menyemak dan menentukan ganjaran XP & Syiling!
-            </p>
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (!customTitle.trim()) {
-                  showToast("Sila masukkan tajuk aktiviti.", "error");
-                  return;
-                }
-                submitChildCustomMission({
-                  title: customTitle.trim(),
-                  description: customDesc.trim() || "Aktiviti/kebaikan inisiatif sendiri oleh anak.",
-                  category: customCategory,
-                  requestedXp: Number(customReqXp),
-                  requestedCoins: Number(customReqCoins)
-                });
-                setShowCustomTaskModal(false);
-                setCustomTitle("");
-                setCustomDesc("");
-                triggerConfetti();
-              }}
-              className="space-y-3 text-xs"
-            >
-              <div>
-                <label className="block font-extrabold text-stone-700 mb-1">
-                  Tajuk Aktiviti / Kebaikan
-                </label>
-                <input
-                  type="text"
-                  placeholder="Contoh: Membantu cikgu menyusun buku di sekolah"
-                  value={customTitle}
-                  onChange={(e) => setCustomTitle(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-stone-300 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block font-extrabold text-stone-700 mb-1">
-                  Penerangan Ringkas
-                </label>
-                <textarea
-                  placeholder="Contoh: Saya tolong cikgu angkat buku latihan dan kemaskan bilik guru selepas waktu persekolahan."
-                  value={customDesc}
-                  onChange={(e) => setCustomDesc(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-stone-300 font-medium h-20 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-extrabold text-stone-700 mb-1">
-                    Cadangan XP
-                  </label>
-                  <input
-                    type="number"
-                    step="5"
-                    value={customReqXp}
-                    onChange={(e) => setCustomReqXp(Number(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl border border-stone-300 font-bold text-emerald-700"
-                  />
-                </div>
-                <div>
-                  <label className="block font-extrabold text-stone-700 mb-1">
-                    Cadangan Syiling 🪙
-                  </label>
-                  <input
-                    type="number"
-                    step="5"
-                    value={customReqCoins}
-                    onChange={(e) => setCustomReqCoins(Number(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl border border-stone-300 font-bold text-amber-600"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold shadow-md cursor-pointer mt-2"
-              >
-                Hantar kepada Ibu Bapa untuk Semakan
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* Daily Hourly Schedule & Routines (Arranged Hour by Hour & Linked with Modules) */}
+      <HourlyScheduleModule
+        onNavigateToSolat={onNavigateToSolat}
+        onNavigateToJawi={onNavigateToJawi}
+        onNavigateToHafazan={onNavigateToHafazan}
+        onNavigateToDiari={onNavigateToDiari}
+        onNavigateToGames={onNavigateToGames}
+        onNavigateToWorld={onNavigateToWorld}
+      />
     </div>
   );
 };

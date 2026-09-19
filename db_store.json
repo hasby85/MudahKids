@@ -79,19 +79,19 @@
             "id": "pet-1789488773551",
             "type": "cat",
             "name": "Bella",
-            "level": 9,
-            "xp": 440,
-            "hunger": 36,
-            "happiness": 52,
-            "sleep": 62,
+            "level": 14,
+            "xp": 650,
+            "hunger": 15,
+            "happiness": 15,
+            "sleep": 24,
             "evolutionStage": 3
           },
           "level": 1,
-          "xp": 1980,
-          "coins": 1296,
-          "diamonds": 13,
+          "xp": 4000,
+          "coins": 2590,
+          "diamonds": 17,
           "energy": 100,
-          "streak": 5,
+          "streak": 7,
           "unlockedWorlds": [
             "kampung"
           ],
@@ -130,9 +130,9 @@
                     "qadhaDone": false
                   },
                   "isyak": {
-                    "completed": false,
+                    "completed": true,
                     "berjemaah": false,
-                    "status": "none",
+                    "status": "completed",
                     "qadhaDone": false
                   }
                 },
@@ -146,7 +146,7 @@
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-18T12:11:03.383Z"
+                "updatedAt": "2026-09-19T06:13:09.102Z"
               },
               {
                 "id": "solat-2026-09-17",
@@ -180,7 +180,7 @@
                   "isyak": {
                     "completed": false,
                     "berjemaah": false,
-                    "status": "none",
+                    "status": "missed",
                     "qadhaDone": false
                   }
                 },
@@ -194,7 +194,7 @@
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-17T15:03:11.738Z"
+                "updatedAt": "2026-09-19T06:13:00.722Z"
               },
               {
                 "id": "solat-2026-09-16",
@@ -246,7 +246,7 @@
                 "updatedAt": "2026-09-17T15:02:31.706Z"
               }
             ],
-            "totalFardhuCount": 10,
+            "totalFardhuCount": 11,
             "totalSunatCount": 0,
             "currentStreak": 0,
             "qadhaPending": {
@@ -254,7 +254,7 @@
               "zohor": 0,
               "asar": 0,
               "maghrib": 0,
-              "isyak": 0
+              "isyak": 1
             },
             "qadhaCompleted": {
               "subuh": 1,
@@ -280,10 +280,15 @@
             ]
           },
           "jawiProgress": {
-            "unlockedLevel": 3,
+            "unlockedLevel": 8,
             "completedLevels": [
               1,
-              2
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
             ],
             "levelActivities": {
               "1": {
@@ -295,6 +300,31 @@
                 "tracing": true,
                 "test": true,
                 "builder": true
+              },
+              "3": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              },
+              "4": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              },
+              "5": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              },
+              "6": {
+                "tracing": true,
+                "test": true,
+                "builder": true
+              },
+              "7": {
+                "builder": true,
+                "tracing": true,
+                "test": true
               }
             }
           },
@@ -365,8 +395,8 @@
             "id": "pet-1789488789615",
             "type": "rabbit",
             "name": "Kitty",
-            "level": 7,
-            "xp": 335,
+            "level": 9,
+            "xp": 440,
             "hunger": 15,
             "happiness": 15,
             "sleep": 15,
@@ -374,10 +404,10 @@
           },
           "level": 1,
           "xp": 495,
-          "coins": 378,
-          "diamonds": 11,
+          "coins": 422,
+          "diamonds": 13,
           "energy": 100,
-          "streak": 4,
+          "streak": 5,
           "unlockedWorlds": [
             "kampung"
           ],
@@ -385,6 +415,50 @@
           "inventory": [],
           "solatProgress": {
             "history": [
+              {
+                "id": "solat-2026-09-19",
+                "date": "2026-09-19",
+                "isDayExcused": true,
+                "fardhu": {
+                  "subuh": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "dimaafkan"
+                  },
+                  "zohor": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "dimaafkan"
+                  },
+                  "asar": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "dimaafkan"
+                  },
+                  "maghrib": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "dimaafkan"
+                  },
+                  "isyak": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "dimaafkan"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-19T06:10:42.789Z",
+                "excuseReason": "Haid / Uzur Syarie"
+              },
               {
                 "id": "solat-2026-09-18",
                 "date": "2026-09-18",
@@ -465,7 +539,7 @@
                   "isyak": {
                     "completed": false,
                     "berjemaah": false,
-                    "status": "none",
+                    "status": "missed",
                     "qadhaDone": false
                   }
                 },
@@ -479,7 +553,7 @@
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-17T15:05:34.691Z"
+                "updatedAt": "2026-09-19T06:11:35.248Z"
               },
               {
                 "id": "solat-2026-09-16",
@@ -539,7 +613,7 @@
               "zohor": 0,
               "asar": 0,
               "maghrib": 0,
-              "isyak": 1
+              "isyak": 2
             },
             "qadhaCompleted": {
               "subuh": 1,
@@ -682,6 +756,50 @@
           "solatProgress": {
             "history": [
               {
+                "id": "solat-2026-09-19",
+                "date": "2026-09-19",
+                "isDayExcused": false,
+                "fardhu": {
+                  "subuh": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "missed",
+                    "qadhaDone": false
+                  },
+                  "zohor": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "none"
+                  },
+                  "asar": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "none"
+                  },
+                  "maghrib": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "none"
+                  },
+                  "isyak": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "none"
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-19T06:12:25.760Z"
+              },
+              {
                 "id": "solat-2026-09-18",
                 "date": "2026-09-18",
                 "isDayExcused": false,
@@ -713,7 +831,7 @@
                   "isyak": {
                     "completed": false,
                     "berjemaah": false,
-                    "status": "none",
+                    "status": "missed",
                     "qadhaDone": false
                   }
                 },
@@ -727,7 +845,7 @@
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-18T12:10:38.563Z"
+                "updatedAt": "2026-09-19T06:12:05.664Z"
               },
               {
                 "id": "solat-2026-09-17",
@@ -761,7 +879,7 @@
                   "isyak": {
                     "completed": false,
                     "berjemaah": false,
-                    "status": "none",
+                    "status": "missed",
                     "qadhaDone": false
                   }
                 },
@@ -775,7 +893,7 @@
                   "taubat": false
                 },
                 "note": "",
-                "updatedAt": "2026-09-17T15:04:12.643Z"
+                "updatedAt": "2026-09-19T06:11:50.025Z"
               },
               {
                 "id": "solat-2026-09-16",
@@ -830,11 +948,11 @@
             "totalSunatCount": 0,
             "currentStreak": 0,
             "qadhaPending": {
-              "subuh": 2,
+              "subuh": 3,
               "zohor": 1,
               "asar": 1,
               "maghrib": 2,
-              "isyak": 1
+              "isyak": 3
             },
             "qadhaCompleted": {
               "subuh": 0,
@@ -873,10 +991,51 @@
         }
       ],
       "activeChildId": "child-1789488773551",
-      "missions": [],
+      "missions": [
+        {
+          "title": "Siapkan Buku Skrap Geografi",
+          "description": "Tugasan khas daripada Ibu Bapa.",
+          "category": "Chores",
+          "difficulty": "Cabar",
+          "xpReward": 40,
+          "coinReward": 15,
+          "timeStart": "21:00",
+          "timeEnd": "23:00",
+          "hourSlot": 21,
+          "recurrenceType": "date_range",
+          "startDate": "2026-09-19",
+          "endDate": "2026-09-30",
+          "id": "m-1789798111551",
+          "childId": "child-1789488773551",
+          "status": "todo"
+        },
+        {
+          "title": "Siapkan Buku Skrap Geografi",
+          "description": "Tugasan khas daripada Ibu Bapa.",
+          "category": "Chores",
+          "difficulty": "Cabar",
+          "xpReward": 40,
+          "coinReward": 15,
+          "timeStart": "21:00",
+          "timeEnd": "23:00",
+          "hourSlot": 21,
+          "days": [
+            "isnin",
+            "selasa",
+            "rabu",
+            "khamis",
+            "jumaat",
+            "sabtu",
+            "ahad"
+          ],
+          "id": "m-1789793147628",
+          "childId": "child-1789488789615",
+          "status": "todo"
+        }
+      ],
       "language": "bm",
-      "lastSyncedAt": "2026-09-19T04:01:38.469Z",
-      "lastSyncTimestamp": 1789790497411
+      "lastSyncedAt": "2026-09-19T06:29:09.408Z",
+      "lastSyncTimestamp": 1789799349084
     },
     "shahirah_mahfuzah@yahoo.com": {
       "user": {

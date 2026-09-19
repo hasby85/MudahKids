@@ -8,7 +8,8 @@ import {
   Mission,
   BuiltStructure,
   ShopItem,
-  JakimNote
+  JakimNote,
+  DayOfWeek
 } from "../types";
 import {
   DEFAULT_ISLAMIC_MISSIONS,
@@ -79,6 +80,7 @@ interface AppContextType {
   // Missions
   missions: Mission[];
   addMission: (mission: Omit<Mission, "id" | "status" | "childId">) => void;
+  deleteMission: (id: string) => void;
   submitChildCustomMission: (data: {
     title: string;
     description: string;
@@ -86,6 +88,9 @@ interface AppContextType {
     requestedXp?: number;
     requestedCoins?: number;
     proofNote?: string;
+    timeStart?: string;
+    timeEnd?: string;
+    days?: DayOfWeek[];
   }) => void;
   completeMission: (id: string, proofUrl?: string, proofNote?: string) => void;
   approveMission: (id: string, bonusCoins?: number, comment?: string) => void;
@@ -1180,6 +1185,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     );
   };
 
+  const deleteMission = (id: string) => {
+    setMissions((prev) => prev.filter((m) => m.id !== id));
+    showToast(
+      language === "en" ? "Task deleted/cancelled successfully." : "Tugasan berjaya dipadam / dibatalkan.",
+      "info"
+    );
+  };
+
   const submitChildCustomMission = (data: {
     title: string;
     description: string;
@@ -1187,8 +1200,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     requestedXp?: number;
     requestedCoins?: number;
     proofNote?: string;
+    timeStart?: string;
+    timeEnd?: string;
+    days?: DayOfWeek[];
   }) => {
     if (!activeChildId) return;
+    const hourSlotNum = data.timeStart ? parseInt(data.timeStart.split(":")[0], 10) : undefined;
     const mission: Mission = {
       id: `m-child-${Date.now()}`,
       childId: activeChildId,
@@ -1203,7 +1220,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       status: "pending_approval",
       createdByChild: true,
       proofNote: data.proofNote,
-      completedAt: new Date().toISOString()
+      completedAt: new Date().toISOString(),
+      timeStart: data.timeStart,
+      timeEnd: data.timeEnd,
+      hourSlot: hourSlotNum,
+      days: data.days
     };
     setMissions((prev) => [mission, ...prev]);
     showToast(
@@ -1223,6 +1244,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const targetMission = missions.find((m) => m.id === id);
     if (!targetMission) return;
 
+    const todayStr = new Date().toISOString().split("T")[0];
+    const prevCompletedDates = targetMission.completedDates || [];
+    const isRecurring =
+      targetMission.recurrenceType === "daily" ||
+      targetMission.recurrenceType === "date_range" ||
+      targetMission.recurrenceType === "custom_days";
+
+    const updatedCompletedDates = prevCompletedDates.includes(todayStr)
+      ? prevCompletedDates
+      : [...prevCompletedDates, todayStr];
+
     setMissions((prev) =>
       prev.map((m) => {
         if (m.id === id) {
@@ -1231,6 +1263,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             xpReward: finalXp,
             coinReward: finalCoins,
             status: "approved",
+            completedDates: isRecurring ? updatedCompletedDates : m.completedDates,
+            pendingDate: undefined,
             parentComment: comment,
             approvedAt: new Date().toISOString()
           };
@@ -1257,12 +1291,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const completeMission = (id: string, proofUrl?: string, proofNote?: string) => {
+    const todayStr = new Date().toISOString().split("T")[0];
     setMissions((prev) =>
       prev.map((m) => {
         if (m.id === id) {
           return {
             ...m,
             status: "pending_approval",
+            pendingDate: todayStr,
             proofUrl,
             proofNote,
             completedAt: new Date().toISOString()
@@ -1281,12 +1317,25 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const targetMission = missions.find((m) => m.id === id);
     if (!targetMission) return;
 
+    const todayStr = new Date().toISOString().split("T")[0];
+    const prevCompletedDates = targetMission.completedDates || [];
+    const isRecurring =
+      targetMission.recurrenceType === "daily" ||
+      targetMission.recurrenceType === "date_range" ||
+      targetMission.recurrenceType === "custom_days";
+
+    const updatedCompletedDates = prevCompletedDates.includes(todayStr)
+      ? prevCompletedDates
+      : [...prevCompletedDates, todayStr];
+
     setMissions((prev) =>
       prev.map((m) => {
         if (m.id === id) {
           return {
             ...m,
             status: "approved",
+            completedDates: isRecurring ? updatedCompletedDates : m.completedDates,
+            pendingDate: undefined,
             parentComment: comment,
             approvedAt: new Date().toISOString()
           };
@@ -1516,6 +1565,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         penalizeChild,
         missions,
         addMission,
+        deleteMission,
         submitChildCustomMission,
         completeMission,
         approveMission,

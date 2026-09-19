@@ -88,7 +88,7 @@ const MainContent: React.FC = () => {
                       }`}
                     >
                       <span className="text-lg">🏠</span>
-                      <span className="truncate">{role === "parent" ? "Pemuka Utama" : "Utama & Misi"}</span>
+                      <span className="truncate">{role === "parent" ? "Pemuka Utama" : "Utama & Jadual"}</span>
                     </button>
 
                     <button
@@ -214,6 +214,8 @@ const MainContent: React.FC = () => {
                         onNavigateToJawi={() => setView("jawi")}
                         onNavigateToHafazan={() => setView("hafazan")}
                         onNavigateToGames={() => setView("permainan")}
+                        onNavigateToSolat={() => setView("solat")}
+                        onNavigateToDiari={() => setView("diari")}
                       />
                     )}
                   </>
