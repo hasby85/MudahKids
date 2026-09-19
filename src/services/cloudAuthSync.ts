@@ -391,8 +391,8 @@ export async function registerAccountCloud(data: {
     return {
       success: false,
       message: data.language === "en"
-        ? "Invalid Access Code! Check your email for 'MudahKids2026'."
-        : "Kod akses tidak sah! Sila semak emel anda untuk kod akses 'MudahKids2026'."
+        ? "Invalid Access Code! Please check your email for the correct code."
+        : "Kod akses tidak sah! Sila semak emel anda untuk kod akses yang betul."
     };
   }
 

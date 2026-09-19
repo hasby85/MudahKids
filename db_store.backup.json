@@ -79,16 +79,16 @@
             "id": "pet-1789488773551",
             "type": "cat",
             "name": "Bella",
-            "level": 8,
-            "xp": 350,
-            "hunger": 76,
-            "happiness": 82,
-            "sleep": 82,
+            "level": 9,
+            "xp": 440,
+            "hunger": 36,
+            "happiness": 52,
+            "sleep": 62,
             "evolutionStage": 3
           },
           "level": 1,
-          "xp": 1855,
-          "coins": 1257,
+          "xp": 1980,
+          "coins": 1296,
           "diamonds": 13,
           "energy": 100,
           "streak": 5,
@@ -99,6 +99,55 @@
           "inventory": [],
           "solatProgress": {
             "history": [
+              {
+                "id": "solat-2026-09-18",
+                "date": "2026-09-18",
+                "isDayExcused": false,
+                "fardhu": {
+                  "subuh": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "missed",
+                    "qadhaDone": true,
+                    "qadhaDate": "2026-09-18"
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "asar": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "maghrib": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "isyak": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "none",
+                    "qadhaDone": false
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-18T12:11:03.383Z"
+              },
               {
                 "id": "solat-2026-09-17",
                 "date": "2026-09-17",
@@ -197,7 +246,7 @@
                 "updatedAt": "2026-09-17T15:02:31.706Z"
               }
             ],
-            "totalFardhuCount": 7,
+            "totalFardhuCount": 10,
             "totalSunatCount": 0,
             "currentStreak": 0,
             "qadhaPending": {
@@ -316,16 +365,16 @@
             "id": "pet-1789488789615",
             "type": "rabbit",
             "name": "Kitty",
-            "level": 5,
-            "xp": 230,
+            "level": 7,
+            "xp": 335,
             "hunger": 15,
             "happiness": 15,
             "sleep": 15,
             "evolutionStage": 3
           },
           "level": 1,
-          "xp": 435,
-          "coins": 364,
+          "xp": 495,
+          "coins": 378,
           "diamonds": 11,
           "energy": 100,
           "streak": 4,
@@ -336,6 +385,54 @@
           "inventory": [],
           "solatProgress": {
             "history": [
+              {
+                "id": "solat-2026-09-18",
+                "date": "2026-09-18",
+                "isDayExcused": false,
+                "fardhu": {
+                  "subuh": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "asar": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "dimaafkan",
+                    "qadhaDone": false
+                  },
+                  "maghrib": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "dimaafkan",
+                    "qadhaDone": false
+                  },
+                  "isyak": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "dimaafkan",
+                    "qadhaDone": false
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-18T12:12:31.412Z"
+              },
               {
                 "id": "solat-2026-09-17",
                 "date": "2026-09-17",
@@ -434,7 +531,7 @@
                 "updatedAt": "2026-09-17T15:04:47.963Z"
               }
             ],
-            "totalFardhuCount": 7,
+            "totalFardhuCount": 9,
             "totalSunatCount": 0,
             "currentStreak": 0,
             "qadhaPending": {
@@ -528,19 +625,19 @@
             "id": "pet-1789488804883",
             "type": "bird",
             "name": "Yamal",
-            "level": 5,
-            "xp": 215,
+            "level": 9,
+            "xp": 410,
             "hunger": 15,
             "happiness": 15,
             "sleep": 15,
             "evolutionStage": 3
           },
           "level": 1,
-          "xp": 215,
-          "coins": 89,
-          "diamonds": 11,
+          "xp": 245,
+          "coins": 187,
+          "diamonds": 15,
           "energy": 100,
-          "streak": 4,
+          "streak": 6,
           "unlockedWorlds": [
             "kampung"
           ],
@@ -584,6 +681,54 @@
           "inventory": [],
           "solatProgress": {
             "history": [
+              {
+                "id": "solat-2026-09-18",
+                "date": "2026-09-18",
+                "isDayExcused": false,
+                "fardhu": {
+                  "subuh": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "missed",
+                    "qadhaDone": false
+                  },
+                  "zohor": {
+                    "completed": true,
+                    "berjemaah": false,
+                    "status": "completed",
+                    "qadhaDone": false
+                  },
+                  "asar": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "missed",
+                    "qadhaDone": false
+                  },
+                  "maghrib": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "missed",
+                    "qadhaDone": false
+                  },
+                  "isyak": {
+                    "completed": false,
+                    "berjemaah": false,
+                    "status": "none",
+                    "qadhaDone": false
+                  }
+                },
+                "sunat": {
+                  "dhuha": false,
+                  "tahajjud": false,
+                  "witir": false,
+                  "rawatib": false,
+                  "tarawih": false,
+                  "hajat": false,
+                  "taubat": false
+                },
+                "note": "",
+                "updatedAt": "2026-09-18T12:10:38.563Z"
+              },
               {
                 "id": "solat-2026-09-17",
                 "date": "2026-09-17",
@@ -681,7 +826,7 @@
                 "updatedAt": "2026-09-17T15:03:45.208Z"
               }
             ],
-            "totalFardhuCount": 2,
+            "totalFardhuCount": 3,
             "totalSunatCount": 0,
             "currentStreak": 0,
             "qadhaPending": {
@@ -730,8 +875,8 @@
       "activeChildId": "child-1789488773551",
       "missions": [],
       "language": "bm",
-      "lastSyncedAt": "2026-09-18T03:58:43.451Z",
-      "lastSyncTimestamp": 1789703923122
+      "lastSyncedAt": "2026-09-19T04:01:38.469Z",
+      "lastSyncTimestamp": 1789790497411
     },
     "shahirah_mahfuzah@yahoo.com": {
       "user": {

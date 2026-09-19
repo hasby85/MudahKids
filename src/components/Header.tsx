@@ -25,7 +25,6 @@ interface HeaderProps {
   onOpenLoginModal?: () => void;
   onLogout?: () => void;
   onOpenJakimNotes?: () => void;
-  onOpenSalesPage?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -33,8 +32,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenRegisterModal,
   onOpenLoginModal,
   onLogout,
-  onOpenJakimNotes,
-  onOpenSalesPage
+  onOpenJakimNotes
 }) => {
   const {
     language,
@@ -104,8 +102,8 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* Child Selector & Stats Badge (Only shown inside app views, hidden on sales and login/landing pages) */}
-          {role === "child" && activeChild && currentView !== "sales" && currentView !== "landing" && user && (
+          {/* Child Selector & Stats Badge (Only shown inside app views when logged in) */}
+          {role === "child" && activeChild && user && (
             <div className="flex flex-wrap items-center gap-3 bg-white px-3 py-1.5 rounded-full border border-stone-200 shadow-2xs">
               {activeChild.activeTitle && (
                 <span className="bg-amber-300 text-stone-900 font-black text-[10px] uppercase px-2.5 py-0.5 rounded-full flex items-center gap-1 border border-amber-400">
@@ -139,7 +137,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Role Switcher Controls */}
           <div className="flex items-center gap-2">
             {/* Active Profile Dropdown if multiple children */}
-            {childrenProfiles.length > 1 && currentView !== "sales" && currentView !== "landing" && (
+            {childrenProfiles.length > 1 && user && (
               <select
                 value={activeChildId}
                 onChange={(e) => setActiveChildId(e.target.value)}
@@ -154,7 +152,7 @@ export const Header: React.FC<HeaderProps> = ({
             )}
 
             {/* Mode Tabs */}
-            {currentView !== "sales" && currentView !== "landing" && (
+            {user && (
               <div className="bg-stone-200/80 p-1 rounded-xl flex items-center gap-1 text-xs font-semibold">
                 <button
                   onClick={handleSwitchToParent}

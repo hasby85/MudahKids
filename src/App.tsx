@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { AppProvider, useApp } from "./context/AppContext";
 import { Header } from "./components/Header";
-import { LandingPage } from "./components/LandingPage";
-import { SalesPage } from "./components/SalesPage";
-import { RegisterModal } from "./components/RegisterModal";
-import { LoginModal } from "./components/LoginModal";
-import { ResetPasswordModal } from "./components/ResetPasswordModal";
+import { AuthScreen } from "./components/AuthScreen";
 import { ParentDashboard } from "./components/ParentDashboard";
 import { ChildDashboard } from "./components/ChildDashboard";
 import { JawiLearningModule } from "./components/JawiLearningModule";
@@ -21,30 +17,16 @@ import { MembershipPlan } from "./types";
 
 const MainContent: React.FC = () => {
   const { role, user, toast, activeChild } = useApp();
-  const [view, setView] = useState<"landing" | "sales" | "app" | "solat" | "jawi" | "hafazan" | "world" | "shop" | "jakim" | "diari" | "permainan">("sales");
-  const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
-  const [selectedPlanForRegister, setSelectedPlanForRegister] = useState<MembershipPlan>("PREMIUM");
+  const [view, setView] = useState<"app" | "solat" | "jawi" | "hafazan" | "world" | "shop" | "jakim" | "diari" | "permainan">("app");
+  const [authTab, setAuthTab] = useState<"login" | "register">("login");
   const [showDocsModal, setShowDocsModal] = useState(false);
 
-  const handleStartRegister = (plan: MembershipPlan) => {
-    setSelectedPlanForRegister(plan);
-    setShowLoginModal(false);
-    setShowResetPasswordModal(false);
-    setShowRegisterModal(true);
+  const handleStartRegister = () => {
+    setAuthTab("register");
   };
 
   const handleOpenLogin = () => {
-    setShowRegisterModal(false);
-    setShowResetPasswordModal(false);
-    setShowLoginModal(true);
-  };
-
-  const handleOpenResetPassword = () => {
-    setShowLoginModal(false);
-    setShowRegisterModal(false);
-    setShowResetPasswordModal(true);
+    setAuthTab("login");
   };
 
   return (
@@ -52,11 +34,13 @@ const MainContent: React.FC = () => {
       {/* Global Header */}
       <Header
         currentView={view}
-        onOpenRegisterModal={() => handleStartRegister("PREMIUM")}
+        onOpenRegisterModal={handleStartRegister}
         onOpenLoginModal={handleOpenLogin}
-        onLogout={() => setView("landing")}
+        onLogout={() => {
+          setAuthTab("login");
+          setView("app");
+        }}
         onOpenJakimNotes={() => setView("jakim")}
-        onOpenSalesPage={() => setView("sales")}
       />
 
       {/* Toast Alert Banner */}
@@ -79,16 +63,11 @@ const MainContent: React.FC = () => {
 
       {/* Main Container View Switcher */}
       <main className="flex-1 w-full mx-auto">
-        {view === "sales" ? (
-          <SalesPage
-            onStartRegistration={handleStartRegister}
-            onExploreApp={() => setView("app")}
-          />
-        ) : view === "landing" && !user ? (
-          <LandingPage
-            onStartRegistration={handleStartRegister}
-            onOpenLogin={handleOpenLogin}
-            onExploreApp={() => setView("app")}
+        {!user ? (
+          /* Direct Login / Registration Screen When Not Authenticated */
+          <AuthScreen
+            initialTab={authTab}
+            onSuccess={() => setView("app")}
           />
         ) : (
           <div className="max-w-7xl mx-auto px-4 py-6">
@@ -253,39 +232,6 @@ const MainContent: React.FC = () => {
           </div>
         )}
       </main>
-
-      {/* Registration Modal */}
-      {showRegisterModal && (
-        <RegisterModal
-          initialPlan={selectedPlanForRegister}
-          onClose={() => setShowRegisterModal(false)}
-          onSuccess={() => {
-            setShowRegisterModal(false);
-            setView("app");
-          }}
-        />
-      )}
-
-      {/* Login Modal */}
-      {showLoginModal && (
-        <LoginModal
-          onClose={() => setShowLoginModal(false)}
-          onSuccess={() => {
-            setShowLoginModal(false);
-            setView("app");
-          }}
-          onOpenRegister={() => handleStartRegister("PREMIUM")}
-          onOpenResetPassword={handleOpenResetPassword}
-        />
-      )}
-
-      {/* Reset Password Modal */}
-      {showResetPasswordModal && (
-        <ResetPasswordModal
-          onClose={() => setShowResetPasswordModal(false)}
-          onBackToLogin={handleOpenLogin}
-        />
-      )}
 
       {/* Documentation Modal */}
       {showDocsModal && (
